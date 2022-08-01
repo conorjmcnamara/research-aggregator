@@ -14,9 +14,67 @@ header {
 
 .title {
 	color: white;
-	text-align: center;
 	letter-spacing: 0.4px;
+	text-align: center;
 	position: relative;
 	padding: 7.5px;
 	margin: 0 auto;
+}
+
+.caption {
+	font-size: 1em;
+    letter-spacing: 0.4px;
+	text-align: center;
+	margin: 4.5%;
+	margin-top: 1.75em; 
+	margin-bottom: 0;
+}
+
+.container {
+	width: 100%;
+}
+
+.buttonGroup {
+	width: 20%;
+	float: left;
+	margin-left: 2%;
+}
+
+.buttonGroup button {
+	width: 100%;
+	font-size: 0.87em;
+	text-align: left;
+}
+
+.topicTitle {
+	font-size: 1.5em;
+    letter-spacing: 0.4px;
+    text-align: center;
+	margin-bottom: 0.8em;
+}
+
+.mobileButtons {
+	width: 100%;
+	display: none;
+	margin-bottom: 2.5em;
+}
+
+.selectButton {
+	width: 60vw;
+}
+
+@media screen and (max-width: 850px) {
+	.buttonGroup {
+		width: 100%;
+		margin-left: 0;
+	}
+
+	.desktopButtons {
+		display: none;
+	}
+
+	.mobileButtons {
+		display: flex;
+		justify-content: center;
+	}
 }
