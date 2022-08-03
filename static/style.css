@@ -1,11 +1,11 @@
 body {
-	padding: 0;
+    padding: 0;
 	margin: 0;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 header {
-	background-color: #2d2d2d;
+    background-color: #2d2d2d;
 	font-size: 1em;
 	width: 100%;
 	top: 0;
@@ -13,7 +13,7 @@ header {
 }
 
 .title {
-	color: white;
+    color: white;
 	letter-spacing: 0.4px;
 	text-align: center;
 	position: relative;
@@ -22,8 +22,8 @@ header {
 }
 
 .caption {
-	font-size: 1em;
-    letter-spacing: 0.4px;
+    font-size: 1em;
+	letter-spacing: 0.4px;
 	text-align: center;
 	margin: 4.5%;
 	margin-top: 1.75em; 
@@ -31,50 +31,75 @@ header {
 }
 
 .container {
-	width: 100%;
+    width: 100%;
 }
 
 .buttonGroup {
-	width: 20%;
+    width: 20%;
 	float: left;
 	margin-left: 2%;
 }
 
 .buttonGroup button {
-	width: 100%;
+    width: 100%;
 	font-size: 0.87em;
 	text-align: left;
 }
 
 .topicTitle {
-	font-size: 1.5em;
-    letter-spacing: 0.4px;
-    text-align: center;
+    font-size: 1.5em;
+	letter-spacing: 0.4px;
+	text-align: center;
 	margin-bottom: 0.8em;
 }
 
 .mobileButtons {
-	width: 100%;
+    width: 100%;
 	display: none;
 	margin-bottom: 2.5em;
 }
 
 .selectButton {
-	width: 60vw;
+    width: 60vw;
+}
+
+.researchData {
+    width: 74%;
+	float: left;
+	margin: 2%;
+	margin-top: 1.75em;
+}
+
+table {
+    width: 100%;
+}
+
+tr:nth-child(odd) {
+    background-color: #eee;
+}
+
+.entryTitle {
+	padding-left: 0.9em;
+	padding-right: 0.9em;
 }
 
 @media screen and (max-width: 850px) {
 	.buttonGroup {
-		width: 100%;
+	    width: 100%;
 		margin-left: 0;
 	}
 
 	.desktopButtons {
-		display: none;
+	    display: none;
 	}
 
 	.mobileButtons {
-		display: flex;
+	    display: flex;
 		justify-content: center;
+	}
+
+	.researchData {
+	    width: 100%;
+		margin: 0;
 	}
 }

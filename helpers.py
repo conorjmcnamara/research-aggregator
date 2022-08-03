@@ -18,8 +18,8 @@ def fetch_data(topic, query_url):
     response = urllib.request.urlopen(query_url)
     if response:
         print(f"Successfully fetched data for the {topic} topic.")
-        data = feedparser.parse(response)
-        return data.entries
+        api_data = feedparser.parse(response)
+        return api_data.entries
 
     else:
         print(f"Error fetching data for the {topic} topic.")

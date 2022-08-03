@@ -32,10 +32,20 @@
                     </select>
                     <input class="submitButton" type="submit" value="Submit">
                 </div>
-
             </div>
+
+            <!-- iterate through each entry of the parsed API response and display the data -->
+            <div class="researchData">
+                <table cellspacing="0" cellpadding="0">
+                    {% for entry in research_data %}
+                        <tr>
+                            <td style="width: 100%;"><h3 class="entryTitle"><a>{{ entry.title }}</a></h3></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
         </div>
     </form>
-
 </body>
 </html>
