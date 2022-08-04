@@ -1,33 +1,33 @@
 body {
     padding: 0;
-	margin: 0;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    margin: 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 header {
     background-color: #2d2d2d;
-	font-size: 1em;
-	width: 100%;
-	top: 0;
-	left: 0;
+    font-size: 1em;
+    width: 100%;
+    top: 0;
+    left: 0;
 }
 
 .title {
     color: white;
-	letter-spacing: 0.4px;
-	text-align: center;
-	position: relative;
-	padding: 7.5px;
-	margin: 0 auto;
+    letter-spacing: 0.4px;
+    text-align: center;
+    position: relative;
+    padding: 7.5px;
+    margin: 0 auto;
 }
 
 .caption {
     font-size: 1em;
-	letter-spacing: 0.4px;
-	text-align: center;
-	margin: 4.5%;
-	margin-top: 1.75em; 
-	margin-bottom: 0;
+    letter-spacing: 0.4px;
+    text-align: center;
+    margin: 4.5%;
+    margin-top: 1.75em; 
+    margin-bottom: 0;
 }
 
 .container {
@@ -36,27 +36,27 @@ header {
 
 .buttonGroup {
     width: 20%;
-	float: left;
-	margin-left: 2%;
+    float: left;
+    margin-left: 2%;
 }
 
 .buttonGroup button {
     width: 100%;
-	font-size: 0.87em;
-	text-align: left;
+    font-size: 0.87em;
+    text-align: left;
 }
 
 .topicTitle {
     font-size: 1.5em;
-	letter-spacing: 0.4px;
-	text-align: center;
-	margin-bottom: 0.8em;
+    letter-spacing: 0.4px;
+    text-align: center;
+    margin-bottom: 0.8em;
 }
 
 .mobileButtons {
     width: 100%;
-	display: none;
-	margin-bottom: 2.5em;
+    display: none;
+    margin-bottom: 2.5em;
 }
 
 .selectButton {
@@ -65,9 +65,9 @@ header {
 
 .researchData {
     width: 74%;
-	float: left;
-	margin: 2%;
-	margin-top: 1.75em;
+    float: left;
+    margin: 2%;
+    margin-top: 1.75em;
 }
 
 table {
@@ -79,14 +79,26 @@ tr:nth-child(odd) {
 }
 
 .entryTitle {
-	padding-left: 0.9em;
-	padding-right: 0.9em;
+    padding-left: 0.9em;
+    padding-right: 0.9em;
 }
+
+.authorsRow {
+    padding: 0.9em;
+    padding-top: 0;
+}
+
+.authorsText {
+    line-height: 1.5;
+    display: inline-block;
+    margin-top: 0;
+    margin-bottom:0;
+  }
 
 @media screen and (max-width: 850px) {
 	.buttonGroup {
 	    width: 100%;
-		margin-left: 0;
+	    margin-left: 0;
 	}
 
 	.desktopButtons {
@@ -95,11 +107,11 @@ tr:nth-child(odd) {
 
 	.mobileButtons {
 	    display: flex;
-		justify-content: center;
+	    justify-content: center;
 	}
 
 	.researchData {
 	    width: 100%;
-		margin: 0;
+	    margin: 0;
 	}
 }

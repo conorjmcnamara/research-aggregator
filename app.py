@@ -18,7 +18,7 @@ def result():
     
     # make an API call with the selected topic
     api_data = create_query(topic)
-    return render_template('index.html', research_data=api_data, topic_buttons=topic_dictionary)
+    return render_template('index.html', topic_buttons=topic_dictionary, research_data=api_data)
 
 
 if __name__ == '__main__':
