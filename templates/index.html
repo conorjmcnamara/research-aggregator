@@ -40,12 +40,20 @@
                     {% for entry in research_data %}
                         <tr>
                             <td style="width: 100%;"><h3 class="entryTitle"><a>{{ entry.title }}</a></h3></td>
+
+                            {% for link in entry.links %}
+                                {% if 'pdf' in link.href %}
+                                    <td class="pdfRow">
+                                        <a href="{{ link.href }}" target="_blank"><img src='../static/pdf_icon.png' class="pdf" height="38vh" width="28vw"/></a>
+                                    </td>
+                                {% endif %}
+                            {% endfor %}
                         </tr>
 
                         <tr>
-                            <td class="authorsRow">
+                            <td colspan="2" class="authorRow">
                                 {% for author in entry.authors %}
-                                    <p class="authorsText">{{ author.name }}</p><p class="authorsText">{{"," if not loop.last }}</p>
+                                    <p class="authorNames">{{ author.name }}</p><p class="authorNames">{{"," if not loop.last }}</p>
                                 {% endfor %}
                             </td>
                         </tr>

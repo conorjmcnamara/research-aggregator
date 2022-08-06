@@ -83,17 +83,27 @@ tr:nth-child(odd) {
     padding-right: 0.9em;
 }
 
-.authorsRow {
+.pdfRow {
+    width: 0%;
+    vertical-align: top;
+}
+
+.pdf {
+    padding-top: 1em;
+    padding-right: 0.9em;
+}
+
+.authorRow {
     padding: 0.9em;
     padding-top: 0;
 }
 
-.authorsText {
+.authorNames {
     line-height: 1.5;
     display: inline-block;
     margin-top: 0;
     margin-bottom:0;
-  }
+}
 
 @media screen and (max-width: 850px) {
 	.buttonGroup {
