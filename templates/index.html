@@ -40,7 +40,6 @@
                     {% for entry in research_data %}
                         <tr>
                             <td style="width: 100%;"><h3 class="entryTitle"><a>{{ entry.title }}</a></h3></td>
-
                             {% for link in entry.links %}
                                 {% if 'pdf' in link.href %}
                                     <td class="pdfRow">

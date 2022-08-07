@@ -1,5 +1,6 @@
 import urllib.request
 import feedparser
+import logging
 
 
 # function that creates an arXiv.org API query URL for a passed topic
@@ -17,12 +18,24 @@ def create_query(topic):
 def fetch_data(topic, query_url):
     response = urllib.request.urlopen(query_url)
     if response:
-        print(f"Successfully fetched data for the {topic} topic.")
+        logger.info(f"Successfully fetched data for the {topic} topic.")
         api_data = feedparser.parse(response)
         return api_data.entries
 
     else:
-        print(f"Error fetching data for the {topic} topic.")
+        logger.error(f"Error fetching data for the {topic} topic.")
+
+
+# function to create a custom logger
+def custom_logger(name, mode):
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.INFO)
+    formatter = logging.Formatter('[%(asctime)s - %(name)s - %(levelname)s] - %(message)s')
+
+    file_handler = logging.FileHandler('./log/output.log', mode=mode)
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+    return logger
 
 
 # keys to be rendered on template buttons
@@ -43,3 +56,5 @@ topic_values = ['AI', 'AR', 'CC', 'CE', 'CG', 'CL', 'CR', 'CV', 'CY', 'DB', 'DC'
 topic_dictionary = {}
 for i in range(len(topic_keys)):
     topic_dictionary[topic_keys[i]] = topic_values[i]
+
+logger = custom_logger(__name__, 'w')
