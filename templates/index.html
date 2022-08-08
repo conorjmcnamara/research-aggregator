@@ -8,7 +8,7 @@
 
 <body>
     <header><h1 class="title">Computer Science Research Aggregator</h1></header>
-    <p class="caption">Select a topic below to fetch the 10 latest matching research papers from <a href="https://arxiv.org" style="color: #0000EE;">arXiv.org</a></p>
+    <p class="caption">Select a topic below to fetch the 10 latest matching research papers from <a href="https://arxiv.org" target="_blank" style="color: #0000EE;">arXiv.org</a></p>
 
     <!-- on form submission, send a POST request with the computer science topic to the /result Flask route -->
     <form action="/result" method="POST">
@@ -38,8 +38,10 @@
             <div class="researchData">
                 <table cellspacing="0" cellpadding="0">
                     {% for entry in research_data %}
-                        <tr>
-                            <td style="width: 100%;"><h3 class="entryTitle"><a>{{ entry.title }}</a></h3></td>
+                        {% set abstractID = entry.id + 'ID' %}
+
+                        <tr onclick="showExtraData('{{ abstractID }}', '{{ entry.id }}')">
+                            <td class="entryTitleRow"><h3 class="entryTitle"><a id="{{ entry.id }}">{{ entry.title }}</a></h3></td>
                             {% for link in entry.links %}
                                 {% if 'pdf' in link.href %}
                                     <td class="pdfRow">
@@ -49,18 +51,21 @@
                             {% endfor %}
                         </tr>
 
-                        <tr>
+                        <tr onclick="showExtraData('{{ abstractID }}', '{{ entry.id }}')">
                             <td colspan="2" class="authorRow">
                                 {% for author in entry.authors %}
                                     <p class="authorNames">{{ author.name }}</p><p class="authorNames">{{"," if not loop.last }}</p>
                                 {% endfor %}
                             </td>
                         </tr>
+
+                        <tr><td colspan="2" id="{{ abstractID }}" style="width: 100%; display: none;"><p class="abstract">{{ entry.summary }}</p></td></tr>
                     {% endfor %}
                 </table>
             </div>
 
         </div>
     </form>
+    <script src="../static/script.js"></script>
 </body>
 </html>
