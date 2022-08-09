@@ -4,7 +4,7 @@ function showExtraData(abstract, title) {
         // display the abstract
         document.getElementById(abstract).style.display = "table-cell";
 
-        // add the URL hyperlink
+        // add the web URL hyperlink
         setTimeout(function() {
             document.getElementById(title).setAttribute("href", title);
             document.getElementById(title).setAttribute("target", "_blank");
@@ -16,7 +16,7 @@ function showExtraData(abstract, title) {
         // hide the abstract
         document.getElementById(abstract).style.display = "none";
 
-        // remove the URL hyperlink
+        // remove the web URL hyperlink
         setTimeout(function() {
             document.getElementById(title).removeAttribute("href");
         }, 10);
