@@ -1,6 +1,8 @@
 # Computer Science Research Aggregator
 
-An interactive Flask web application to access recent research papers by computer science topic. Data is collected using the [arXiv.org](https://arxiv.org) API.
+An interactive Flask web application to access recent research papers by computer science topic. Data is collected using the arXiv.org API.
+
+[![Computer Science Research Aggregator GIF](assets/sample.gif)](https://github.com/conorjmcnamara/research-aggregator)
 
 ## Installation
 
