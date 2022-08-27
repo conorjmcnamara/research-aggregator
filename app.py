@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from helpers import create_query, topic_dictionary
+from helpers import create_query, fetch_data, topic_dictionary
 
 # configure the application
 app = Flask(__name__)
@@ -17,7 +17,8 @@ def result():
     topic = output['topic']
     
     # make an API call with the selected topic
-    api_data = create_query(topic)
+    query_url = create_query(topic)
+    api_data = fetch_data(topic, query_url)
     return render_template('index.html', topic_buttons=topic_dictionary, research_data=api_data)
 
 

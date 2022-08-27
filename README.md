@@ -10,7 +10,7 @@ An interactive Flask web application to access recent research papers by compute
 - Python 3 - [install](https://www.python.org/downloads/)
 
 ### Running the Application
-Input the following commands into the command line
+Execute the following commands:
 
 ```bash
 # Clone the repository
@@ -27,6 +27,14 @@ $ flask run
 ```
 
 Open http://127.0.0.1:5000 to view it in the browser.
+
+### Unit Testing
+Execute the following command from the ```research-aggregator``` directory:
+
+```bash
+# Start test session
+$ python -m pytest tests -v
+```
 
 ## Resources
 - [Flask](https://palletsprojects.com/p/flask)

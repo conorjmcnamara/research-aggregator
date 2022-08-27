@@ -1,4 +1,4 @@
-import urllib.request
+import urllib.request, urllib.error
 import feedparser
 import logging
 
@@ -7,23 +7,28 @@ import logging
 def create_query(topic):
     base_url = 'http://export.arxiv.org/api/query?'
     parameters = 'sortBy=submittedDate&max_results'
-    max_results = 10
+    MAX_RESULTS = 10
 
     # append the search parameters onto the base URL
-    query_url = f"{base_url}search_query=cat:cs.{topic}&{parameters}={str(max_results)}"
-    return fetch_data(topic, query_url)
+    return f"{base_url}search_query=cat:cs.{topic}&{parameters}={str(MAX_RESULTS)}"
 
 
 # function that calls the arXiv.org API and returns the response
 def fetch_data(topic, query_url):
-    response = urllib.request.urlopen(query_url)
-    if response:
-        logger.info(f"Successfully fetched data for the {topic} topic.")
+    try:
+        response = urllib.request.urlopen(query_url)
         api_data = feedparser.parse(response)
-        return api_data.entries
 
-    else:
-        logger.error(f"Error fetching data for the {topic} topic.")
+        # check if data was returned from arXiv.org
+        if api_data.entries:
+            logger.info(f"Successfully fetched data for the {topic} topic")
+            return api_data.entries
+        else:
+            logger.error(f"No data for the {topic} topic")
+            return api_data.entries
+
+    except urllib.error.HTTPError as error:
+        logger.critical(f"Error fetching data for the {topic} topic, {error}")
 
 
 # function to create a custom logger
