@@ -1,6 +1,6 @@
 # Computer Science Research Aggregator
 
-An interactive Flask web application to access recent research papers by computer science topic. Data is collected using the arXiv.org API.
+A Flask web application to access recent research papers by computer science topic using the arXiv.org API.
 
 [![Computer Science Research Aggregator GIF](assets/sample.gif)](https://github.com/conorjmcnamara/research-aggregator)
 
@@ -10,7 +10,7 @@ An interactive Flask web application to access recent research papers by compute
 - Python 3 - [install](https://www.python.org/downloads/)
 
 ### Running the Application
-Execute the following commands:
+Run the following commands:
 
 ```bash
 # Clone the repository
@@ -29,7 +29,7 @@ $ flask run
 Open http://127.0.0.1:5000 to view it in the browser.
 
 ### Unit Testing
-Execute the following command from the ```research-aggregator``` directory:
+Run the following command from the ```research-aggregator``` directory:
 
 ```bash
 # Start test session
