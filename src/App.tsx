@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import './App.css';
-import { topics } from './utils/topics';
+import { topics } from './utils/utils';
 import { Home } from './components/Home';
 import { Navigation } from './components/Navigation';
 import { DisplayTopic } from './components/DisplayTopic';

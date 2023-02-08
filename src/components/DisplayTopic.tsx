@@ -1,6 +1,6 @@
 import React, { FC, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { topicsI } from '../utils/topics';
+import { topicsI, dbDataI } from '../utils/utils';
 
 interface Props {
     topics: topicsI
@@ -16,18 +16,8 @@ export const DisplayTopic: FC<Props> = ({topics}) => {
         validID = false;
     }
 
-    interface topicDataI {
-        topic: string;
-        web_url: string;
-        date: string;
-        title: string;
-        summary: string;
-        authors: string[];
-        pdf_url: string;
-    }
-
     // fetch data from the Flask API given a topic ID
-    const [topicData, setTopicData] = useState<topicDataI[]>();
+    const [topicData, setTopicData] = useState<dbDataI[]>();
     useEffect(() => {
         // avoid requesting data with a known invalid topic ID
         if (validID) {
@@ -54,13 +44,13 @@ export const DisplayTopic: FC<Props> = ({topics}) => {
             <h1>{id}: {topics[id]}</h1>
 
             {/* display research papers given the passed topic ID */}
-            {topicData.map((paper: topicDataI, i: number) => (
+            {topicData.map((paper: dbDataI, i: number) => (
                 <>
                 <h1 key={`title${i}`}>{paper.title}</h1>
-                <p key={`web_url${i}`}>{paper.web_url}</p>
-                <p key={`pdf_url${i}`}>{paper.pdf_url}</p>
+                <p key={`url${i}`}>{paper.url}</p>
                 <p key={`date${i}`}>{paper.date}</p>
-                <p key={`summary${i}`}>{paper.summary}</p>
+                <p key={`summary${i}`}>{paper.abstract}</p>
+                <p key={`source${i}`}>{paper.source}</p>
 
                 {/* display the authors */}
                 {paper.authors.map((author: string, j: number) => (

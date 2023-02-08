@@ -1,6 +1,6 @@
 import React, { FC, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { topicsI } from '../utils/topics';
+import { topicsI, dbDataI } from '../utils/utils';
 
 interface Props {
     topics: topicsI
@@ -11,18 +11,8 @@ export const DisplaySearch: FC<Props> = ({topics}) => {
     let {query} = useParams<{query: string}>();
     query??= "";
 
-    interface queryDataI {
-        topic: string;
-        web_url: string;
-        date: string;
-        title: string;
-        summary: string;
-        authors: string[];
-        pdf_url: string;
-    }
-
     // fetch data from the Flask API given a search query
-    const [queryData, setQueryData] = useState<queryDataI[]>();
+    const [queryData, setQueryData] = useState<dbDataI[]>();
     useEffect(() => {
         fetch(`/search-query/${query}`).then(res => res.json()).then(data => {
             setQueryData(data);
@@ -40,14 +30,14 @@ export const DisplaySearch: FC<Props> = ({topics}) => {
         return (
             <div>
                 {/* display research papers given the passed search */}
-                {queryData.map((paper: queryDataI, i: number) => (
+                {queryData.map((paper: dbDataI, i: number) => (
                     <>
                     <h1 key={`title${i}`}>{paper.title}</h1>
                     <p key={`topic${i}`}>{paper.topic}: {topics[paper.topic]}</p>
-                    <p key={`web_url${i}`}>{paper.web_url}</p>
-                    <p key={`pdf_url${i}`}>{paper.pdf_url}</p>
+                    <p key={`url${i}`}>{paper.url}</p>
                     <p key={`date${i}`}>{paper.date}</p>
-                    <p key={`summary${i}`}>{paper.summary}</p>
+                    <p key={`summary${i}`}>{paper.abstract}</p>
+                    <p key={`source${i}`}>{paper.source}</p>
 
                     {/* display the authors */}
                     {paper.authors.map((author: string, j: number) => (

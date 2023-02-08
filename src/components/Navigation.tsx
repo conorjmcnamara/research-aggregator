@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { topicsI } from '../utils/topics';
+import { topicsI } from '../utils/utils';
 
 interface Props {
     topics: topicsI

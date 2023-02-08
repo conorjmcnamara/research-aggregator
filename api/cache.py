@@ -6,14 +6,14 @@ class LRUCache:
         self.capacity = capacity
         self.cache = OrderedDict()
 
-    def get(self, key: str) -> Optional[list]:
-        if key in self.cache:
-            self.cache.move_to_end(key)
-            return self.cache[key]
+    def get(self, id: str) -> Optional[list]:
+        if id in self.cache:
+            self.cache.move_to_end(id)
+            return self.cache[id]
         return None
         
-    def put(self, key: str, value: list) -> None:
-        self.cache[key] = value
+    def put(self, id: str, papers: list) -> None:
+        self.cache[id] = papers
         if len(self.cache) > self.capacity:
             self.cache.popitem(last=False)
-        self.cache.move_to_end(key)
+        self.cache.move_to_end(id)

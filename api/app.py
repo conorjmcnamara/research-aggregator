@@ -1,6 +1,6 @@
 from flask import Flask, make_response
 from cache import LRUCache
-from dbparser import db, topic_id
+from utils import db, topics
 
 # configuration
 app = Flask(__name__)
@@ -9,20 +9,20 @@ lru_cache = LRUCache(10)
 @app.route("/topic-query/<string:id>")
 def topic_query(id: str):
     # check for a valid topic ID
-    if id not in topic_id:
+    if id not in topics:
         return make_response({"Invalid topic ID: ": id}, 404)
 
     # cache hit
     if lru_cache.get(id):
         return make_response(lru_cache.get(id), 200)
     # cache miss
-    req = db.find({"topic": id}).limit(10)
+    response = db.find({"topic": id}).limit(10)
     topic_data = []
 
-    # remove the database document ID
-    for json_obj in req:
-        json_obj.pop("_id", None)
-        topic_data.append(json_obj)
+    for paper in response:
+        # remove the database document ID
+        paper.pop("_id", None)
+        topic_data.append(paper)
     lru_cache.put(id, topic_data)
     return make_response(topic_data, 200)
 
@@ -34,7 +34,7 @@ def search_query(query: str):
             "index": "papers_index",
             "text": {
                 "query": query,
-                "path": ["title", "summary"]
+                "path": ["title", "abstract"]
             }
         }
     }, {"$limit": 10}]
