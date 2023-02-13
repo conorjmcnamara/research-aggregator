@@ -1,0 +1,173 @@
+body {
+    font-family: "-apple-system", "Helvetica Neue", "Roboto", "Segoe UI", sans-serif;
+}
+
+h1 {
+    font-size: 1.4rem;
+    font-weight: 400;
+}
+
+h2 {
+	font-size: 1.2rem;
+	font-weight: 300;
+}
+
+/* home and 404 not found */
+.home, .not-found {
+	text-align: center;
+}
+
+.home-title, .not-found-title {
+	margin-bottom: 0em;
+	margin-top: 0.5em;
+}
+
+.home-text {
+	margin: 0;
+}
+
+/* header */
+.header {
+	background-color: #444444;
+	width: 100%;
+	top: 0;
+	left: 0;
+	padding: 0;
+	margin: 0;
+}
+
+.header-title {
+	color: white;
+	text-align: left;
+	font-size: 1.5rem;
+	letter-spacing: 0.4px;
+	position: relative;
+	padding: 5px;
+	margin: 0 auto;
+	line-height: 40px;
+	font-weight: 500;
+	display: inline-block;
+}
+
+.header-title:hover {
+	text-decoration: underline;
+}
+
+.header-search-bar, .header-bookmarks, .header-sign-in {
+	display: inline-block;
+}
+
+/* navigation buttons */
+.navigation-container {
+	width: 100%;
+}
+
+.navigation-buttons {
+	width: 20%;
+	float: left;
+	margin-left: 2%;
+}
+
+.navigation-buttons button {
+    width: 100%;
+    font-size: 0.87em;
+    text-align: left;
+}
+
+.navigation-mobile-buttons {
+    width: 100%;
+    display: none;
+    margin-bottom: 0.5em;
+}
+
+.navigation-topic-title {
+    text-align: center;
+    margin-bottom: 0.5em;
+	margin-top: 0.5em;
+}
+
+/* research data */
+.research-data {
+    width: 74%;
+    float: left;
+    margin-left: 2%;
+	margin-bottom: 2%;
+}
+
+.research-selected-query {
+	margin-bottom: 0em;
+	margin-top: 0.5em;
+}
+
+table {
+	width: 100%;
+	margin-top: 0.75em;
+}
+
+tr:nth-child(odd) {
+    background-color: #eee;
+}
+
+tr:nth-child(6n+2) {
+    background-color: #eee;
+}
+
+tr:nth-child(6n+5) {
+    background-color: white;
+}
+
+.research-title-row {
+	width: 100%;
+}
+
+.research-bookmark-row {
+	width: 0%;
+    vertical-align: top;
+	padding-left: 0.9em;
+	padding-right: 0.9em;
+}
+
+.research-title, .research-bookmark {
+	color: black;
+	text-decoration: underline;
+}
+
+.research-title, .research-abstract {
+	padding-left: 0.9em;
+    padding-right: 0.9em;
+	box-decoration-break: clone;
+}
+
+.research-author-row {
+    padding: 0.9em;
+    padding-top: 0;
+}
+
+.research-hidden-row {
+	width: 100%;
+}
+
+@media screen and (max-width: 850px) {
+	.navigation-buttons {
+	    width: 100%;
+	    margin-left: 0;
+	}
+
+	.navigation-desktop-buttons {
+	    display: none;
+	}
+
+	.navigation-mobile-buttons {
+	    display: flex;
+	    justify-content: center;
+	}
+
+	.research-data {
+	    width: 100%;
+	    margin: 0;
+	}
+
+	.research-selected-query {
+		margin-left: 2%
+	}
+}

@@ -8,6 +8,10 @@ export interface dbDataI {
     authors: string[];
 }
 
+export interface showHiddenI {
+    [id: string]: boolean
+}
+
 export interface topicsI {
     [id: string]: string
 };

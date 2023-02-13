@@ -1,6 +1,6 @@
 import React, { FC, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { topicsI, dbDataI } from '../utils/utils';
+import { topicsI, dbDataI, showHiddenI } from '../utils/utils';
 
 interface Props {
     topics: topicsI
@@ -26,38 +26,67 @@ export const DisplayTopic: FC<Props> = ({topics}) => {
             });
         }
     }, [id, validID]);
-   
+
+    // display a paper's abstract, topics and source
+    const [showHidden, setShowHidden] = useState<showHiddenI>({});
+    const toggleHidden = (index: string) => {
+        setShowHidden(prevShowHidden => ({
+            [index]: !prevShowHidden[index]
+        }));
+    }
+
     // invalid topic ID
     if (!validID) {
         return (
-            <p>Invalid topic ID: '{id}'</p>
+            <h1 style={{ textAlign: "center"}}>Invalid topic ID: {id}</h1>
         )
     }
     // loading
     else if (!topicData) {
         return (
-            <p>Loading...</p>
+            <h1 style={{ textAlign: "center"}}>Loading...</h1>
         )
     }
     return (
-        <div>
-            <h1>{id}: {topics[id]}</h1>
+        <div className="research-data">
+            <h1 className="research-selected-query">Topic: {topics[id]}</h1>
 
-            {/* display research papers given the passed topic ID */}
-            {topicData.map((paper: dbDataI, i: number) => (
-                <>
-                <h1 key={`title${i}`}>{paper.title}</h1>
-                <p key={`url${i}`}>{paper.url}</p>
-                <p key={`date${i}`}>{paper.date}</p>
-                <p key={`summary${i}`}>{paper.abstract}</p>
-                <p key={`source${i}`}>{paper.source}</p>
+            <table cellSpacing="0" cellPadding="0">
+                {/* display research papers given the passed topic ID */}
+                {topicData.map((paper: dbDataI, i: number) => (
+                    <>
+                    <tr>
+                        <td className="research-title-row" onClick={() => toggleHidden(`topic${id}${i}`)}>
+                            <h2 key={`title${i}`}><a className={"research-title"} href={paper.url}>{paper.title}</a></h2>
+                        </td>
 
-                {/* display the authors */}
-                {paper.authors.map((author: string, j: number) => (
-                    <p key={`author${i}${j}`}>{author}</p>
+                        <td className="research-bookmark-row">
+                            <p className="research-bookmark">Bookmark</p>
+                        </td>
+                    </tr>
+
+                    <tr onClick={() => toggleHidden(`topic${id}${i}`)}>
+                        <td colSpan={2} className="research-author-row">
+                            {/* display the authors */}
+                            {paper.authors.map((author: string, j: number) => (
+                                <span key={`author${i}${j}`} className="research-author">
+                                    { (j ? ', ' : '') + author}
+                                </span>
+                            ))}
+                            <p className="research-date">{paper.date}</p>
+                        </td>
+                    </tr>
+                        
+                    <tr onClick={() => toggleHidden(`topic${id}${i}`)}>
+                        <td style={{ display: showHidden[`topic${id}${i}`] ? 'table-cell' : 'none'}} colSpan={2} className="research-hidden-row">
+                            <p className="research-abstract">{paper.abstract}</p>
+                            <p className="research-abstract">Topics: {paper.topic}</p>
+                            <p className="research-abstract">Source: {paper.source}</p>
+                        </td>
+                    </tr>
+                    </>
                 ))}
-                </>
-            ))}
+            </table>
         </div>
     );
 }

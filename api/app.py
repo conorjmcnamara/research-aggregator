@@ -6,7 +6,7 @@ from utils import db, topics
 app = Flask(__name__)
 lru_cache = LRUCache(10)
 
-@app.route("/topic-query/<string:id>")
+@app.route("/topic-query/<string:id>", methods=["GET"])
 def topic_query(id: str):
     # check for a valid topic ID
     if id not in topics:
@@ -26,7 +26,7 @@ def topic_query(id: str):
     lru_cache.put(id, topic_data)
     return make_response(topic_data, 200)
 
-@app.route("/search-query/<string:query>")
+@app.route("/search-query/<string:query>", methods=["GET"])
 def search_query(query: str):
     # search for research papers with the passed query
     pipeline = [{

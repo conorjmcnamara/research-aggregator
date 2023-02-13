@@ -32,7 +32,7 @@ user = os.getenv("USER")
 password = os.getenv("PASSWORD")
 db = get_db(user, password, "papers")
 
-# remove unnesscary words and punctuation from the topic names for the Semantic Scholar API
+# remove unnecessary grammar from the topic names for the Semantic Scholar API
 topics = {
     "AI": "artificial+intelligence",
     "CC": "computational+complexity",

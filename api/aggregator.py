@@ -10,22 +10,22 @@ from utils import upload_data, db, topics
 # constant number of research papers to request
 MAX_PAPERS = 10
 
-# function to fetch data from arXiv.org
+# function to fetch data from arXiv
 def arxiv(id: str, session: requests.Session) -> Optional[list]:
     base_url = "http://export.arxiv.org/api/query?"
     param = "sortBy=submittedDate&max_results"
     url = f"{base_url}search_query=cat:cs.{id}&{param}={MAX_PAPERS}"
 
-    # HTTP GET request to the arXiv.org API
+    # HTTP GET request to the arXiv API
     try:
         response = session.get(url)
         try:
             data = xmltodict.parse(response.text)
         except:
-            logging.critical(f"Failed to parse XML to dictionary. HTTP code {response.status_code}")
+            logging.critical(f"Failed to parse XML to dictionary with topic ID: {id}. HTTP code {response.status_code}")
             return None
     except:
-        logging.critical(f"Failed to make a GET request with topic ID: {id}. HTTP code {response.status_code}")
+        logging.critical(f"Failed to make a GET request to arXiv with topic ID: {id}. HTTP code {response.status_code}")
         return None
     else:
         # parse the raw data
@@ -37,7 +37,7 @@ def arxiv(id: str, session: requests.Session) -> Optional[list]:
             paper["date"] = entry["updated"][:10]
             paper["abstract"] = entry["summary"]
             paper["url"] = entry["id"]
-            paper["source"] = "arxiv.org"
+            paper["source"] = "arXiv"
 
             # check for multiple authors
             authors = []
@@ -49,7 +49,7 @@ def arxiv(id: str, session: requests.Session) -> Optional[list]:
                         authors.append(author["name"])
             paper["authors"] = authors
             result.append(paper)
-        logging.info(f"Successfully made a GET request with topic ID: {id}. HTTP code {response.status_code}")
+        logging.info(f"Successfully made a GET request to arXiv with topic ID: {id}. HTTP code {response.status_code}")
         return result
 
 # node used for Semantic Scholar parsing with a date and index to the API JSON response
@@ -60,7 +60,7 @@ class Node:
 
 # function to fetch data from Semantic Scholar
 def semantic_scholar(id: str, name: str, session: requests.Session) -> Optional[list]:
-    # skip searching for the "other" topic name
+    # skip the "other" topic name
     if id == "OH":
         return None
 
@@ -74,10 +74,10 @@ def semantic_scholar(id: str, name: str, session: requests.Session) -> Optional[
         try:
             data = response.json()["data"]
         except:
-            logging.critical(f"Empty data response for topic name: {name}. HTTP code {response.status_code}")
+            logging.critical(f"Empty data response with topic name: {name}. HTTP code {response.status_code}")
             return None
     except:
-        logging.critical(f"Failed to make a GET request with topic name: {name}. HTTP code {response.status_code}")
+        logging.critical(f"Failed to make a GET request to Semantic Scholar with topic name: {name}. HTTP code {response.status_code}")
         return None
     else:
         # parse the raw data
@@ -107,14 +107,14 @@ def semantic_scholar(id: str, name: str, session: requests.Session) -> Optional[
             paper["date"] = json["publicationDate"]
             paper["abstract"] = json["abstract"]
             paper["url"] = json["url"]
-            paper["source"] = "semanticscholar.org"
+            paper["source"] = "Semantic Scholar"
 
             authors = []
             for author in json["authors"]:
                 authors.append(author["name"])
             paper["authors"] = authors
             result.append(paper)
-        logging.info(f"Successfully made a GET request with topic name: {name}. HTTP code {response.status_code}")
+        logging.info(f"Successfully made a GET request to Semantic Scholar with topic name: {name}. HTTP code {response.status_code}")
         return result
 
 if __name__ == "__main__":
