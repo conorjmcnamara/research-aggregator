@@ -13,7 +13,7 @@ export const DisplaySearch: FC<Props> = ({topics}) => {
     // fetch data from the Flask API given a search query
     const [queryData, setQueryData] = useState<dbDataI[]>();
     useEffect(() => {
-        fetch(`/search-query/${query}`).then(response => response.json()).then(data => {
+        fetch(`/api/search/${query}`).then(response => response.json()).then(data => {
             setQueryData(data);
         });
     }, [query]);
@@ -26,17 +26,14 @@ export const DisplaySearch: FC<Props> = ({topics}) => {
         }));
     }
     
-    // check that search query data exists
+    // check for search query data
     if (queryData) {
         if (queryData.length === 0) {
-            return (
-                <h1 className="info-h1">No data found with the search query: {query}</h1>
-            )
+            return (<h1 className="info-h1">No data found with the search query: {query}</h1>);
         }
         return (
             <div className="research-data">
                 <h1 className="research-query">Search: {query}</h1>
-
                 <table cellSpacing="0" cellPadding="0">
                     {queryData.map((paper: dbDataI, i: number) => (
                         <>
@@ -69,10 +66,8 @@ export const DisplaySearch: FC<Props> = ({topics}) => {
                     ))}
                 </table>
             </div>
-        )
+        );
     }
-    // loading
-    return (
-        <h1 className="info-h1">Loading...</h1>
-    );
+    // load until the research data is ready
+    return (<h1 className="info-h1">Loading...</h1>);
 }

@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { topicsI } from '../utils/utils';
+import { topicsI, checkCookieExists } from '../utils/utils';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -16,6 +16,21 @@ export const Navigation: FC<Props> = ({topics}) => {
     const [query, setQuery] = useState<string>("");
     const navigate = useNavigate();
     const topicID: string[] = Object.keys(topics);
+    var loggedIn: boolean = checkCookieExists("csrf_access_token") ? true : false;
+
+    const logOut = async() => {
+        fetch("/api/logout", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+        })
+        .then(response => {
+            if (response.status === 200) navigate(`/`);
+            throw new Error();
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    }
 
     return (
         <div>
@@ -31,7 +46,8 @@ export const Navigation: FC<Props> = ({topics}) => {
                     <Navbar.Collapse >
                     <Nav className="ms-auto" style={{marginLeft: "0"}}>
                         <Nav.Link onClick={() => navigate(`/bookmarks`)} href="/bookmarks" style={{color: "white"}}>Bookmarks</Nav.Link>
-                        <Nav.Link onClick={() => navigate(`/sign-in`)} href="/sign-in" style={{color: "white"}}>Sign In</Nav.Link>
+                        {loggedIn ? <Nav.Link onClick={() => logOut()} style={{color: "white"}}>Sign Out</Nav.Link> :
+                        <Nav.Link onClick={() => navigate(`/login`)} href="/login" style={{color: "white"}}>Sign In</Nav.Link>}
                     </Nav>
                     </Navbar.Collapse>
                 </Container>
