@@ -1,4 +1,4 @@
 # NLP Research Aggregator
 
-Run backend: npm run api
+Run backend API: npm run api
 Run frontend: npm start
