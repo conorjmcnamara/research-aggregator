@@ -2,10 +2,12 @@ import logging
 import requests
 import heapq
 import xmltodict
+import os
+from dotenv import load_dotenv
 from concurrent.futures import ThreadPoolExecutor
 from collections import defaultdict
 from typing import Optional
-from utils import upload_data, db, topics
+from utils import get_db, upload_data, topics
 
 # constant number of research papers to request
 MAX_PAPERS = 10
@@ -37,7 +39,7 @@ def arxiv(id: str, session: requests.Session) -> Optional[list]:
             paper["date"] = entry["updated"][:10]
             paper["abstract"] = entry["summary"]
             paper["url"] = entry["id"]
-            paper["source"] = "arXiv"
+            paper["source"] = "arXiv.org"
 
             # check for multiple authors
             authors = []
@@ -107,7 +109,7 @@ def semantic_scholar(id: str, name: str, session: requests.Session) -> Optional[
             paper["date"] = json["publicationDate"]
             paper["abstract"] = json["abstract"]
             paper["url"] = json["url"]
-            paper["source"] = "Semantic Scholar"
+            paper["source"] = "SemanticScholar.org"
 
             authors = []
             for author in json["authors"]:
@@ -135,4 +137,8 @@ if __name__ == "__main__":
                 papers.append(paper)
     
     # batch upload to MongoDB Atlas
-    upload_data(db, papers)
+    load_dotenv()
+    user = os.getenv("USER")
+    password = os.getenv("PASSWORD")
+    papers_db = get_db(user, password, "papers")
+    upload_data(papers_db, papers)

@@ -58,3 +58,12 @@ export const topics: topicsI = {
     "SC": "Symbolic Computation",
     "SY": "Systems and Control"
 };
+
+export function checkCookieExists(name: string) {
+    const cookies: Array<string> = document.cookie.split(';');
+    for (var i=0; i<cookies.length; i++) {
+        if (cookies[i].split('=')[0].trim() === name) {
+            return true;
+        }
+    }
+}

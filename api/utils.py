@@ -1,7 +1,6 @@
 import logging
-import os
 import pymongo
-from dotenv import load_dotenv
+from collections import OrderedDict
 from typing import Optional
 
 # function to create a MongoDB Atlas connection
@@ -16,62 +15,74 @@ def get_db(user: str, password: str, collection: str) -> Optional[pymongo.collec
         return None
 
 # function to upload data to MongoDB Atlas
-def upload_data(db: pymongo.collection.Collection, papers: list) -> bool:
+def upload_data(papers_db: pymongo.collection.Collection, papers: list) -> bool:
     try:
-        db.delete_many({})
-        db.insert_many(papers)
+        papers_db.delete_many({})
+        papers_db.insert_many(papers)
         logging.info("Successfully updated the MongoDB Atlas database")
         return True
     except:
         logging.critical("Failed to update the MongoDB Atlas database")
         return False
 
-# read environment variables
-load_dotenv()
-user = os.getenv("USER")
-password = os.getenv("PASSWORD")
-db = get_db(user, password, "papers")
+# least recently used cache
+class LRUCache:
+    def __init__(self, capacity: int):
+        self.capacity = capacity
+        self.cache = OrderedDict()
 
-# remove unnecessary grammar from the topic names for the Semantic Scholar API
+    def get(self, id: str) -> Optional[list]:
+        if id in self.cache:
+            self.cache.move_to_end(id)
+            return self.cache[id]
+        return None
+        
+    def put(self, id: str, papers: list) -> None:
+        self.cache[id] = papers
+        if len(self.cache) > self.capacity:
+            self.cache.popitem(last=False)
+        self.cache.move_to_end(id)
+
+# simplify topic names for the Semantic Scholar API
 topics = {
-    "AI": "Artificial Intelligence",
-    "CL": "Computation and Language",
-    "CC": "Computational Complexity",
-    "CE": "Computational Engineering, Finance, and Science",
-    "CG": "Computational Geometry",
-    "CV": "Computer Vision and Pattern Recognition",
-    "CY": "Computers and Society",
-    "CR": "Cryptography and Security",
-    "DS": "Data Structures and Algorithms",
-    "DB": "Databases",
-    "DL": "Digital Libraries",
-    "DM": "Discrete Mathematics",
-    "DC": "Distributed, Parallel, and Cluster Computing",
-    "ET": "Emerging Technologies",
-    "FL": "Formal Languages and Automata Theory",
-    "GT": "Game Theory",
-    "GL": "General Literature",
-    "GR": "Graphics",
-    "AR": "Hardware Architecture",
-    "HC": "Human-Computer Interaction", 
-    "IR": "Information Retrieval",
-    "IT": "Information Theory",
-    "LO": "Logic in Computer Science",
-    "LG": "Machine Learning",
-    "MS": "Mathematical Software",
-    "MA": "Multiagent Systems",
-    "MM": "Multimedia",
-    "NI": "Networking and Internet Architecture",
-    "NE": "Neural and Evolutionary Computing",
-    "NA": "Numerical Analysis",
-    "OS": "Operating Systems",
-    "OH": "Other",
-    "PF": "Performance",
-    "PL": "Programming Languages",
-    "RO": "Robotics",
-    "SI": "Social and Information Networks",
-    "SE": "Software Engineering",
-    "SD": "Sound",
-    "SC": "Symbolic Computation",
-    "SY": "Systems and Control"
+    "AI": "artificial+intelligence",
+    "CC": "computational+complexity",
+    "CE": "computational+engineering+finance+science",
+    "CG": "computational+geometry",
+    "CL": "computation+language",
+    "CR": "cryptography+security",
+    "CV": "computer+vision+pattern+recognition",
+    "CY": "computers+society",
+    "DB": "databases",
+    "DC": "distributed+parallel+cluster+computing",
+    "DL": "digital+libraries",
+    "DM": "discrete+mathematics",
+    "DS": "data+structures+algorithms",
+    "ET": "emerging+technologies",
+    "FL": "formal+languages+automata+theory",
+    "GT": "game+theory",
+    "GL": "general+literature",
+    "GR": "graphics",
+    "AR": "hardware+architecture",
+    "HC": "human+computer+interaction", 
+    "IR": "information+retrieval",
+    "IT": "information+theory",
+    "LG": "machine+learning",
+    "LO": "logic+in+computer+science",
+    "MA": "multiagent+systems",
+    "MM": "multimedia",
+    "MS": "mathematical+software",
+    "NA": "numerical+analysis",
+    "NE": "neural+evolutionary+computing",
+    "NI": "networking+internet+architecture",
+    "OH": "other",
+    "OS": "operating+systems",
+    "PF": "performance",
+    "PL": "programming+languages",
+    "RO": "robotics",
+    "SC": "symbolic+computation",
+    "SD": "sound",
+    "SE": "software+sngineering",
+    "SI": "social+information+networks",
+    "SY": "systems+control"
 }

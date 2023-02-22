@@ -19,7 +19,7 @@ export const DisplayTopic: FC<Props> = ({topics}) => {
     const [topicData, setTopicData] = useState<dbDataI[]>();
     useEffect(() => {
         if (validID) {
-            fetch(`/topic-query/${id}`).then(response => response.json()).then(data => {
+            fetch(`/api/topic/${id}`).then(response => response.json()).then(data => {
                 setTopicData(data);
             });
         }
@@ -35,20 +35,15 @@ export const DisplayTopic: FC<Props> = ({topics}) => {
 
     // check for an invalid topic ID
     if (!validID) {
-        return (
-            <h1 className="info-h1">Invalid topic ID: {id}</h1>
-        )
+        return (<h1 className="info-h1">Invalid topic ID: {id}</h1>);
     }
-    // loading
+    // load until the research data is ready
     else if (!topicData) {
-        return (
-            <h1 className="info-h1">Loading...</h1>
-        )
+        return (<h1 className="info-h1">Loading...</h1>);
     }
     return (
         <div className="research-data">
             <h1>Topic: {topics[id]}</h1>
-
             <table cellSpacing="0" cellPadding="0">
                 {topicData.map((paper: dbDataI, i: number) => (
                     <>
