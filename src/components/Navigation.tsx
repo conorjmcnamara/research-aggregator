@@ -19,13 +19,14 @@ export const Navigation: FC<Props> = ({topics}) => {
     var loggedIn: boolean = checkCookieExists("csrf_access_token") ? true : false;
 
     const logOut = async() => {
-        fetch("/api/logout", {
+        const requestOptions = {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
-        })
+            headers: {"Content-Type": "application/json"}
+        }
+        fetch("/api/logout", requestOptions)
         .then(response => {
             if (response.status === 200) navigate(`/`);
-            throw new Error();
+            else throw new Error();
         })
         .catch((error) => {
             console.log(error);

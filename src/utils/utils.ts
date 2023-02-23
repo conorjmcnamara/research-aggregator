@@ -1,4 +1,4 @@
-export interface dbDataI {
+export interface researchDataI {
     topic: string;
     title: string;
     date: string;
@@ -62,8 +62,6 @@ export const topics: topicsI = {
 export function checkCookieExists(name: string) {
     const cookies: Array<string> = document.cookie.split(';');
     for (var i=0; i<cookies.length; i++) {
-        if (cookies[i].split('=')[0].trim() === name) {
-            return true;
-        }
+        if (cookies[i].split('=')[0].trim() === name) return true;
     }
 }

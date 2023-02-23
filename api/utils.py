@@ -3,8 +3,7 @@ import pymongo
 from collections import OrderedDict
 from typing import Optional
 
-# function to create a MongoDB Atlas connection
-def get_db(user: str, password: str, collection: str) -> Optional[pymongo.collection.Collection]:
+def get_db_connection(user: str, password: str, collection: str) -> Optional[pymongo.collection.Collection]:
     connection = f"mongodb+srv://{user}:{password}@research.holkbao.mongodb.net/?retryWrites=true&w=majority"
     try:
         client = pymongo.MongoClient(connection)
@@ -14,8 +13,7 @@ def get_db(user: str, password: str, collection: str) -> Optional[pymongo.collec
         logging.critical("Failed to connect to MongoDB Atlas")
         return None
 
-# function to upload data to MongoDB Atlas
-def upload_data(papers_db: pymongo.collection.Collection, papers: list) -> bool:
+def upload_db_data(papers_db: pymongo.collection.Collection, papers: list) -> bool:
     try:
         papers_db.delete_many({})
         papers_db.insert_many(papers)
@@ -25,7 +23,6 @@ def upload_data(papers_db: pymongo.collection.Collection, papers: list) -> bool:
         logging.critical("Failed to update the MongoDB Atlas database")
         return False
 
-# least recently used cache
 class LRUCache:
     def __init__(self, capacity: int):
         self.capacity = capacity

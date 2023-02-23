@@ -1,3 +1,4 @@
+
 import React, { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { checkCookieExists } from '../utils/utils';
@@ -17,11 +18,12 @@ export const Login: FC = () => {
     var loggedIn: boolean = checkCookieExists("csrf_access_token") ? true : false;
 
     const login = async() => {
-        fetch("/api/login", {
+        const requestOptions = {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({email: userEmail, password: userPassword})
-        })
+        }
+        fetch("/api/login", requestOptions)
         .then(response => {
             if (response.status === 200) return response.json();
             throw new Error();
@@ -36,19 +38,24 @@ export const Login: FC = () => {
         })
     }
     
-    // check if the user is logged in
     if (loggedIn) {
         return (<h1 className="info-h1">Session is currently active...</h1>);
     }
     return (
         <div className="default-display-container">
             <h1>Login</h1>
-            <Form className="navbar-form">
-                <Form.Control className="navbar-search-bar" placeholder="Email" onChange={event => setUserEmail(event.target.value)} />
-                <Form.Control className="navbar-search-bar"placeholder="Password" onChange={event => setUserPassword(event.target.value)} />
-                <Button onClick={() => login()}>Login</Button>
+            <Form className="signup-form">
+                <Form.Group>
+                    <p>Email Address</p>
+                    <Form.Control className="signup-bar" placeholder="Enter email" onChange={event => setUserEmail(event.target.value)} />
+                </Form.Group>
+                <Form.Group>
+                    <p>Password</p>
+                    <Form.Control className="signup-bar" placeholder="Enter password" onChange={event => setUserPassword(event.target.value)} />
+                </Form.Group>
+                <Button className="signup-button" onClick={() => login()}>Login</Button>
             </Form>
-            <p onClick={() => navigate(`/signup`)}>New user? Signup</p>
+            <p className="signup-link" onClick={() => navigate(`/signup`)}>New user? Signup</p>
             {loginResponse && <p>Login {loginResponse.login}</p>}
         </div>
     );

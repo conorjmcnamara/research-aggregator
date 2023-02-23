@@ -1,6 +1,6 @@
 import React, { FC, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { topicsI, dbDataI, showHiddenI } from '../utils/utils';
+import { topicsI, researchDataI, showHiddenI } from '../utils/utils';
 
 interface Props {
     topics: topicsI
@@ -15,8 +15,7 @@ export const DisplayTopic: FC<Props> = ({topics}) => {
         validID = false;
     }
 
-    // fetch data from the Flask API given a topic ID
-    const [topicData, setTopicData] = useState<dbDataI[]>();
+    const [topicData, setTopicData] = useState<researchDataI[]>();
     useEffect(() => {
         if (validID) {
             fetch(`/api/topic/${id}`).then(response => response.json()).then(data => {
@@ -33,11 +32,9 @@ export const DisplayTopic: FC<Props> = ({topics}) => {
         }));
     }
 
-    // check for an invalid topic ID
     if (!validID) {
         return (<h1 className="info-h1">Invalid topic ID: {id}</h1>);
     }
-    // load until the research data is ready
     else if (!topicData) {
         return (<h1 className="info-h1">Loading...</h1>);
     }
@@ -45,15 +42,13 @@ export const DisplayTopic: FC<Props> = ({topics}) => {
         <div className="research-data">
             <h1>Topic: {topics[id]}</h1>
             <table cellSpacing="0" cellPadding="0">
-                {topicData.map((paper: dbDataI, i: number) => (
+                {topicData.map((paper: researchDataI, i: number) => (
                     <>
                     <tr>
                         <td className="research-title-col" onClick={() => toggleHidden(`topic${id}${i}`)}>
                             <h2 key={`title${i}`}><a className="research-paper-title" href={paper.url}>{paper.title}</a></h2>
                         </td>
-                        <td className="research-bookmark-col">
-                            <h3>Bookmark</h3>
-                        </td>
+                        <td className="research-bookmark-col"><h3>Bookmark</h3></td>
                     </tr>
 
                     <tr onClick={() => toggleHidden(`topic${id}${i}`)}>
