@@ -7,18 +7,15 @@ from dotenv import load_dotenv
 from concurrent.futures import ThreadPoolExecutor
 from collections import defaultdict
 from typing import Optional
-from utils import get_db, upload_data, topics
+from utils import get_db_connection, upload_db_data, topics
 
-# constant number of research papers to request
-MAX_PAPERS = 10
+MAX_PAPERS_REQUEST = 10
 
-# function to fetch data from arXiv
-def arxiv(id: str, session: requests.Session) -> Optional[list]:
+def fetch_arxiv(id: str, session: requests.Session) -> Optional[list]:
     base_url = "http://export.arxiv.org/api/query?"
     param = "sortBy=submittedDate&max_results"
-    url = f"{base_url}search_query=cat:cs.{id}&{param}={MAX_PAPERS}"
+    url = f"{base_url}search_query=cat:cs.{id}&{param}={MAX_PAPERS_REQUEST}"
 
-    # HTTP GET request to the arXiv API
     try:
         response = session.get(url)
         try:
@@ -30,7 +27,6 @@ def arxiv(id: str, session: requests.Session) -> Optional[list]:
         logging.critical(f"Failed to make a GET request to arXiv with topic ID: {id}. HTTP code {response.status_code}")
         return None
     else:
-        # parse the raw data
         result = []
         for entry in data["feed"]["entry"]:
             paper = defaultdict(list)
@@ -54,23 +50,19 @@ def arxiv(id: str, session: requests.Session) -> Optional[list]:
         logging.info(f"Successfully made a GET request to arXiv with topic ID: {id}. HTTP code {response.status_code}")
         return result
 
-# node used for Semantic Scholar parsing with a date and index to the API JSON response
+# node used for Semantic Scholar parsing
 class Node:
-    def __init__(self, index: int, date: str):
-        self.index = index
+    def __init__(self, date: str, json_index: int):
         self.date = date
+        self.json_index = json_index
 
-# function to fetch data from Semantic Scholar
-def semantic_scholar(id: str, name: str, session: requests.Session) -> Optional[list]:
-    # skip the "other" topic name
+def fetch_semantic_scholar(id: str, name: str, session: requests.Session) -> Optional[list]:
     if id == "OH":
         return None
-
     base_url = "https://api.semanticscholar.org/graph/v1/paper/search?query="
     param = "&year=2023&fieldsOfStudy=Computer+Science&fields=title,url,abstract,publicationDate,authors&limit=20"
     url = f"{base_url}{name}{param}"
 
-    # HTTP GET request to the Semantic Scholar API
     try:
         response = session.get(url)
         try:
@@ -82,23 +74,23 @@ def semantic_scholar(id: str, name: str, session: requests.Session) -> Optional[
         logging.critical(f"Failed to make a GET request to Semantic Scholar with topic name: {name}. HTTP code {response.status_code}")
         return None
     else:
-        # parse the raw data
         heap = []
         size = 0
 
         # maintain a heap of the most recent research papers by date
         for i in range(len(data)):
             date = data[i]["publicationDate"]
-            if date:
-                if size < MAX_PAPERS:
+            if not date:
+                continue
+            if size < MAX_PAPERS_REQUEST:
+                node = Node(i, date)
+                heapq.heappush(heap, (i, node))
+            else:
+                if date > heap[0][1].date:
                     node = Node(i, date)
+                    heapq.heappop(heap)
                     heapq.heappush(heap, (i, node))
-                else:
-                    if date > heap[0][1].date:
-                        node = Node(i, date)
-                        heapq.heappop(heap)
-                        heapq.heappush(heap, (i, node))
-                size += 1
+            size += 1
         
         result = []
         for entry in heap:
@@ -126,8 +118,8 @@ if __name__ == "__main__":
 
     futures = []
     for id, name in topics.items():
-        futures.append(executor.submit(arxiv, id, session))
-        futures.append(executor.submit(semantic_scholar, id, name, session))
+        futures.append(executor.submit(fetch_arxiv, id, session))
+        futures.append(executor.submit(fetch_semantic_scholar, id, name, session))
     
     session.close()
     papers = []
@@ -136,9 +128,8 @@ if __name__ == "__main__":
             for paper in future.result():
                 papers.append(paper)
     
-    # batch upload to MongoDB Atlas
     load_dotenv()
     user = os.getenv("USER")
     password = os.getenv("PASSWORD")
-    papers_db = get_db(user, password, "papers")
-    upload_data(papers_db, papers)
+    papers_db = get_db_connection(user, password, "papers")
+    upload_db_data(papers_db, papers)

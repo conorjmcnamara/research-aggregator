@@ -10,25 +10,23 @@ export const Bookmarks: FC = () => {
     var loggedIn: boolean = checkCookieExists("csrf_access_token") ? true : false;
  
     useEffect(() => {
-        if (loggedIn) {
-            fetch(`/api/bookmarks`, {
-                method: "GET",
-                headers: {"Content-Type": "application/json"}
-            })
-            .then(response => response.json()).then(data => {
-                setBookmarkData(data);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        if (!loggedIn) return;
+        const requestOptions = {
+            method: "GET",
+            headers: {"Content-Type": "application/json"}
         }
+        fetch(`/api/bookmarks`, requestOptions)
+        .then(response => response.json()).then(data => {
+            setBookmarkData(data);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
     }, [loggedIn]);
 
-    // check if the user is logged in
     if (!loggedIn) {
         return (<h1 className="info-h1">Create an account or login to view bookmarked papers</h1>);
     }
-    // load until the bookmark data is ready
     else if (!bookmarkData) {
         return (<h1 className="info-h1">Loading...</h1>);
     }
