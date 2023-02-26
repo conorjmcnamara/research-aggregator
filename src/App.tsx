@@ -8,21 +8,20 @@ import { Bookmarks } from './components/Bookmarks';
 import { DisplayTopic } from './components/DisplayTopic';
 import { DisplaySearch } from './components/DisplaySearch';
 import { NotFound } from './components/NotFound';
-import { topics } from './utils/utils';
 import './App.css';
 
 const App: FC = () => {
   return (
     <div className="App">
       <BrowserRouter>
-        <Navigation topics={topics} />
+        <Navigation />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/bookmarks" element={<Bookmarks />} />
-            <Route path="/topic/:id" element={<DisplayTopic topics={topics} />} />
-            <Route path="/search/:query" element={<DisplaySearch topics={topics} />} />
+            <Route path="/topic/:id" element={<DisplayTopic />} />
+            <Route path="/search/:query" element={<DisplaySearch />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
       </BrowserRouter>

@@ -1,10 +1,9 @@
-
 import React, { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { checkCookieExists } from '../utils/utils';
+import { getCookie } from '../utils/utils';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface loginI {
     login: string;
@@ -15,7 +14,7 @@ export const Login: FC = () => {
     const [userEmail, setUserEmail] = useState<string>("");
     const [userPassword, setUserPassword] = useState<string>("");
     const [loginResponse, setLoginResponse] = useState<loginI>();
-    var loggedIn: boolean = checkCookieExists("csrf_access_token") ? true : false;
+    var loggedIn: boolean = getCookie("csrf_access_token") ? true : false;
 
     const login = async() => {
         const requestOptions = {

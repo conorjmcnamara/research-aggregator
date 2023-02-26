@@ -1,70 +1,86 @@
 import React, { FC, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { topicsI, researchDataI, showHiddenI } from '../utils/utils';
+import { researchDataI, showHiddenI, getCookie, topics } from '../utils/utils';
 
-interface Props {
-    topics: topicsI
-}
-
-export const DisplayTopic: FC<Props> = ({topics}) => {
-    let {id} = useParams<{id: string}>();
+export const DisplayTopic: FC = () => {
+    const [topicData, setTopicData] = useState<researchDataI>({});
+    const [paperUIDs, setPaperUIDs] = useState<string[]>();
+    const [showHidden, setShowHidden] = useState<showHiddenI>({});
+    var doubleSubmitToken: string | undefined = getCookie("csrf_access_token");
+    var validID: boolean = true;
+    var {id} = useParams<{id: string}>();
     id ??= "";
     
-    let validID: boolean = true;
     if (!topics[id]) {
         validID = false;
     }
 
-    const [topicData, setTopicData] = useState<researchDataI[]>();
     useEffect(() => {
-        if (validID) {
-            fetch(`/api/topic/${id}`).then(response => response.json()).then(data => {
-                setTopicData(data);
-            });
-        }
+        if (!validID) return;
+        fetch(`/api/topic/${id}`)
+        .then(response => response.json()).then(data => {
+            setTopicData(data);
+            setPaperUIDs(Object.keys(data));
+        })
+        .catch((error) => {
+            console.log(error);
+        });
     }, [id, validID]);
 
     // display a paper's abstract, topics and source
-    const [showHidden, setShowHidden] = useState<showHiddenI>({});
     const toggleHidden = (index: string) => {
         setShowHidden(prevShowHidden => ({
             [index]: !prevShowHidden[index]
         }));
     }
 
+    const bookmarkPaper = async(uid: string) => {
+        if (!doubleSubmitToken || !topicData) return;
+        const requestOptions = {
+            method: "POST",
+            headers: {"Content-Type": "application/json",
+            "X-CSRF-TOKEN": doubleSubmitToken},
+            body: JSON.stringify({uid: uid})
+        }
+        fetch("/api/bookmarks", requestOptions)
+        .catch((error) => {
+            console.log(error);
+        });
+    }
+
     if (!validID) {
         return (<h1 className="info-h1">Invalid topic ID: {id}</h1>);
     }
-    else if (!topicData) {
+    else if (!topicData || !paperUIDs) {
         return (<h1 className="info-h1">Loading...</h1>);
     }
     return (
         <div className="research-data">
             <h1>Topic: {topics[id]}</h1>
             <table cellSpacing="0" cellPadding="0">
-                {topicData.map((paper: researchDataI, i: number) => (
+                {paperUIDs.map((uid: string, i: number) => (
                     <>
                     <tr>
                         <td className="research-title-col" onClick={() => toggleHidden(`topic${id}${i}`)}>
-                            <h2 key={`title${i}`}><a className="research-paper-title" href={paper.url}>{paper.title}</a></h2>
+                            <h2 key={`title${i}`}><a className="research-paper-title" href={topicData[uid].url}>{topicData[uid].title}</a></h2>
                         </td>
-                        <td className="research-bookmark-col"><h3>Bookmark</h3></td>
+                        <td className="research-bookmark-col"><h3 onClick={() => bookmarkPaper(`${topicData[uid]._id}`)}>Bookmark</h3></td>
                     </tr>
 
                     <tr onClick={() => toggleHidden(`topic${id}${i}`)}>
                         <td className="research-author-col" colSpan={2} >
-                            {paper.authors.map((author: string, j: number) => (
+                            {topicData[uid].authors.map((author: string, j: number) => (
                                 <span key={`author${i}${j}`}>{(j ? ", " : "") + author}</span>
                             ))}
-                            <p>{paper.date}</p>
+                            <p>{topicData[uid].date}</p>
                         </td>
                     </tr>
                         
                     <tr onClick={() => toggleHidden(`topic${id}${i}`)}>
                         <td className="research-hidden-col" colSpan={2} style={{display: showHidden[`topic${id}${i}`] ? "table-cell" : "none"}}>
-                            <p className="research-paper-abstract">{paper.abstract}</p>
-                            <p className="research-paper-topic"><b>Topics:</b> {paper.topic}</p>
-                            <p className="research-paper-source"><b>Source:</b> {paper.source}</p>
+                            <p className="research-paper-abstract">{topicData[uid].abstract}</p>
+                            <p className="research-paper-topic"><b>Topics:</b> {topics[topicData[uid].topic]} ({topicData[uid].topic})</p>
+                            <p className="research-paper-source"><b>Source:</b> {topicData[uid].source}</p>
                         </td>
                     </tr>
                     </>
