@@ -1,22 +1,18 @@
 import React, { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { topicsI, checkCookieExists } from '../utils/utils';
+import { getCookie, topics } from '../utils/utils';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-interface Props {
-    topics: topicsI
-}
-
-export const Navigation: FC<Props> = ({topics}) => {
-    const [query, setQuery] = useState<string>("");
+export const Navigation: FC = () => {
     const navigate = useNavigate();
+    const [query, setQuery] = useState<string>("");
     const topicID: string[] = Object.keys(topics);
-    var loggedIn: boolean = checkCookieExists("csrf_access_token") ? true : false;
+    var loggedIn: boolean = getCookie("csrf_access_token") ? true : false;
 
     const logOut = async() => {
         const requestOptions = {

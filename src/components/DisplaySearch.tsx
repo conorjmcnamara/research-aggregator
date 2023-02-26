@@ -1,63 +1,80 @@
 import React, { FC, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { topicsI, researchDataI, showHiddenI } from '../utils/utils';
+import { researchDataI, showHiddenI, getCookie, topics } from '../utils/utils';
 
-interface Props {
-    topics: topicsI
-}
+export const DisplaySearch: FC = () => {
+    const [searchData, setSearchData] = useState<researchDataI>({});
+    const [paperUIDs, setPaperUIDs] = useState<string[]>();
+    const [showHidden, setShowHidden] = useState<showHiddenI>({});
+    var doubleSubmitToken: string | undefined = getCookie("csrf_access_token");
+    var {query} = useParams<{query: string}>();
+    query ??= "";
 
-export const DisplaySearch: FC<Props> = ({topics}) => {
-    let {query} = useParams<{query: string}>();
-    query??= "";
-
-    const [queryData, setQueryData] = useState<researchDataI[]>();
     useEffect(() => {
-        fetch(`/api/search/${query}`).then(response => response.json()).then(data => {
-            setQueryData(data);
+        fetch(`/api/search/${query}`)
+        .then(response => response.json()).then(data => {
+            setSearchData(data);
+            setPaperUIDs(Object.keys(data));
+        })
+        .catch((error) => {
+            console.log(error);
         });
     }, [query]);
 
     // display a paper's abstract, topics and source
-    const [showHidden, setShowHidden] = useState<showHiddenI>({});
     const toggleHidden = (index: string) => {
         setShowHidden(prevShowHidden => ({
             [index]: !prevShowHidden[index]
         }));
     }
 
-    if (!queryData) {
+    const bookmarkPaper = async(uid: string) => {
+        if (!doubleSubmitToken || !searchData) return;
+        const requestOptions = {
+            method: "POST",
+            headers: {"Content-Type": "application/json",
+            "X-CSRF-TOKEN": doubleSubmitToken},
+            body: JSON.stringify({uid: uid})
+        }
+        fetch("/api/bookmarks", requestOptions)
+        .catch((error) => {
+            console.log(error);
+        });
+    }
+
+    if (!searchData || !paperUIDs) {
         return (<h1 className="info-h1">Loading...</h1>);
     }
-    else if (queryData.length === 0) {
+    else if (paperUIDs.length === 0) {
         return (<h1 className="info-h1">No data found with the search query: {query}</h1>);
     }
     return (
         <div className="research-data">
             <h1 className="research-query">Search: {query}</h1>
             <table cellSpacing="0" cellPadding="0">
-                {queryData.map((paper: researchDataI, i: number) => (
+                {paperUIDs.map((uid: string, i: number) => (
                     <>
                     <tr>
-                        <td className="research-title-col" onClick={() => toggleHidden(`search${paper.topic}${i}`)}>
-                            <h2 key={`title${i}`}><a className="research-paper-title" href={paper.url}>{paper.title}</a></h2>
+                        <td className="research-title-col" onClick={() => toggleHidden(`search${searchData[uid].topic}${i}`)}>
+                            <h2 key={`title${i}`}><a className="research-paper-title" href={searchData[uid].url}>{searchData[uid].title}</a></h2>
                         </td>
-                        <td className="research-bookmark-col"><h3>Bookmark</h3></td>
+                        <td className="research-bookmark-col"><h3 onClick={() => bookmarkPaper(`${searchData[uid]._id}`)}>Bookmark</h3></td>
                     </tr>
 
-                    <tr onClick={() => toggleHidden(`search${paper.topic}${i}`)}>
+                    <tr onClick={() => toggleHidden(`search${searchData[uid].topic}${i}`)}>
                         <td className="research-author-col" colSpan={2}>
-                            {paper.authors.map((author: string, j: number) => (
+                            {searchData[uid].authors.map((author: string, j: number) => (
                                 <span key={`author${i}${j}`}>{(j ? ", " : "") + author}</span>
                             ))}
-                            <p>{paper.date}</p>
+                            <p>{searchData[uid].date}</p>
                         </td>
                     </tr>
                         
-                    <tr onClick={() => toggleHidden(`search${paper.topic}${i}`)}>
-                    <td className="research-hidden-col" colSpan={2} style={{display: showHidden[`search${paper.topic}${i}`] ? "table-cell" : "none"}}>
-                            <p className="research-paper-abstract">{paper.abstract}</p>
-                            <p className="research-paper-topic"><b>Topics:</b> {paper.topic}</p>
-                            <p className="research-paper-source"><b>Source:</b> {paper.source}</p>
+                    <tr onClick={() => toggleHidden(`search${searchData[uid].topic}${i}`)}>
+                        <td className="research-hidden-col" colSpan={2} style={{display: showHidden[`search${searchData[uid].topic}${i}`] ? "table-cell" : "none"}}>
+                            <p className="research-paper-abstract">{searchData[uid].abstract}</p>
+                            <p className="research-paper-topic"><b>Topics:</b> {topics[searchData[uid].topic]} ({searchData[uid].topic})</p>
+                            <p className="research-paper-source"><b>Source:</b> {searchData[uid].source}</p>
                         </td>
                     </tr>
                 </>

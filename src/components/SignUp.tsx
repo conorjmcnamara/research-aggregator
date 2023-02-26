@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { checkCookieExists } from '../utils/utils';
+import { getCookie } from '../utils/utils';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -14,7 +14,7 @@ export const SignUp: FC = () => {
     const [userEmail, setUserEmail] = useState<string>("");
     const [userPassword, setUserPassword] = useState<string>("");
     const [signUpResponse, setSignUpResponse] = useState<signUpI>();
-    var loggedIn: boolean = checkCookieExists("csrf_access_token") ? true : false;
+    var loggedIn: boolean = getCookie("csrf_access_token") ? true : false;
 
     const signUp = async() => {
         const requestOptions = {

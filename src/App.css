@@ -210,6 +210,7 @@ tr:nth-child(6n+5) {
     padding-top: 0.9em;
     padding-right: 0.9em;
     padding-left: 0.9em;
+    cursor: pointer;
 }
 
 .research-bookmark-col h3 {
@@ -250,29 +251,29 @@ tr:nth-child(6n+5) {
 
 @media screen and (max-width: 850px) {
     .navigation-buttons {
-	    width: 100%;
-	    margin-left: 0;
-	}
+        width: 100%;
+        margin-left: 0;
+    }
 
     .navigation-desktop-buttons {
-	    display: none;
-	}
+        display: none;
+    }
 
     .navigation-mobile-buttons {
-	    display: flex;
-	    justify-content: center;
-	}
+        display: flex;
+        justify-content: center;
+    }
 
     .research-data {
-	    width: 100%;
-	    margin: 0;
-	}
+        width: 100%;
+        margin: 0;
+    }
 
     .research-data h1 {
-	    margin-left: 0.7em;
-	}
+        margin-left: 0.7em;
+    }
 
     .navbar-search-bar {
-	    width: 12em !important;
-	}
+        width: 12em !important;
+    }
 }
