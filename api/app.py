@@ -49,7 +49,7 @@ def login():
     
     # check if the user exists in the database
     if user and encrypted_password == user["password"]:
-        # create double submit protection cookies to avoid CSRF attacks
+        # create double submit protection cookies to prevent CSRF attacks
         access_token = create_access_token(identity=user["email"])
         response = jsonify({"login": "successful"})
         set_access_cookies(response, access_token)
@@ -105,7 +105,6 @@ def refresh_expiring_jwts(response):
             set_access_cookies(response, access_token)
         return response
     except (RuntimeError, KeyError):
-        # return the original response
         return response
 
 @app.route("/api/topic/<string:id>", methods=["GET"])

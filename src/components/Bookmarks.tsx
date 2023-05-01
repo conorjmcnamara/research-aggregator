@@ -19,7 +19,7 @@ export const Bookmarks: FC = () => {
             setPaperUIDs(Object.keys(data));
         })
         .catch((error) => {
-            console.log(error);
+            console.log(error.message);
         });
     }, [doubleSubmitToken]);
 
@@ -46,7 +46,7 @@ export const Bookmarks: FC = () => {
             }
         })
         .catch((error) => {
-            console.log(error);
+            console.log(error.message);
         });
     }
 

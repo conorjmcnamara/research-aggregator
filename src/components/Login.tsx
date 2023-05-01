@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { getCookie } from '../utils/utils';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface loginI {
     login: string;
@@ -33,7 +32,7 @@ export const Login: FC = () => {
         })
         .catch((error) => {
             setLoginResponse({login: "unsccessful"});
-            console.log(error);
+            console.log(error.message);
         })
     }
     
@@ -54,7 +53,7 @@ export const Login: FC = () => {
                 </Form.Group>
                 <Button className="signup-button" onClick={() => login()}>Login</Button>
             </Form>
-            <p className="signup-link" onClick={() => navigate(`/signup`)}>New user? Signup</p>
+            <p className="signup-link" onClick={() => navigate(`/signup`)}>Don't have an account? Sign Up</p>
             {loginResponse && <p>Login {loginResponse.login}</p>}
         </div>
     );
