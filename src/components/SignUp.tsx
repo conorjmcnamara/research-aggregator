@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { getCookie } from '../utils/utils';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import 'bootstrap/dist/css/bootstrap.min.css'
 
 interface signUpI {
     signup: string;
@@ -37,7 +36,7 @@ export const SignUp: FC = () => {
         })
         .catch((error) => {
             setSignUpResponse({signup: "unsccessful"});
-            console.log(error);
+            console.log(error.message);
         })
     }
 

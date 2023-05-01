@@ -23,7 +23,7 @@ export const DisplayTopic: FC = () => {
             setPaperUIDs(Object.keys(data));
         })
         .catch((error) => {
-            console.log(error);
+            console.log(error.message);
         });
     }, [id, validID]);
 
@@ -44,7 +44,7 @@ export const DisplayTopic: FC = () => {
         }
         fetch("/api/bookmarks", requestOptions)
         .catch((error) => {
-            console.log(error);
+            console.log(error.message);
         });
     }
 

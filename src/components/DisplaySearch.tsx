@@ -17,7 +17,7 @@ export const DisplaySearch: FC = () => {
             setPaperUIDs(Object.keys(data));
         })
         .catch((error) => {
-            console.log(error);
+            console.log(error.message);
         });
     }, [query]);
 
@@ -38,7 +38,7 @@ export const DisplaySearch: FC = () => {
         }
         fetch("/api/bookmarks", requestOptions)
         .catch((error) => {
-            console.log(error);
+            console.log(error.message);
         });
     }
 
@@ -77,7 +77,7 @@ export const DisplaySearch: FC = () => {
                             <p className="research-paper-source"><b>Source:</b> {searchData[uid].source}</p>
                         </td>
                     </tr>
-                </>
+                    </>
                 ))}
             </table>
         </div>

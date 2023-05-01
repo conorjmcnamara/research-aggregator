@@ -6,7 +6,6 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 export const Navigation: FC = () => {
     const navigate = useNavigate();
@@ -25,7 +24,7 @@ export const Navigation: FC = () => {
             else throw new Error();
         })
         .catch((error) => {
-            console.log(error);
+            console.log(error.message);
         });
     }
 
