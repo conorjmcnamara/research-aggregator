@@ -7,6 +7,9 @@ on:
 jobs:
   test_pull_request:
     runs-on: ubuntu-latest
+    env:
+      MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
+      MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
