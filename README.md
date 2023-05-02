@@ -2,6 +2,6 @@
 
 npm run api
 
-npm run start
+npm start
 
 pytest -v

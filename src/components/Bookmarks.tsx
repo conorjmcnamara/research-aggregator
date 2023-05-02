@@ -15,7 +15,7 @@ export const Bookmarks: FC = () => {
             method: "GET",
             headers: {"Content-Type": "application/json"}
         }
-        fetch(`/api/bookmarks`, requestOptions)
+        fetch("/api/bookmarks", requestOptions)
         .then(response => response.json()).then(data => {
             setBookmarkData(data);
             setPaperUIDs(Object.keys(data));
@@ -71,7 +71,7 @@ export const Bookmarks: FC = () => {
                         <td className="research-title-col" onClick={() => toggleHidden(`bookmark${i}`)}>
                             <h2 key={`title${i}`}><a className="research-paper-title" href={bookmarkData[uid].url}>{bookmarkData[uid].title}</a></h2>
                         </td>
-                        <td className="research-bookmark-col"><h3 onClick={() => removePaper(`${bookmarkData[uid]._id}`)}>Unsave</h3></td>
+                        <td className="research-bookmark-col"><h3 onClick={() => removePaper(`${bookmarkData[uid]._id}`)}>Remove</h3></td>
                     </tr>
 
                     <tr onClick={() => toggleHidden(`bookmark${i}`)}>

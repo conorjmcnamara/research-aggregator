@@ -17,7 +17,7 @@ export const Navigation: FC = () => {
     const dispatch = useDispatch();
     var loginStatus = useSelector((state: RootState) => state.loginStatus.status);
 
-    const logOut = async() => {
+    const logout = async() => {
         const requestOptions = {
             method: "POST",
             headers: {"Content-Type": "application/json"}
@@ -52,7 +52,7 @@ export const Navigation: FC = () => {
                         {loginStatus ? (
                             <>
                             <Nav.Link onClick={() => navigate(`/account`)} href="/account" style={{color: "white"}}>Account</Nav.Link>
-                            <Nav.Link onClick={() => logOut()} style={{color: "white"}}>Sign Out</Nav.Link>
+                            <Nav.Link onClick={() => logout()} style={{color: "white"}}>Sign Out</Nav.Link>
                             </>
                         ) : 
                             <Nav.Link onClick={() => navigate(`/login`)} href="/login" style={{color: "white"}}>Sign In</Nav.Link>

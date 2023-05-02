@@ -28,6 +28,8 @@ app.config["JWT_TOKEN_LOCATION"] = "cookies"
 app.config["JWT_COOKIE_SECURE"] = True
 app.config["JWT_COOKIE_CSRF_PROTECT"] = True
 
+# app.config['JWT_AUTH_USERNAME_KEY'] = 'email'
+
 @app.route("/api/signup", methods=["POST"])
 def signup():
     credentials = request.get_json()
@@ -38,8 +40,8 @@ def signup():
     if not user:
         credentials["bookmarks"] = []
         users_db.insert_one(credentials)
-        return jsonify({"signup": "successful"}), 201
-    return jsonify({"signup": "unsuccessful, user already exists"}), 409
+        return jsonify({"data": "signup successful"}), 201
+    return jsonify({"data": "signup unsuccessful, user already exists"}), 409
 
 @app.route("/api/login", methods=["POST"])
 def login():
@@ -47,20 +49,57 @@ def login():
     encrypted_password = hashlib.sha256(credentials["password"].encode("utf-8")).hexdigest()
     user = users_db.find_one({"email": credentials["email"]})
     
-    # check if the user exists in the database
+    # check if the user is new
     if user and encrypted_password == user["password"]:
         # create double submit protection cookies to prevent CSRF attacks
         access_token = create_access_token(identity=user["email"])
-        response = jsonify({"login": "successful"})
+        response = jsonify({"data": "login successful"})
         set_access_cookies(response, access_token)
         return response, 200
-    return jsonify({"login": "unsuccessful, user not found"}), 401
+    return jsonify({"data": "login unsuccessful, user not found"}), 401
 
 @app.route("/api/logout", methods=["POST"])
 def logout():
-    response = jsonify({"logout": "successful"})
+    response = jsonify({"data": "logout successful"})
     unset_jwt_cookies(response)
     return response, 200
+
+# secured user account endpoint
+@app.route("/api/user", methods=["GET", "PUT", "DELETE"])
+@jwt_required()
+def user():
+    credentials = get_jwt_identity()
+
+    # get email
+    if request.method == "GET":
+        return jsonify(credentials), 200
+
+    elif request.method == "PUT":
+        new_credentials = request.get_json()
+        user = users_db.find_one({"email": credentials})
+
+        # update email
+        if "newEmail" in new_credentials:
+            users_db.update_one({"email": credentials}, {"$set": {"email": new_credentials["newEmail"]}})
+            access_token = create_access_token(identity=new_credentials["newEmail"])
+            response = jsonify({"data": "email update successful"})
+            set_access_cookies(response, access_token)
+            return response, 200
+
+        # update password
+        elif "newPassword" in new_credentials:
+            encrypted_password = hashlib.sha256(new_credentials["newPassword"].encode("utf-8")).hexdigest()
+            if encrypted_password == user["password"]:
+                return jsonify({"data": "password update unsuccessful"}), 409
+            users_db.update_one({"email": credentials}, {"$set": {"password": encrypted_password}})
+            return jsonify({"data": "password update successful"}), 200
+    
+    # delete account
+    else:
+        users_db.delete_one({"email": credentials})
+        response = jsonify({"account deletion": "successful"})
+        unset_jwt_cookies(response)
+        return response, 200
 
 # secured bookmarks endpoint
 @app.route("/api/bookmarks", methods=["GET", "POST", "DELETE"])
@@ -83,13 +122,13 @@ def bookmarks():
     elif request.method == "POST":
         paper_uid = request.get_json()["uid"]
         users_db.update_one({"email": user["email"]}, {"$addToSet": {"bookmarks": paper_uid}})
-        return jsonify({"bookmark": "successful"}), 200
+        return jsonify({"data": "bookmark addition successful"}), 201
     
     # delete a paper from the bookmarks list
     else:
         paper_uid = request.get_json()["uid"]
         users_db.update_one({"email": user["email"]}, {"$pull": {"bookmarks": paper_uid}})
-        return jsonify({"bookmark": "successful"}), 200
+        return jsonify({"data": "bookmark deletion successful"}), 200
 
 @app.after_request
 def refresh_expiring_jwts(response):
@@ -101,7 +140,7 @@ def refresh_expiring_jwts(response):
         if buffer > expiry:
             user = get_jwt_identity()
             access_token = create_access_token(identity=user)
-            response = jsonify({"refresh": "successful"})
+            response = jsonify({"data": "JWT refresh successful"})
             set_access_cookies(response, access_token)
         return response
     except (RuntimeError, KeyError):
@@ -110,7 +149,7 @@ def refresh_expiring_jwts(response):
 @app.route("/api/topic/<string:id>", methods=["GET"])
 def topic_query(id: str):
     if id not in topics:
-        return jsonify({"invalid topic ID: ": id}), 404
+        return jsonify({"data": "invalid topic ID: " + id}), 404
 
     cache_hit = lru_cache.get(id)
     if cache_hit:
@@ -126,7 +165,7 @@ def topic_query(id: str):
 
 @app.route("/api/search/<string:query>", methods=["GET"])
 def search_query(query: str):
-    pipeline = [{
+    response = [{
         "$search": {
             "index": "papers_index",
             "text": {
@@ -136,13 +175,13 @@ def search_query(query: str):
         }
     }, {"$limit": 10}]
 
-    if pipeline:
+    if response:
         search_data = {}
-        for paper in papers_db.aggregate(pipeline):
+        for paper in papers_db.aggregate(response):
             paper["_id"] = str(paper["_id"])
             search_data[paper["_id"]] = paper
         return jsonify(search_data), 200
-    return jsonify({"search:": f"failed with query: {query}"}), 404
+    return jsonify({"data:": f"empty search with query: {query}"}), 404
 
 if __name__ == "__main__":
     app.run(debug=False)
