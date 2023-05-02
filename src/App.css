@@ -116,14 +116,18 @@ h2 {
 }
 
 /* signup styles */
-.signup-form {
+.user-form {
     font-size: 1em;
     display: inline-block;
     text-align: left;
     align-items: center;
 }
 
-.signup-bar {
+.user-form-group {
+    margin-top: 0.45em;
+}
+
+.user-form-bar {
     font-size: 0.95em !important;
     height: 1.95em !important;
     width: 25em;
@@ -134,7 +138,7 @@ h2 {
     padding-left: 0.5em !important;
 }
 
-.signup-button {
+.user-form-button {
     font-size: 0.95em !important; 
     text-align: center !important;
     height: 1.95em !important;
@@ -142,12 +146,12 @@ h2 {
     background-color: #444444 !important;
     border: 2px solid #444444 !important;
     margin-top: 0.4em;
-    margin-bottom: 0.3em;
+    margin-bottom: 0.5em;
     padding-top: 0em !important;
     padding-bottom: 0em !important;
 }
 
-.signup-link {
+.user-form-link {
     font-size: 0.85em;
     text-decoration: underline;
     cursor: pointer;

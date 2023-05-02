@@ -3,18 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { setLoginStatus } from '../slices/loginStatusSlice';
 import { RootState } from '../store';
+import { responseMsgI } from '../utils/utils';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
-interface loginI {
-    login: string;
-}
-
 export const Login: FC = () => {
-    const navigate = useNavigate();
     const [userEmail, setUserEmail] = useState<string>("");
     const [userPassword, setUserPassword] = useState<string>("");
-    const [loginResponse, setLoginResponse] = useState<loginI>();
+    const [responseMsg, setResponseMsg] = useState<responseMsgI>();
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     var loginStatus = useSelector((state: RootState) => state.loginStatus.status);
 
@@ -31,11 +28,11 @@ export const Login: FC = () => {
         })
         .then((data) => {
             dispatch(setLoginStatus());
-            setLoginResponse(data);
+            setResponseMsg({responseMsg: data.data});
             navigate(`/bookmarks`);
         })
         .catch((error) => {
-            setLoginResponse({login: "unsccessful"});
+            setResponseMsg({responseMsg: "login unsuccessful"});
             console.log(error.message);
         })
     }
@@ -46,19 +43,19 @@ export const Login: FC = () => {
     return (
         <div className="default-display-container">
             <h1>Login</h1>
-            <Form className="signup-form">
-                <Form.Group>
+            <Form className="user-form">
+                <Form.Group className="user-form-group">
                     <p>Email Address</p>
-                    <Form.Control className="signup-bar" placeholder="Enter email" onChange={event => setUserEmail(event.target.value)} />
+                    <Form.Control className="user-form-bar" placeholder="Enter email" onChange={event => setUserEmail(event.target.value)} />
                 </Form.Group>
-                <Form.Group>
+                <Form.Group className="user-form-group">
                     <p>Password</p>
-                    <Form.Control className="signup-bar" placeholder="Enter password" onChange={event => setUserPassword(event.target.value)} />
+                    <Form.Control className="user-form-bar" placeholder="Enter password" onChange={event => setUserPassword(event.target.value)} />
                 </Form.Group>
-                <Button className="signup-button" onClick={() => login()}>Login</Button>
+                <Button className="user-form-button" onClick={() => login()}>Login</Button>
             </Form>
-            <p className="signup-link" onClick={() => navigate(`/signup`)}>Don't have an account? Sign Up</p>
-            {loginResponse && <p>Login {loginResponse.login}</p>}
+            <p className="user-form-link" onClick={() => navigate(`/signup`)}>Don't have an account? Sign Up</p>
+            {responseMsg && <p>Login {responseMsg.responseMsg}</p>}
         </div>
     );
 }

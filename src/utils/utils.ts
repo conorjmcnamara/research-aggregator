@@ -4,6 +4,10 @@ export function getCookie(name: string) {
     return Cookies.get(name)
 }
 
+export interface responseMsgI {
+    responseMsg: string;
+}
+
 export interface researchPaperI {
     _id: string;
     topic: string;
