@@ -1,14 +1,16 @@
 import React, { FC, useState, useEffect } from 'react';
-import { researchDataI, showHiddenI, getCookie, topics } from '../utils/utils';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
+import { researchDataI, showHiddenI, topics } from '../utils/utils';
 
 export const Bookmarks: FC = () => {
     const [bookmarkData, setBookmarkData] = useState<researchDataI>({});
     const [paperUIDs, setPaperUIDs] = useState<string[]>();
     const [showHidden, setShowHidden] = useState<showHiddenI>({});
-    var doubleSubmitToken: string | undefined = getCookie("csrf_access_token");
+    var loginStatus = useSelector((state: RootState) => state.loginStatus.status);
 
     useEffect(() => {
-        if (!doubleSubmitToken) return;
+        if (!loginStatus) return;
         const requestOptions = {
             method: "GET",
             headers: {"Content-Type": "application/json"}
@@ -21,7 +23,7 @@ export const Bookmarks: FC = () => {
         .catch((error) => {
             console.log(error.message);
         });
-    }, [doubleSubmitToken]);
+    }, [loginStatus]);
 
     // display a paper's abstract, topics and source
     const toggleHidden = (index: string) => {
@@ -31,11 +33,11 @@ export const Bookmarks: FC = () => {
     }
 
     const removePaper = async(uid: string) => {
-        if (!doubleSubmitToken || !bookmarkData) return;
+        if (!loginStatus || !bookmarkData) return;
         const requestOptions = {
             method: "DELETE",
             headers: {"Content-Type": "application/json",
-            "X-CSRF-TOKEN": doubleSubmitToken},
+            "X-CSRF-TOKEN": loginStatus},
             body: JSON.stringify({uid: uid})
         }
         fetch("/api/bookmarks", requestOptions)
@@ -50,7 +52,7 @@ export const Bookmarks: FC = () => {
         });
     }
 
-    if (!doubleSubmitToken) {
+    if (!loginStatus) {
         return (<h1 className="info-h1">Create an account or login to view bookmarked papers</h1>);
     }
     else if (!bookmarkData || !paperUIDs) {

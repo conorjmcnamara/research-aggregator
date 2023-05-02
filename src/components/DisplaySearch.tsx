@@ -1,12 +1,14 @@
 import React, { FC, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { researchDataI, showHiddenI, getCookie, topics } from '../utils/utils';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
+import { researchDataI, showHiddenI, topics } from '../utils/utils';
 
 export const DisplaySearch: FC = () => {
     const [searchData, setSearchData] = useState<researchDataI>({});
     const [paperUIDs, setPaperUIDs] = useState<string[]>();
     const [showHidden, setShowHidden] = useState<showHiddenI>({});
-    var doubleSubmitToken: string | undefined = getCookie("csrf_access_token");
+    var loginStatus = useSelector((state: RootState) => state.loginStatus.status);
     var {query} = useParams<{query: string}>();
     query ??= "";
 
@@ -29,11 +31,11 @@ export const DisplaySearch: FC = () => {
     }
 
     const bookmarkPaper = async(uid: string) => {
-        if (!doubleSubmitToken || !searchData) return;
+        if (!loginStatus || !searchData) return;
         const requestOptions = {
             method: "POST",
             headers: {"Content-Type": "application/json",
-            "X-CSRF-TOKEN": doubleSubmitToken},
+            "X-CSRF-TOKEN": loginStatus},
             body: JSON.stringify({uid: uid})
         }
         fetch("/api/bookmarks", requestOptions)
