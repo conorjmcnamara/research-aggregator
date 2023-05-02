@@ -1,6 +1,9 @@
 import React, { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getCookie, topics } from '../utils/utils';
+import { useSelector, useDispatch } from 'react-redux';
+import { setLoginStatus } from '../slices/loginStatusSlice';
+import { RootState } from '../store';
+import { topics } from '../utils/utils';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -11,7 +14,8 @@ export const Navigation: FC = () => {
     const navigate = useNavigate();
     const [query, setQuery] = useState<string>("");
     const topicID: string[] = Object.keys(topics);
-    var loggedIn: boolean = getCookie("csrf_access_token") ? true : false;
+    const dispatch = useDispatch();
+    var loginStatus = useSelector((state: RootState) => state.loginStatus.status);
 
     const logOut = async() => {
         const requestOptions = {
@@ -20,7 +24,10 @@ export const Navigation: FC = () => {
         }
         fetch("/api/logout", requestOptions)
         .then(response => {
-            if (response.status === 200) navigate(`/`);
+            if (response.status === 200) {
+                dispatch(setLoginStatus());
+                navigate(`/`);
+            }
             else throw new Error();
         })
         .catch((error) => {
@@ -42,8 +49,14 @@ export const Navigation: FC = () => {
                     <Navbar.Collapse >
                     <Nav className="ms-auto" style={{marginLeft: "0"}}>
                         <Nav.Link onClick={() => navigate(`/bookmarks`)} href="/bookmarks" style={{color: "white"}}>Bookmarks</Nav.Link>
-                        {loggedIn ? <Nav.Link onClick={() => logOut()} style={{color: "white"}}>Sign Out</Nav.Link> :
-                        <Nav.Link onClick={() => navigate(`/login`)} href="/login" style={{color: "white"}}>Sign In</Nav.Link>}
+                        {loginStatus ? (
+                            <>
+                            <Nav.Link onClick={() => navigate(`/account`)} href="/account" style={{color: "white"}}>Account</Nav.Link>
+                            <Nav.Link onClick={() => logOut()} style={{color: "white"}}>Sign Out</Nav.Link>
+                            </>
+                        ) : 
+                            <Nav.Link onClick={() => navigate(`/login`)} href="/login" style={{color: "white"}}>Sign In</Nav.Link>
+                        }
                     </Nav>
                     </Navbar.Collapse>
                 </Container>

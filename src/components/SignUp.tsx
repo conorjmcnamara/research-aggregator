@@ -1,6 +1,8 @@
 import React, { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getCookie } from '../utils/utils';
+import { useSelector, useDispatch } from 'react-redux';
+import { setLoginStatus } from '../slices/loginStatusSlice';
+import { RootState } from '../store';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
@@ -13,7 +15,8 @@ export const SignUp: FC = () => {
     const [userEmail, setUserEmail] = useState<string>("");
     const [userPassword, setUserPassword] = useState<string>("");
     const [signUpResponse, setSignUpResponse] = useState<signUpI>();
-    var loggedIn: boolean = getCookie("csrf_access_token") ? true : false;
+    const dispatch = useDispatch();
+    var loginStatus = useSelector((state: RootState) => state.loginStatus.status);
 
     const signUp = async() => {
         const requestOptions = {
@@ -30,7 +33,10 @@ export const SignUp: FC = () => {
             setSignUpResponse(data);
             fetch("/api/login", requestOptions)
             .then(response => {
-                if (response.status === 200) navigate(`/bookmarks`)
+                if (response.status === 200) {
+                    dispatch(setLoginStatus());
+                    navigate(`/bookmarks`);
+                }
                 else throw new Error();
             })
         })
@@ -40,7 +46,7 @@ export const SignUp: FC = () => {
         })
     }
 
-    if (loggedIn) {
+    if (loginStatus) {
         return (<h1 className="info-h1">Session is currently active...</h1>);
     }
     return (

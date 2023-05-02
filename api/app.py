@@ -8,7 +8,7 @@ from flask_jwt_extended import (
 )
 from dotenv import load_dotenv
 from bson.objectid import ObjectId
-from utils import get_db_connection, LRUCache, topics
+from api.utils import get_db_connection, LRUCache, topics
 
 # configuration
 app = Flask(__name__)
