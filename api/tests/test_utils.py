@@ -1,23 +1,47 @@
 import os
+import pymongo
 from dotenv import load_dotenv
-from api.utils import LRUCache, get_db_connection
-
-def test_lru_cache():
-    lru = LRUCache(5)
-    lru.put("DB", [{"topic": "DB"}])
-    assert lru.get("DB") == [{"topic": "DB"}]
-    assert lru.get("AI") == None
+from api.utils import *
 
 def test_get_db_connection():
-    # read secrets from GitHub Actions
+    # read from GitHub Actions
     if "GITHUB_ACTIONS" in os.environ:
         user = os.environ["MONGODB_USERNAME"]
         password = os.environ["MONGODB_PASSWORD"]
-    # read secrets from .env file
+    # read from .env
     else:
         load_dotenv()
         user = os.getenv("USER")
         password = os.getenv("PASSWORD")
+    
+    db = get_db_connection(user, password, "papers")
+    assert db is not None
+    assert type(db) == pymongo.collection.Collection
+    assert get_db_connection("username", "password", "collection") is None
 
-    assert get_db_connection(user, password, "papers") is not None
-    assert get_db_connection("foo", "bar", "baz") is None
+def test_upload_db_data():
+    demo_paper = {"topic": "topic"}
+    assert upload_db_data("collection", [demo_paper]) is False
+    assert upload_db_data("", [demo_paper]) is False
+    assert upload_db_data("collection", []) is False
+
+def test_lru_cache():
+    lru_cache = LRUCache(3)
+    lru_cache.put("AI", [{"topic": "AI"}])
+    lru_cache.put("DB", [{"topic": "DB"}])
+    lru_cache.put("DS", [{"topic": "DS"}])
+    lru_cache.put("LG", [{"topic": "LG"}])
+    assert lru_cache.get("AI") is None
+    assert lru_cache.get("DB") == [{"topic": "DB"}]
+    lru_cache.put("DB", [{"topic": "DB", "title": "title"}])
+    lru_cache.put("OS", [{"topic": "OS"}])
+    assert lru_cache.get("DS") is None
+    assert lru_cache.get("DB") == [{"topic": "DB", "title": "title"}]
+
+def test_topics():
+    verify = ["AI", "CC", "CE", "CG", "CL", "CR", "CV", "CY", "DB", "DC", "DL",
+             "DM", "DS", "ET", "FL", "GT", "GL", "GR", "AR", "HC", "IR", "IT",
+             "LG", "LO", "MA", "MM", "MS", "NA", "NE", "NI", "OH", "OS", "PF",
+             "PL", "RO", "SC", "SD", "SE", "SI", "SY"]
+    for id in verify:
+        assert topics.get(id)

@@ -28,8 +28,6 @@ app.config["JWT_TOKEN_LOCATION"] = "cookies"
 app.config["JWT_COOKIE_SECURE"] = True
 app.config["JWT_COOKIE_CSRF_PROTECT"] = True
 
-# app.config['JWT_AUTH_USERNAME_KEY'] = 'email'
-
 @app.route("/api/signup", methods=["POST"])
 def signup():
     credentials = request.get_json()
