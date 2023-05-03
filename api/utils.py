@@ -18,6 +18,9 @@ def get_db_connection(username: str, password: str, collection: str) -> Optional
         return None
 
 def upload_db_data(papers_db: pymongo.collection.Collection, papers: list) -> bool:
+    if not papers_db or not papers:
+        logging.critical("Invalid MongoDB Atlas collection or upload list")
+        return False
     try:
         papers_db.delete_many({})
         papers_db.insert_many(papers)

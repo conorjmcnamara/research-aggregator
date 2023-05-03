@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from concurrent.futures import ThreadPoolExecutor
 from collections import defaultdict
 from typing import Optional
-from utils import get_db_connection, upload_db_data, topics
+from api.utils import get_db_connection, upload_db_data, topics
 
 MAX_PAPERS_REQUEST = 10
 

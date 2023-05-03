@@ -5,7 +5,7 @@ on:
     branches: [ master ]
   
 jobs:
-  test_pull_request:
+  backend-tests:
     runs-on: ubuntu-latest
     env:
       MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
@@ -16,12 +16,24 @@ jobs:
         with:
           python-version: 3.8
       
-      - name: Install dependencies
-        run: |
-          cd api
-          pip install -r requirements.txt
+      - name: Install Python dependencies
+        working-directory: ./api
+        run: pip install -r requirements.txt
       
-      - name: Run unit tests
-        run: |
-          cd api
-          pytest -v
+      - name: Run backend tests
+        working-directory: ./api
+        run: pytest -v
+  
+  frontend-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      
+      - name: Install Node.js dependencies
+        run: npm install
+      
+      - name: Run frontend tests
+        run: npm run test
