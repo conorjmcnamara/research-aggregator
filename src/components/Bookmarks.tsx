@@ -66,31 +66,38 @@ export const Bookmarks: FC = () => {
             <h1>Bookmarks</h1>
             <table cellSpacing="0" cellPadding="0">
                 {paperUIDs.slice(0).reverse().map((uid: string, i: number) => (
-                    <>
-                    <tr>
-                        <td className="research-title-col" onClick={() => toggleHidden(`bookmark${i}`)}>
-                            <h2 key={`title${i}`}><a className="research-paper-title" href={bookmarkData[uid].url}>{bookmarkData[uid].title}</a></h2>
-                        </td>
-                        <td className="research-bookmark-col"><h3 onClick={() => removePaper(`${bookmarkData[uid]._id}`)}>Remove</h3></td>
-                    </tr>
+                    <React.Fragment>
+                        <tr>
+                            <td className="research-title-col" onClick={() => toggleHidden(`bookmark${i}`)}>
+                                <h2 key={`title${i}`}><a className="research-paper-title" href={bookmarkData[uid].url}>{bookmarkData[uid].title}</a></h2>
+                            </td>
+                            <td className="research-bookmark-col"><h3 onClick={() => removePaper(`${bookmarkData[uid]._id}`)}>Remove</h3></td>
+                        </tr>
 
-                    <tr onClick={() => toggleHidden(`bookmark${i}`)}>
-                        <td className="research-author-col" colSpan={2} >
-                            {bookmarkData[uid].authors.map((author: string, j: number) => (
-                                <span key={`author${i}${j}`}>{(j ? ", " : "") + author}</span>
-                            ))}
-                            <p>{bookmarkData[uid].date}</p>
-                        </td>
-                    </tr>
-                        
-                    <tr onClick={() => toggleHidden(`bookmark${i}`)}>
-                        <td className="research-hidden-col" colSpan={2} style={{display: showHidden[`bookmark${i}`] ? "table-cell" : "none"}}>
-                            <p className="research-paper-abstract">{bookmarkData[uid].abstract}</p>
-                            <p className="research-paper-topic"><b>Topics:</b> {topics[bookmarkData[uid].topic]} ({bookmarkData[uid].topic})</p>
-                            <p className="research-paper-source"><b>Source:</b> {bookmarkData[uid].source}</p>
-                        </td>
-                    </tr>
-                    </>
+                        <tr onClick={() => toggleHidden(`bookmark${i}`)}>
+                            <td className="research-author-col" colSpan={2} >
+                                {bookmarkData[uid].authors.map((author: string, j: number) => (
+                                    <span key={`author${i}${j}`}>{(j ? ", " : "") + author}</span>
+                                ))}
+                                <p>{bookmarkData[uid].date}</p>
+                            </td>
+                        </tr>
+                            
+                        <tr onClick={() => toggleHidden(`bookmark${i}`)}>
+                            <td className="research-hidden-col" colSpan={2} style={{display: showHidden[`bookmark${i}`] ? "table-cell" : "none"}}>
+                                <p className="research-paper-abstract">{bookmarkData[uid].abstract}</p>
+                                <p className="research-paper-topic">
+                                    <b>Topics: </b>
+                                    <React.Fragment>
+                                        {bookmarkData[uid].topics.map((topic: string, k: number) => (
+                                            <span key={`topic${i}${k}`}>{(k ? ", " : "") + topic}</span>
+                                        ))}
+                                    </React.Fragment>
+                                </p>
+                                <p className="research-paper-source"><b>Source:</b> {bookmarkData[uid].source}</p>
+                            </td>
+                        </tr>
+                    </React.Fragment>
                 ))}
             </table>
         </div>

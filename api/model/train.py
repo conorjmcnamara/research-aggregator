@@ -65,7 +65,7 @@ def predict(model: Sequential, dataset: tf.data.Dataset) -> np.ndarray:
     predicted_probailities = (predicted_probailities >= Constants.PREDICTION_THRESHOLD).astype(int)
     return predicted_probailities
 
-def plot_confusion_matrix(model: Sequential, actual_probailities, predicted_probailities) -> None:
+def plot_confusion_matrix(model: Sequential, actual_probailities: np.ndarray, predicted_probailities: np.ndarray) -> None:
     # compute confusion matrix for each label seperately, sum up, and plot
     confusion_matrix = multilabel_confusion_matrix(actual_probailities, predicted_probailities)
     confusion_matrix = np.sum(confusion_matrix, axis=0)

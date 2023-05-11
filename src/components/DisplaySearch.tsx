@@ -55,31 +55,40 @@ export const DisplaySearch: FC = () => {
             <h1 className="research-query">Search: {query}</h1>
             <table cellSpacing="0" cellPadding="0">
                 {paperUIDs.map((uid: string, i: number) => (
-                    <>
-                    <tr>
-                        <td className="research-title-col" onClick={() => toggleHidden(`search${searchData[uid].topic}${i}`)}>
-                            <h2 key={`title${i}`}><a className="research-paper-title" href={searchData[uid].url}>{searchData[uid].title}</a></h2>
-                        </td>
-                        <td className="research-bookmark-col"><h3 onClick={() => bookmarkPaper(`${searchData[uid]._id}`)}>Bookmark</h3></td>
-                    </tr>
+                    <React.Fragment>
+                        <tr>
+                            <td className="research-title-col" onClick={() => toggleHidden(`search${searchData[uid].url}${i}`)}>
+                                <h2 key={`title${i}`}><a className="research-paper-title" href={searchData[uid].url}>{searchData[uid].title}</a></h2>
+                            </td>
+                            <td className="research-bookmark-col"><h3 onClick={() => bookmarkPaper(`${searchData[uid]._id}`)}>Bookmark</h3></td>
+                        </tr>
 
-                    <tr onClick={() => toggleHidden(`search${searchData[uid].topic}${i}`)}>
-                        <td className="research-author-col" colSpan={2}>
-                            {searchData[uid].authors.map((author: string, j: number) => (
-                                <span key={`author${i}${j}`}>{(j ? ", " : "") + author}</span>
-                            ))}
-                            <p>{searchData[uid].date}</p>
-                        </td>
-                    </tr>
-                        
-                    <tr onClick={() => toggleHidden(`search${searchData[uid].topic}${i}`)}>
-                        <td className="research-hidden-col" colSpan={2} style={{display: showHidden[`search${searchData[uid].topic}${i}`] ? "table-cell" : "none"}}>
-                            <p className="research-paper-abstract">{searchData[uid].abstract}</p>
-                            <p className="research-paper-topic"><b>Topics:</b> {topics[searchData[uid].topic]} ({searchData[uid].topic})</p>
-                            <p className="research-paper-source"><b>Source:</b> {searchData[uid].source}</p>
-                        </td>
-                    </tr>
-                    </>
+                        <tr onClick={() => toggleHidden(`search${searchData[uid].url}${i}`)}>
+                            <td className="research-author-col" colSpan={2}>
+                                {searchData[uid].authors.map((author: string, j: number) => (
+                                    <span key={`author${i}${j}`}>{(j ? ", " : "") + author}</span>
+                                ))}
+                                <p>{searchData[uid].date}</p>
+                            </td>
+                        </tr>
+                            
+                        <tr onClick={() => toggleHidden(`search${searchData[uid].url}${i}`)}>
+                            <td className="research-hidden-col" colSpan={2} style={{display: showHidden[`search${searchData[uid].url}${i}`] ? "table-cell" : "none"}}>
+                                <p className="research-paper-abstract">{searchData[uid].abstract}</p>
+                                
+                                <p className="research-paper-topic">
+                                        <b>Topics: </b>
+                                        <React.Fragment>
+                                            {searchData[uid].topics.map((topic: string, k: number) => (
+                                                <span key={`topic${i}${k}`}>{(k ? ", " : "") + topic}</span>
+                                            ))}
+                                        </React.Fragment>
+                                    </p>
+                                    
+                                <p className="research-paper-source"><b>Source:</b> {searchData[uid].source}</p>
+                            </td>
+                        </tr>
+                    </React.Fragment>
                 ))}
             </table>
         </div>

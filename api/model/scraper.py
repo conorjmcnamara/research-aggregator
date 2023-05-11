@@ -8,21 +8,21 @@ import logging
 import pandas as pd
 from concurrent.futures import ThreadPoolExecutor
 from collections import defaultdict
-from typing import Optional
+from typing import Optional, List, DefaultDict, Dict, Any
 from utils import topics
 
 MAX_PAPERS_REQUEST = 5000
 seen_papers = set()
 
-def parse_arxiv(data: dict, id: str) -> list[defaultdict(list)]:
+def parse_arxiv(data: Dict[str, Any], id: str) -> List[DefaultDict[str, list]]:
     result = []
     for entry in data["feed"]["entry"]:
         if entry["id"] in seen_papers:
             continue
         paper = defaultdict(list)
         paper["abstract"] = entry["summary"]
-        paper_topics = []
 
+        paper_topics = []
         for paper_id in entry["category"]:
             if type(paper_id) == str:
                 continue
@@ -36,7 +36,7 @@ def parse_arxiv(data: dict, id: str) -> list[defaultdict(list)]:
         seen_papers.add(entry["id"])
     return result
 
-def fetch_arxiv(id: str, session: requests.Session) -> Optional[list]:
+def fetch_arxiv(id: str, session: requests.Session) -> Optional[List[DefaultDict[str, list]]]:
     base_url = "http://export.arxiv.org/api/query?"
     param = "sortBy=submittedDate&max_results"
     url = f"{base_url}search_query=cat:cs.{id}&{param}={MAX_PAPERS_REQUEST}"

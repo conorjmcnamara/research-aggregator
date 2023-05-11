@@ -10,13 +10,13 @@ export interface responseMsgI {
 
 export interface researchPaperI {
     _id: string;
-    topic: string;
     title: string;
     date: string;
     abstract: string;
     url: string;
     source: string;
     authors: string[];
+    topics: string[];
 }
 
 export interface researchDataI {
@@ -29,7 +29,7 @@ export interface showHiddenI {
 
 interface topicsI {
     [id: string]: string
-};
+}
 
 export const topics: topicsI = {
     "AI": "Artificial Intelligence",
@@ -71,4 +71,4 @@ export const topics: topicsI = {
     "SD": "Sound",
     "SC": "Symbolic Computation",
     "SY": "Systems and Control"
-};
+}
