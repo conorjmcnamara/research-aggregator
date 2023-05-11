@@ -63,7 +63,6 @@ export const topics: topicsI = {
     "NE": "Neural and Evolutionary Computing",
     "NA": "Numerical Analysis",
     "OS": "Operating Systems",
-    "OH": "Other",
     "PF": "Performance",
     "PL": "Programming Languages",
     "RO": "Robotics",

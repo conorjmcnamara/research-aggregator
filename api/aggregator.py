@@ -11,7 +11,7 @@ from utils import get_db_connection, upload_db_data, topics
 
 MAX_PAPERS_REQUEST = 10
 
-def fetch_arxiv(id: str, session: requests.Session) -> Optional[list]:
+def fetch_arxiv(id: str, session: requests.Session) -> Optional[list[defaultdict(list)]]:
     base_url = "http://export.arxiv.org/api/query?"
     param = "sortBy=submittedDate&max_results"
     url = f"{base_url}search_query=cat:cs.{id}&{param}={MAX_PAPERS_REQUEST}"
@@ -111,8 +111,8 @@ if __name__ == "__main__":
     for id, name in topics.items():
         futures.append(executor.submit(fetch_arxiv, id, session))
         futures.append(executor.submit(fetch_semantic_scholar, id, name, session))
-    
     session.close()
+    
     papers = []
     for future in futures:
         if future.result():

@@ -1,6 +1,6 @@
 import logging
 import pymongo
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 from typing import Optional
 
 def get_db_connection(username: str, password: str, collection: str) -> Optional[pymongo.collection.Collection]:
@@ -17,7 +17,7 @@ def get_db_connection(username: str, password: str, collection: str) -> Optional
         logging.critical("Failed to connect to MongoDB Atlas")
         return None
 
-def upload_db_data(papers_db: pymongo.collection.Collection, papers: list) -> bool:
+def upload_db_data(papers_db: pymongo.collection.Collection, papers: list[defaultdict(list)]) -> bool:
     if not papers_db or not papers:
         logging.critical("Invalid MongoDB Atlas collection or upload list")
         return False
@@ -79,7 +79,6 @@ topics = {
     "NA": "numerical+analysis",
     "NE": "neural+evolutionary+computing",
     "NI": "networking+internet+architecture",
-    "OH": "other",
     "OS": "operating+systems",
     "PF": "performance",
     "PL": "programming+languages",
