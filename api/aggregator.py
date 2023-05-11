@@ -11,7 +11,7 @@ from utils import get_db_connection, upload_db_data, topics
 
 MAX_PAPERS_REQUEST = 10
 
-def fetch_arxiv(id: str, session: requests.Session) -> Optional[list[defaultdict(list)]]:
+def fetch_arxiv(id: str, session: requests.Session) -> Optional[list]:
     base_url = "http://export.arxiv.org/api/query?"
     param = "sortBy=submittedDate&max_results"
     url = f"{base_url}search_query=cat:cs.{id}&{param}={MAX_PAPERS_REQUEST}"

@@ -17,7 +17,7 @@ def get_db_connection(username: str, password: str, collection: str) -> Optional
         logging.critical("Failed to connect to MongoDB Atlas")
         return None
 
-def upload_db_data(papers_db: pymongo.collection.Collection, papers: list[defaultdict(list)]) -> bool:
+def upload_db_data(papers_db: pymongo.collection.Collection, papers: list) -> bool:
     if not papers_db or not papers:
         logging.critical("Invalid MongoDB Atlas collection or upload list")
         return False
