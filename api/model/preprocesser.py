@@ -6,6 +6,7 @@ from keras.layers import StringLookup, TextVectorization
 from sklearn.model_selection import train_test_split
 from sklearn.utils import class_weight
 from ast import literal_eval
+from typing import Tuple, Dict
 from constants import Constants
 
 AUTO = tf.data.AUTOTUNE
@@ -15,9 +16,9 @@ def remove_substrings(text: str, latex_regex: str, url_regex: str) -> str:
     text = re.sub(url_regex, "", text)
     return text
 
-def split_data(data: pd.DataFrame) -> tuple[pd.DataFrame]:
+def split_data(data: pd.DataFrame) -> Tuple[pd.DataFrame]:
     train_df, test_df = train_test_split(data, test_size=0.2, shuffle=True)
-    # generate a random validation dataset from the testing dataset
+    # generate a random validation dataset from the test dataset
     validation_df = test_df.sample(frac=0.5)
     test_df.drop(validation_df.index, inplace=True)
     return (train_df, validation_df, test_df)
@@ -28,7 +29,7 @@ def multi_label_binarization(data: pd.DataFrame) -> StringLookup:
     lookup_layer.adapt(labels)
     return lookup_layer
 
-def get_class_weights(data: pd.DataFrame, lookup_layer: StringLookup) -> dict:
+def get_class_weights(data: pd.DataFrame, lookup_layer: StringLookup) -> Dict[int, float]:
     # compute class weights to handle class imbalance during model creation
     classes = [x for x in lookup_layer.get_vocabulary() if x != "[UNK]"]
     class_instances = np.concatenate(data["topics"].values)
@@ -55,7 +56,7 @@ def create_text_vectorizer(train_df: pd.DataFrame, train_dataset: tf.data.Datase
     text_vectorizer.adapt(train_dataset.map(lambda text, label: text))
     return text_vectorizer
 
-def preprocess_data(data: pd.DataFrame) -> tuple[StringLookup, TextVectorization, dict]:
+def preprocess_data(data: pd.DataFrame) -> Tuple[StringLookup, TextVectorization, Dict[str, tf.data.Dataset]]:
     # remove duplicates
     data = data[~data["abstracts"].duplicated()]
 

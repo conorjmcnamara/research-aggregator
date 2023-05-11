@@ -50,10 +50,10 @@ export const Navigation: FC = () => {
                     <Nav className="ms-auto" style={{marginLeft: "0"}}>
                         <Nav.Link onClick={() => navigate(`/bookmarks`)} href="/bookmarks" style={{color: "white"}}>Bookmarks</Nav.Link>
                         {loginCookie ? (
-                            <>
-                            <Nav.Link onClick={() => navigate(`/account`)} href="/account" style={{color: "white"}}>Account</Nav.Link>
-                            <Nav.Link onClick={() => logout()} style={{color: "white"}}>Sign Out</Nav.Link>
-                            </>
+                            <React.Fragment>
+                                <Nav.Link onClick={() => navigate(`/account`)} href="/account" style={{color: "white"}}>Account</Nav.Link>
+                                <Nav.Link onClick={() => logout()} style={{color: "white"}}>Sign Out</Nav.Link>
+                            </React.Fragment>
                         ) : 
                             <Nav.Link onClick={() => navigate(`/login`)} href="/login" style={{color: "white"}}>Sign In</Nav.Link>
                         }

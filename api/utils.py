@@ -1,7 +1,7 @@
 import logging
 import pymongo
-from collections import OrderedDict, defaultdict
-from typing import Optional
+from collections import OrderedDict
+from typing import Optional, List, DefaultDict, Dict, Any
 
 def get_db_connection(username: str, password: str, collection: str) -> Optional[pymongo.collection.Collection]:
     connection = f"mongodb+srv://{username}:{password}@research.holkbao.mongodb.net/?retryWrites=true&w=majority"
@@ -17,8 +17,8 @@ def get_db_connection(username: str, password: str, collection: str) -> Optional
         logging.critical("Failed to connect to MongoDB Atlas")
         return None
 
-def upload_db_data(papers_db: pymongo.collection.Collection, papers: list) -> bool:
-    if not papers_db or not papers:
+def upload_db_data(papers_db: pymongo.collection.Collection, papers: List[DefaultDict[str, list]]) -> bool:
+    if papers_db is None or not papers:
         logging.critical("Invalid MongoDB Atlas collection or upload list")
         return False
     try:
@@ -35,13 +35,13 @@ class LRUCache:
         self.capacity = capacity
         self.cache = OrderedDict()
 
-    def get(self, id: str) -> Optional[list]:
+    def get(self, id: str) -> Optional[Dict[str, Dict[str, Any]]]:
         if id in self.cache:
             self.cache.move_to_end(id)
             return self.cache[id]
         return None
         
-    def put(self, id: str, papers: list) -> None:
+    def put(self, id: str, papers: Dict[str, Dict[str, Any]]) -> None:
         self.cache[id] = papers
         if len(self.cache) > self.capacity:
             self.cache.popitem(last=False)

@@ -3,9 +3,10 @@ import pandas as pd
 import tensorflow as tf
 from keras import models, Sequential
 from keras.layers import StringLookup
+from typing import Tuple, List
 from constants import Constants
 
-def load_model() -> tuple[Sequential, StringLookup]:
+def load_model() -> Tuple[Sequential, StringLookup]:
     model = models.load_model(Constants.MODEL_FILE)
     with open(Constants.VOCAB_FILE, "rb") as file:
         vocab = pickle.load(file)
@@ -18,7 +19,7 @@ def create_tf_dataset(data: pd.DataFrame) -> tf.data.Dataset:
     dataset = dataset.batch(Constants.BATCH_SIZE)
     return dataset
 
-def predict(model, dataset: tf.data.Dataset, lookup_layer: StringLookup) -> list[str]:
+def predict(model, dataset: tf.data.Dataset, lookup_layer: StringLookup) -> List[str]:
     predicted_probailities = model.predict(dataset)
     predicted_probailities = (predicted_probailities >= Constants.PREDICTION_THRESHOLD).astype(int)
     predicted_labels = []
