@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from concurrent.futures import ThreadPoolExecutor
 from collections import defaultdict
 from typing import Optional
-from api.utils import get_db_connection, upload_db_data, topics
+from utils import get_db_connection, upload_db_data, topics
 
 MAX_PAPERS_REQUEST = 10
 
@@ -18,11 +18,7 @@ def fetch_arxiv(id: str, session: requests.Session) -> Optional[list]:
 
     try:
         response = session.get(url)
-        try:
-            data = xmltodict.parse(response.text)
-        except:
-            logging.critical(f"Failed to parse XML to dictionary with topic ID: {id}. HTTP code {response.status_code}")
-            return None
+        data = xmltodict.parse(response.text)
     except:
         logging.critical(f"Failed to make a GET request to arXiv with topic ID: {id}. HTTP code {response.status_code}")
         return None
@@ -37,7 +33,6 @@ def fetch_arxiv(id: str, session: requests.Session) -> Optional[list]:
             paper["url"] = entry["id"]
             paper["source"] = "arXiv.org"
 
-            # check for multiple authors
             authors = []
             if len(entry["author"]) == 1:
                 authors.append(entry["author"]["name"])
@@ -65,11 +60,7 @@ def fetch_semantic_scholar(id: str, name: str, session: requests.Session) -> Opt
 
     try:
         response = session.get(url)
-        try:
-            data = response.json()["data"]
-        except:
-            logging.critical(f"Empty data response with topic name: {name}. HTTP code {response.status_code}")
-            return None
+        data = response.json()["data"]
     except:
         logging.critical(f"Failed to make a GET request to Semantic Scholar with topic name: {name}. HTTP code {response.status_code}")
         return None

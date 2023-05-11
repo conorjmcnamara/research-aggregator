@@ -7,10 +7,10 @@ export const Bookmarks: FC = () => {
     const [bookmarkData, setBookmarkData] = useState<researchDataI>({});
     const [paperUIDs, setPaperUIDs] = useState<string[]>();
     const [showHidden, setShowHidden] = useState<showHiddenI>({});
-    var loginStatus = useSelector((state: RootState) => state.loginStatus.status);
+    var loginCookie = useSelector((state: RootState) => state.loginCookie.cookie);
 
     useEffect(() => {
-        if (!loginStatus) return;
+        if (!loginCookie) return;
         const requestOptions = {
             method: "GET",
             headers: {"Content-Type": "application/json"}
@@ -23,7 +23,7 @@ export const Bookmarks: FC = () => {
         .catch((error) => {
             console.log(error.message);
         });
-    }, [loginStatus]);
+    }, [loginCookie]);
 
     // display a paper's abstract, topics and source
     const toggleHidden = (index: string) => {
@@ -33,11 +33,11 @@ export const Bookmarks: FC = () => {
     }
 
     const removePaper = async(uid: string) => {
-        if (!loginStatus || !bookmarkData) return;
+        if (!loginCookie || !bookmarkData) return;
         const requestOptions = {
             method: "DELETE",
             headers: {"Content-Type": "application/json",
-            "X-CSRF-TOKEN": loginStatus},
+            "X-CSRF-TOKEN": loginCookie},
             body: JSON.stringify({uid: uid})
         }
         fetch("/api/bookmarks", requestOptions)
@@ -52,7 +52,7 @@ export const Bookmarks: FC = () => {
         });
     }
 
-    if (!loginStatus) {
+    if (!loginCookie) {
         return (<h1 className="info-h1">Create an account or login to view bookmarked papers</h1>);
     }
     else if (!bookmarkData || !paperUIDs) {

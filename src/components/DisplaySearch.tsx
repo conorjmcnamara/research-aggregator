@@ -8,7 +8,7 @@ export const DisplaySearch: FC = () => {
     const [searchData, setSearchData] = useState<researchDataI>({});
     const [paperUIDs, setPaperUIDs] = useState<string[]>();
     const [showHidden, setShowHidden] = useState<showHiddenI>({});
-    var loginStatus = useSelector((state: RootState) => state.loginStatus.status);
+    var loginCookie = useSelector((state: RootState) => state.loginCookie.cookie);
     var {query} = useParams<{query: string}>();
     query ??= "";
 
@@ -31,11 +31,11 @@ export const DisplaySearch: FC = () => {
     }
 
     const bookmarkPaper = async(uid: string) => {
-        if (!loginStatus || !searchData) return;
+        if (!loginCookie || !searchData) return;
         const requestOptions = {
             method: "POST",
             headers: {"Content-Type": "application/json",
-            "X-CSRF-TOKEN": loginStatus},
+            "X-CSRF-TOKEN": loginCookie},
             body: JSON.stringify({uid: uid})
         }
         fetch("/api/bookmarks", requestOptions)

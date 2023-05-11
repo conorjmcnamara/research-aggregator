@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { setLoginStatus } from '../slices/loginStatusSlice';
+import { setLoginCookie } from '../slices/loginCookieSlice';
 import { RootState } from '../store';
 import { topics } from '../utils/utils';
 import Button from 'react-bootstrap/Button';
@@ -15,7 +15,7 @@ export const Navigation: FC = () => {
     const [query, setQuery] = useState<string>("");
     const topicID: string[] = Object.keys(topics);
     const dispatch = useDispatch();
-    var loginStatus = useSelector((state: RootState) => state.loginStatus.status);
+    var loginCookie = useSelector((state: RootState) => state.loginCookie.cookie);
 
     const logout = async() => {
         const requestOptions = {
@@ -25,7 +25,7 @@ export const Navigation: FC = () => {
         fetch("/api/logout", requestOptions)
         .then(response => {
             if (response.status === 200) {
-                dispatch(setLoginStatus());
+                dispatch(setLoginCookie());
                 navigate(`/`);
             }
             else throw new Error();
@@ -49,7 +49,7 @@ export const Navigation: FC = () => {
                     <Navbar.Collapse >
                     <Nav className="ms-auto" style={{marginLeft: "0"}}>
                         <Nav.Link onClick={() => navigate(`/bookmarks`)} href="/bookmarks" style={{color: "white"}}>Bookmarks</Nav.Link>
-                        {loginStatus ? (
+                        {loginCookie ? (
                             <>
                             <Nav.Link onClick={() => navigate(`/account`)} href="/account" style={{color: "white"}}>Account</Nav.Link>
                             <Nav.Link onClick={() => logout()} style={{color: "white"}}>Sign Out</Nav.Link>
