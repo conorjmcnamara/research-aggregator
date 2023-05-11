@@ -111,8 +111,8 @@ if __name__ == "__main__":
     for id, name in topics.items():
         futures.append(executor.submit(fetch_arxiv, id, session))
         futures.append(executor.submit(fetch_semantic_scholar, id, name, session))
-    
     session.close()
+    
     papers = []
     for future in futures:
         if future.result():

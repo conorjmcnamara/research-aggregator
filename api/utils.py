@@ -1,6 +1,6 @@
 import logging
 import pymongo
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 from typing import Optional
 
 def get_db_connection(username: str, password: str, collection: str) -> Optional[pymongo.collection.Collection]:
@@ -79,7 +79,6 @@ topics = {
     "NA": "numerical+analysis",
     "NE": "neural+evolutionary+computing",
     "NI": "networking+internet+architecture",
-    "OH": "other",
     "OS": "operating+systems",
     "PF": "performance",
     "PL": "programming+languages",
