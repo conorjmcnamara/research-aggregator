@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { setLoginStatus } from '../slices/loginStatusSlice';
+import { setLoginCookie } from '../slices/loginCookieSlice';
 import { RootState } from '../store';
 import { responseMsgI } from '../utils/utils';
 import Form from 'react-bootstrap/Form';
@@ -14,10 +14,10 @@ export const Account: FC = () => {
     const [responseMsg, setResponseMsg] = useState<responseMsgI>();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    var loginStatus = useSelector((state: RootState) => state.loginStatus.status);
+    var loginCookie = useSelector((state: RootState) => state.loginCookie.cookie);
 
     useEffect(() => {
-        if (!loginStatus) return;
+        if (!loginCookie) return;
         const requestOptions = {
             method: "GET",
             headers: {"Content-Type": "application/json"}
@@ -33,7 +33,7 @@ export const Account: FC = () => {
     }, [])
 
     const updateEmail = async() => {
-        if (!loginStatus) return;
+        if (!loginCookie) return;
         else if (newUserEmail === currentUserEmail) {
             setResponseMsg({responseMsg: "email update unsuccessful, matching emails detected"});
             return;
@@ -41,7 +41,7 @@ export const Account: FC = () => {
         const requestOptions = {
             method: "PUT",
             headers: {"Content-Type": "application/json",
-            "X-CSRF-TOKEN": loginStatus},
+            "X-CSRF-TOKEN": loginCookie},
             body: JSON.stringify({newEmail: newUserEmail})
         }
         fetch("/api/user", requestOptions)
@@ -50,7 +50,7 @@ export const Account: FC = () => {
             throw new Error();
         })
         .then((data) => {
-            dispatch(setLoginStatus());
+            dispatch(setLoginCookie());
             setCurrentUserEmail(newUserEmail);
             setResponseMsg({responseMsg: data.data});
         })
@@ -61,11 +61,11 @@ export const Account: FC = () => {
     }
 
     const updatePassword = async() => {
-        if (!loginStatus) return;
+        if (!loginCookie) return;
         const requestOptions = {
             method: "PUT",
             headers: {"Content-Type": "application/json",
-            "X-CSRF-TOKEN": loginStatus},
+            "X-CSRF-TOKEN": loginCookie},
             body: JSON.stringify({newPassword: newUserPassword})
         }
         fetch("/api/user", requestOptions)
@@ -74,7 +74,7 @@ export const Account: FC = () => {
             throw new Error();
         })
         .then((data) => {
-            dispatch(setLoginStatus());
+            dispatch(setLoginCookie());
             setResponseMsg({responseMsg: data.data});
         })
         .catch((error) => {
@@ -84,11 +84,11 @@ export const Account: FC = () => {
     }
 
     const deleteAccount = async() => {
-        if (!loginStatus) return;
+        if (!loginCookie) return;
         const requestOptions = {
             method: "DELETE",
             headers: {"Content-Type": "application/json",
-            "X-CSRF-TOKEN": loginStatus},
+            "X-CSRF-TOKEN": loginCookie},
         }
         fetch("/api/user", requestOptions)
         .then(response => {
@@ -97,7 +97,7 @@ export const Account: FC = () => {
         })
         .then((data) => {
             setResponseMsg({responseMsg: data.data});
-            dispatch(setLoginStatus());
+            dispatch(setLoginCookie());
             navigate(`/`);
         })
         .catch((error) => {
@@ -106,7 +106,7 @@ export const Account: FC = () => {
         })
     }
 
-    if (!loginStatus) {
+    if (!loginCookie) {
         return (<h1 className="info-h1">Create an account or login to view account settings</h1>);
     }
     else if (!currentUserEmail) {

@@ -8,14 +8,12 @@ export const DisplayTopic: FC = () => {
     const [topicData, setTopicData] = useState<researchDataI>({});
     const [paperUIDs, setPaperUIDs] = useState<string[]>();
     const [showHidden, setShowHidden] = useState<showHiddenI>({});
-    var loginStatus = useSelector((state: RootState) => state.loginStatus.status);
+    var loginCookie = useSelector((state: RootState) => state.loginCookie.cookie);
     var validID: boolean = true;
     var {id} = useParams<{id: string}>();
     id ??= "";
     
-    if (!topics[id]) {
-        validID = false;
-    }
+    if (!topics[id]) validID = false;
 
     useEffect(() => {
         if (!validID) return;
@@ -37,11 +35,11 @@ export const DisplayTopic: FC = () => {
     }
 
     const bookmarkPaper = async(uid: string) => {
-        if (!loginStatus || !topicData) return;
+        if (!loginCookie || !topicData) return;
         const requestOptions = {
             method: "POST",
             headers: {"Content-Type": "application/json",
-            "X-CSRF-TOKEN": loginStatus},
+            "X-CSRF-TOKEN": loginCookie},
             body: JSON.stringify({uid: uid})
         }
         fetch("/api/bookmarks", requestOptions)

@@ -1,7 +1,7 @@
 import os
 import pymongo
 from dotenv import load_dotenv
-from api.utils import *
+from ..utils import *
 
 def test_get_db_connection():
     # read from GitHub Actions

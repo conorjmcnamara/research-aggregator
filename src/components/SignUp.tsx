@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { setLoginStatus } from '../slices/loginStatusSlice';
+import { setLoginCookie } from '../slices/loginCookieSlice';
 import { RootState } from '../store';
 import { responseMsgI } from '../utils/utils';
 import Form from 'react-bootstrap/Form';
@@ -13,7 +13,7 @@ export const SignUp: FC = () => {
     const [responseMsg, setResponseMsg] = useState<responseMsgI>();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    var loginStatus = useSelector((state: RootState) => state.loginStatus.status);
+    var loginCookie = useSelector((state: RootState) => state.loginCookie.cookie);
 
     const signUp = async() => {
         const requestOptions = {
@@ -30,7 +30,7 @@ export const SignUp: FC = () => {
             fetch("/api/login", requestOptions)
             .then(response => {
                 if (response.status === 200) {
-                    dispatch(setLoginStatus());
+                    dispatch(setLoginCookie());
                     setResponseMsg({responseMsg: data.data});
                     navigate(`/bookmarks`);
                 }
@@ -43,7 +43,7 @@ export const SignUp: FC = () => {
         })
     }
 
-    if (loginStatus) {
+    if (loginCookie) {
         return (<h1 className="info-h1">Session is currently active...</h1>);
     }
     return (
