@@ -52,7 +52,6 @@ def fetch_arxiv(id: str, session: requests.Session) -> Optional[List[DefaultDict
     base_url = "http://export.arxiv.org/api/query?"
     param = "sortBy=submittedDate&max_results"
     url = f"{base_url}search_query=cat:cs.{id}&{param}={MAX_PAPERS_REQUEST}"
-
     try:
         response = session.get(url)
         data = xmltodict.parse(response.text)
@@ -110,7 +109,6 @@ def fetch_semantic_scholar(id: str, name: str, session: requests.Session) -> Opt
     base_url = "https://api.semanticscholar.org/graph/v1/paper/search?query="
     param = "&year=2023&fieldsOfStudy=Computer+Science&fields=title,url,abstract,publicationDate,authors&limit=20"
     url = f"{base_url}{name}{param}"
-
     try:
         response = session.get(url)
         data = response.json()["data"]

@@ -14,7 +14,7 @@ def load_model() -> Tuple[Sequential, StringLookup]:
     lookup_layer = StringLookup(vocabulary=vocab, output_mode="multi_hot")
     return (model, lookup_layer)
 
-def create_tf_dataset(data: pd.DataFrame) -> tf.data.Dataset:
+def get_tf_dataset(data: pd.DataFrame) -> tf.data.Dataset:
     dataset = tf.data.Dataset.from_tensor_slices(data["abstracts"].values)
     dataset = dataset.batch(Constants.BATCH_SIZE)
     return dataset
@@ -34,5 +34,5 @@ if __name__ == "__main__":
     model, lookup_layer = load_model()
     # data = [""]
     # df = pd.DataFrame(data, columns=["abstracts"])
-    # dataset = create_tf_dataset(df)
+    # dataset = get_tf_dataset(df)
     # predict(model, dataset, lookup_layer)

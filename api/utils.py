@@ -13,8 +13,8 @@ def get_db_connection(username: str, password: str, collection: str) -> Optional
             return None
         logging.info("Connected to MongoDB Atlas")
         return db[collection]
-    except:
-        logging.critical("Failed to connect to MongoDB Atlas")
+    except Exception as e:
+        logging.critical(f"Failed to connect to MongoDB Atlas. Error: {e}")
         return None
 
 def upload_db_data(papers_db: pymongo.collection.Collection, papers: List[DefaultDict[str, list]]) -> bool:
@@ -26,8 +26,8 @@ def upload_db_data(papers_db: pymongo.collection.Collection, papers: List[Defaul
         papers_db.insert_many(papers)
         logging.info("Successfully updated the MongoDB Atlas database")
         return True
-    except:
-        logging.critical("Failed to update the MongoDB Atlas database")
+    except Exception as e:
+        logging.critical(f"Failed to update the MongoDB Atlas database. Error: {e}")
         return False
 
 class LRUCache:
