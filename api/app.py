@@ -151,7 +151,7 @@ def topic_query(id: str):
 
     cache_hit = lru_cache.get(id)
     if cache_hit:
-        return jsonify(lru_cache.get(id)), 200
+        return jsonify(cache_hit), 200
     
     response = papers_db.find({"topics": [id]}).limit(10)
     topic_data = {}

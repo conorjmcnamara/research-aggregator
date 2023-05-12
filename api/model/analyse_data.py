@@ -39,7 +39,6 @@ def plot_label_count_distribution(data: pd.DataFrame) -> None:
 
 if __name__ == "__main__":
     data = pd.read_csv("data/training_data.csv")
-    
     # convert the labels to lists of strings
     data["topics"] = data["topics"].apply(lambda id: literal_eval(id))
     show_basic_info(data)

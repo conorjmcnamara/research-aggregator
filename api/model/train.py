@@ -22,7 +22,7 @@ METRICS = [
     metrics.Recall(),
 ]
 
-def create_model(lookup_layer: StringLookup) -> Sequential:
+def get_model(lookup_layer: StringLookup) -> Sequential:
     # feed-forward neural network
     model = Sequential([
         Dense(150, activation="relu"),
@@ -82,7 +82,8 @@ def plot_confusion_matrix(model: Sequential, actual_probailities: np.ndarray, pr
             plt.text(j, i, format(confusion_matrix[i, j]), horizontalalignment="center", color=color)
     plt.title("Confusion matrix")
 
-    if not os.path.exists("plots"): os.mkdir("plots")
+    if not os.path.exists("plots"):
+        os.mkdir("plots")
     plt.savefig(f"plots/confusion_matrix.png")
     plt.show()
 
@@ -104,7 +105,7 @@ if __name__ == "__main__":
     lookup_layer, text_vectorizer, class_weights, datasets = preprocess_data(training_data)
     test_text, test_labels = next(iter(datasets["test"]))
 
-    model = create_model(lookup_layer)
+    model = get_model(lookup_layer)
     history = fit_model(model, class_weights, datasets["train"], datasets["validation"])
     save_model(model, text_vectorizer, lookup_layer)
     evaluate_model(model, datasets["test"])

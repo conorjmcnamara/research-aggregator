@@ -44,8 +44,8 @@ def fetch_arxiv(id: str, session: requests.Session) -> Optional[List[DefaultDict
     try:
         response = session.get(url)
         data = xmltodict.parse(response.text)
-    except:
-        logging.critical(f"Failed to make a GET request to arXiv with topic ID: {id}. HTTP code {response.status_code}")
+    except Exception as e:
+        logging.critical(f"Failed to make a GET request to arXiv with topic ID: {id}. Error: {e}")
         return None
     else:
         return parse_arxiv(data, id)

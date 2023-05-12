@@ -30,7 +30,7 @@ def multi_label_binarization(data: pd.DataFrame) -> StringLookup:
     return lookup_layer
 
 def get_class_weights(data: pd.DataFrame, lookup_layer: StringLookup) -> Dict[int, float]:
-    # compute class weights to handle class imbalance during model creation
+    # compute class weights to handle class imbalance during model training
     classes = [x for x in lookup_layer.get_vocabulary() if x != "[UNK]"]
     class_instances = np.concatenate(data["topics"].values)
     class_weights = class_weight.compute_class_weight(class_weight="balanced", classes=classes, y=class_instances)
@@ -39,13 +39,13 @@ def get_class_weights(data: pd.DataFrame, lookup_layer: StringLookup) -> Dict[in
         result[i+1] = class_weights[i]
     return result
 
-def create_tf_dataset(data: pd.DataFrame, lookup_layer: StringLookup) -> tf.data.Dataset:
+def get_tf_dataset(data: pd.DataFrame, lookup_layer: StringLookup) -> tf.data.Dataset:
     labels = tf.ragged.constant(data["topics"].values)
     labels_binarized = lookup_layer(labels).numpy()
     dataset = tf.data.Dataset.from_tensor_slices((data["abstracts"].values, labels_binarized))
     return dataset.batch(Constants.BATCH_SIZE).prefetch(AUTO)
 
-def create_text_vectorizer(train_df: pd.DataFrame, train_dataset: tf.data.Dataset) -> TextVectorization:
+def get_text_vectorizer(train_df: pd.DataFrame, train_dataset: tf.data.Dataset) -> TextVectorization:
     vocab = set()
     train_df["abstracts"].str.lower().str.split().apply(vocab.update)
     vocab_size = len(vocab)
@@ -72,11 +72,11 @@ def preprocess_data(data: pd.DataFrame) -> Tuple[StringLookup, TextVectorization
     lookup_layer = multi_label_binarization(train_df)
     class_weights = get_class_weights(data, lookup_layer)
 
-    train_dataset = create_tf_dataset(train_df, lookup_layer)
-    validation_dataset = create_tf_dataset(validation_df, lookup_layer)
-    test_dataset = create_tf_dataset(test_df, lookup_layer)
+    train_dataset = get_tf_dataset(train_df, lookup_layer)
+    validation_dataset = get_tf_dataset(validation_df, lookup_layer)
+    test_dataset = get_tf_dataset(test_df, lookup_layer)
 
-    text_vectorizer = create_text_vectorizer(train_df, train_dataset)
+    text_vectorizer = get_text_vectorizer(train_df, train_dataset)
     train_dataset = train_dataset.map(
         lambda text, label: (text_vectorizer(text), label), num_parallel_calls=AUTO
     ).prefetch(AUTO)
