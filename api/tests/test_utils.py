@@ -1,10 +1,9 @@
 import os
 import pymongo
 from dotenv import load_dotenv
-from ..utils import *
+from ..utils import get_db_connection, upload_db_data, LRUCache, topics
 
 def test_get_db_connection():
-    # read from GitHub Actions
     if "GITHUB_ACTIONS" in os.environ:
         user = os.environ["MONGODB_USERNAME"]
         password = os.environ["MONGODB_PASSWORD"]
@@ -15,15 +14,15 @@ def test_get_db_connection():
         password = os.getenv("PASSWORD")
     
     db = get_db_connection(user, password, "papers")
-    assert db is not None
+    assert db != None
     assert type(db) == pymongo.collection.Collection
-    assert get_db_connection("username", "password", "collection") is None
+    assert get_db_connection("username", "password", "collection") == None
 
 def test_upload_db_data():
     demo_paper = {"topic": "AI"}
-    assert upload_db_data("collection", [demo_paper]) is False
-    assert upload_db_data("", [demo_paper]) is False
-    assert upload_db_data("collection", []) is False
+    assert upload_db_data("collection", [demo_paper]) == False
+    assert upload_db_data("", [demo_paper]) == False
+    assert upload_db_data("collection", []) == False
 
 def test_lru_cache():
     lru_cache = LRUCache(3)
@@ -31,11 +30,11 @@ def test_lru_cache():
     lru_cache.put("DB", [{"paper_id": {"topic": "DB"}}])
     lru_cache.put("DS", [{"paper_id": {"topic": "DS"}}])
     lru_cache.put("LG", [{"paper_id": {"topic": "LG"}}])
-    assert lru_cache.get("AI") is None
+    assert lru_cache.get("AI") == None
     assert lru_cache.get("DB") == [{"paper_id": {"topic": "DB"}}]
     lru_cache.put("DB", [{"paper_id1": {"topic": "DB"}, "paper_id2": {"topic": "DB"}}])
     lru_cache.put("OS", [{"paper_id": {"topic": "OS"}}])
-    assert lru_cache.get("DS") is None
+    assert lru_cache.get("DS") == None
     assert lru_cache.get("DB") == [{"paper_id1": {"topic": "DB"}, "paper_id2": {"topic": "DB"}}]
 
 def test_topics_list():
@@ -44,4 +43,4 @@ def test_topics_list():
              "LG", "LO", "MA", "MM", "MS", "NA", "NE", "NI", "OS", "PF", "PL",
              "RO", "SC", "SD", "SE", "SI", "SY"]
     for id in verify:
-        assert topics.get(id)
+        assert topics.get(id) != None

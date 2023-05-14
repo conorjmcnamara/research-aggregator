@@ -75,16 +75,14 @@ export const DisplaySearch: FC = () => {
                         <tr onClick={() => toggleHidden(`search${searchData[uid].url}${i}`)}>
                             <td className="research-hidden-col" colSpan={2} style={{display: showHidden[`search${searchData[uid].url}${i}`] ? "table-cell" : "none"}}>
                                 <p className="research-paper-abstract">{searchData[uid].abstract}</p>
-                                
                                 <p className="research-paper-topic">
-                                        <b>Topics: </b>
-                                        <React.Fragment>
-                                            {searchData[uid].topics.map((topic: string, k: number) => (
-                                                <span key={`topic${i}${k}`}>{(k ? ", " : "") + topic}</span>
-                                            ))}
-                                        </React.Fragment>
-                                    </p>
-                                    
+                                    <b>Topics: </b>
+                                    <React.Fragment>
+                                        {searchData[uid].topics.map((topic: string, k: number) => (
+                                            <span key={`topic${i}${k}`}>{(k ? ", " : "") + topic}</span>
+                                        ))}
+                                    </React.Fragment>
+                                </p>
                                 <p className="research-paper-source"><b>Source:</b> {searchData[uid].source}</p>
                             </td>
                         </tr>

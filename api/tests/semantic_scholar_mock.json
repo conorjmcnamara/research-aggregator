@@ -1,0 +1,40 @@
+[
+    {
+       "paperId":"288078127a3078332230442170f6745ed333c700",
+       "url":"https://www.semanticscholar.org/paper/288078127a3078332230442170f6745ed333c700",
+       "title":"A Conversation on Artificial Intelligence, Chatbots, and Plagiarism in Higher Education",
+       "abstract":"None",
+       "publicationDate":"2023-01-02",
+       "authors":[
+          {
+             "authorId":"152378504",
+             "name":"Michael R. King"
+          },
+          {
+             "authorId":"2196932745",
+             "name":"chatGPT"
+          }
+       ]
+    },
+    {
+       "paperId":"8d984ee2eeabb630014f31fc759d4980830c4bdb",
+       "url":"https://www.semanticscholar.org/paper/8d984ee2eeabb630014f31fc759d4980830c4bdb",
+       "title":"Can artificial intelligence help for scientific writing?",
+       "abstract":"None",
+       "publicationDate":"2023-02-25",
+       "authors":[
+          {
+             "authorId":"32433579",
+             "name":"M. Salvagno"
+          },
+          {
+             "authorId":"4254919",
+             "name":"F. Taccone"
+          },
+          {
+             "authorId":"1738459585",
+             "name":"A. Gerli"
+          }
+       ]
+    }
+ ]
