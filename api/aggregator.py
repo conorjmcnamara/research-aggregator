@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from concurrent.futures import ThreadPoolExecutor
 from collections import defaultdict
 from typing import Optional, List, DefaultDict, Dict, Any
-from utils import get_db_connection, upload_db_data, topics
+from api.utils import get_db_connection, upload_db_data, topics
 
 MAX_PAPERS_REQUEST = 25
 seen_arxiv_papers = set()
@@ -67,14 +67,14 @@ class Node:
         self.date = date
         self.json_index = json_index
 
-def parse_semantic_scholar(data: Dict[str, Any], id: str) -> List[DefaultDict[str, list]]:
+def parse_semantic_scholar(data: List[Dict[str, Any]], id: str) -> List[DefaultDict[str, list]]:
     heap = []
     size = 0
 
     # maintain a heap of the most recent research papers by date
     for i in range(len(data)):
         date = data[i]["publicationDate"]
-        if not date or data[i]["url"] in seen_semantic_scholar_papers:
+        if not date or data[i]["paperId"] in seen_semantic_scholar_papers:
             continue
         if size < MAX_PAPERS_REQUEST:
             node = Node(i, date)
@@ -85,7 +85,7 @@ def parse_semantic_scholar(data: Dict[str, Any], id: str) -> List[DefaultDict[st
                 heapq.heappop(heap)
                 heapq.heappush(heap, (i, node))
         size += 1
-        seen_semantic_scholar_papers.add(data[i]["url"])
+        seen_semantic_scholar_papers.add(data[i]["paperId"])
 
     result = []
     for entry in heap:
