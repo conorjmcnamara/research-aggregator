@@ -1,7 +1,9 @@
+import sys
+sys.path.append("..")
 import os
 import pymongo
 from dotenv import load_dotenv
-from ..utils import get_db_connection, upload_db_data, LRUCache, topics
+from utils import get_db_connection, upload_db_data, LRUCache, topics
 
 def test_get_db_connection():
     if "GITHUB_ACTIONS" in os.environ:

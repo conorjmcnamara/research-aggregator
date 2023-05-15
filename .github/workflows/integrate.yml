@@ -21,7 +21,7 @@ jobs:
         run: pip install -r requirements.txt
       
       - name: Run backend tests
-        working-directory: ./api
+        working-directory: ./api/tests
         run: pytest -v
   
   frontend-tests:

@@ -1,10 +1,12 @@
+import sys
+sys.path.append("..")
 import json
-from ..aggregator import parse_arxiv, Node, parse_semantic_scholar
+from aggregator import parse_arxiv, Node, parse_semantic_scholar
 
 FIELDS = ["title", "date", "abstract", "url", "source", "authors", "topics"]
 
 def test_parse_arxiv():
-    with open("tests/arxiv_mock.json") as file:
+    with open("arxiv_mock.json") as file:
         data = json.load(file)
     papers = parse_arxiv(data, "AI")
     assert len(papers) == 2
@@ -22,9 +24,9 @@ def test_node():
     assert node.json_index == 1
 
 def test_parse_semantic_scholar():
-    with open("tests/semantic_scholar_mock.json") as file:
+    with open("semantic_scholar_mock.json") as file:
         data = json.load(file)
-    papers = parse_semantic_scholar(data, "AI")
+    papers, abstracts = parse_semantic_scholar(data, "AI")
     assert len(papers) == 2
     assert len(papers[0]) == len(FIELDS)
     for field in FIELDS:
