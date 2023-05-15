@@ -7,11 +7,13 @@ from sklearn.model_selection import train_test_split
 from sklearn.utils import class_weight
 from ast import literal_eval
 from typing import Tuple, Dict
-from constants import Constants
+from .constants import Constants
 
 AUTO = tf.data.AUTOTUNE
 
-def remove_substrings(text: str, latex_regex: str, url_regex: str) -> str:
+def remove_substrings(text: str) -> str:
+    latex_regex = r"\$.*?\$"
+    url_regex = r"(http[s]?://|www\.)\S+"
     text = re.sub(latex_regex, "", text)
     text = re.sub(url_regex, "", text)
     return text
@@ -64,9 +66,7 @@ def preprocess_data(data: pd.DataFrame) -> Tuple[StringLookup, TextVectorization
     data["topics"] = data["topics"].apply(lambda x: literal_eval(x))
 
     # remove LaTex and URL substrings from abstracts
-    latex_regex = r"\$.*?\$"
-    url_regex = r"(http[s]?://|www\.)\S+"
-    data["abstracts"] = data["abstracts"].apply(lambda x: remove_substrings(x, latex_regex, url_regex))
+    data["abstracts"] = data["abstracts"].apply(lambda x: remove_substrings(x))
 
     train_df, validation_df, test_df = split_data(data)
     lookup_layer = multi_label_binarization(train_df)

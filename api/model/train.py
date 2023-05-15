@@ -9,8 +9,9 @@ from keras.layers import StringLookup, Dense, Dropout, TextVectorization
 from keras.callbacks import EarlyStopping, History
 from keras.optimizers import Adam
 from sklearn.metrics import multilabel_confusion_matrix
-from preprocesser import preprocess_data
-from constants import Constants
+from typing import Dict
+from .preprocesser import preprocess_data
+from .constants import Constants
 
 METRICS = [
     metrics.TruePositives(),
@@ -37,7 +38,7 @@ def get_model(lookup_layer: StringLookup) -> Sequential:
     model.compile(loss="binary_crossentropy", optimizer=optimizer, metrics=METRICS)
     return model
 
-def fit_model(model: Sequential, class_weights: dict, train_dataset: tf.data.Dataset, validation_dataset: tf.data.Dataset) -> History:
+def fit_model(model: Sequential, class_weights: Dict[int, float], train_dataset: tf.data.Dataset, validation_dataset: tf.data.Dataset) -> History:
     # implement early stopping to reduce overfitting
     early_stop = EarlyStopping(monitor="loss", patience=5)
 
@@ -65,7 +66,7 @@ def predict(model: Sequential, dataset: tf.data.Dataset) -> np.ndarray:
     predicted_probailities = (predicted_probailities >= Constants.PREDICTION_THRESHOLD).astype(int)
     return predicted_probailities
 
-def plot_confusion_matrix(model: Sequential, actual_probailities: np.ndarray, predicted_probailities: np.ndarray) -> None:
+def plot_confusion_matrix(actual_probailities: np.ndarray, predicted_probailities: np.ndarray) -> None:
     # compute confusion matrix for each label seperately, sum up, and plot
     confusion_matrix = multilabel_confusion_matrix(actual_probailities, predicted_probailities)
     confusion_matrix = np.sum(confusion_matrix, axis=0)
@@ -114,4 +115,4 @@ if __name__ == "__main__":
     print(history)
     plot_history(history, "loss")
     plot_history(history, "binary_accuracy")
-    plot_confusion_matrix(model, test_labels, predicted_probailities)
+    plot_confusion_matrix(test_labels, predicted_probailities)

@@ -4,10 +4,11 @@ import heapq
 import xmltodict
 import os
 from dotenv import load_dotenv
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, wait
 from collections import defaultdict
-from typing import Optional, List, DefaultDict, Dict, Any
-from api.utils import get_db_connection, upload_db_data, topics
+from typing import Optional, List, DefaultDict, Dict, Tuple, Any
+from utils import get_db_connection, upload_db_data, topics
+from model.predict import load_model, predict
 
 MAX_PAPERS_REQUEST = 25
 seen_arxiv_papers = set()
@@ -16,7 +17,7 @@ seen_semantic_scholar_papers = set()
 def parse_arxiv(data: Dict[str, Any], id: str) -> List[DefaultDict[str, list]]:
     result = []
     for entry in data["feed"]["entry"]:
-        if entry["id"] in seen_arxiv_papers:
+        if not entry["id"] or entry["id"] in seen_arxiv_papers:
             continue
         paper = defaultdict(list)
         paper["title"] = entry["title"]
@@ -67,27 +68,28 @@ class Node:
         self.date = date
         self.json_index = json_index
 
-def parse_semantic_scholar(data: List[Dict[str, Any]], id: str) -> List[DefaultDict[str, list]]:
+def parse_semantic_scholar(data: List[Dict[str, Any]], id: str) -> Tuple[List[DefaultDict[str, list]], List[str]]:
     heap = []
     size = 0
 
     # maintain a heap of the most recent research papers by date
     for i in range(len(data)):
         date = data[i]["publicationDate"]
-        if not date or data[i]["paperId"] in seen_semantic_scholar_papers:
+        if not date or not data[i]["abstract"] or data[i]["paperId"] in seen_semantic_scholar_papers:
             continue
         if size < MAX_PAPERS_REQUEST:
-            node = Node(i, date)
+            node = Node(date, i)
             heapq.heappush(heap, (i, node))
         else:
             if date > heap[0][1].date:
-                node = Node(i, date)
+                node = Node(date, i)
                 heapq.heappop(heap)
                 heapq.heappush(heap, (i, node))
         size += 1
         seen_semantic_scholar_papers.add(data[i]["paperId"])
 
     result = []
+    abstracts = []
     for entry in heap:
         json = data[entry[0]]
         paper = defaultdict(list)
@@ -103,7 +105,8 @@ def parse_semantic_scholar(data: List[Dict[str, Any]], id: str) -> List[DefaultD
         paper["authors"] = authors
         paper["topics"] = [id]
         result.append(paper)
-    return result
+        abstracts.append(paper["abstract"])
+    return (result, abstracts)
 
 def fetch_semantic_scholar(id: str, name: str, session: requests.Session) -> Optional[List[DefaultDict[str, list]]]:
     base_url = "https://api.semanticscholar.org/graph/v1/paper/search?query="
@@ -128,12 +131,23 @@ if __name__ == "__main__":
         futures.append(executor.submit(fetch_arxiv, id, session))
         futures.append(executor.submit(fetch_semantic_scholar, id, name, session))
     session.close()
+    wait(futures)
     
     papers = []
-    for future in futures:
-        if future.result():
+    model, lookup_layer = load_model()
+    for i, future in enumerate(futures):
+        if not future.result():
+            continue
+        if i % 2 == 0:
             for paper in future.result():
                 papers.append(paper)
+        # model prediction for Semantic Scholar
+        else:
+            data, abstracts = future.result()
+            predicted_labels = predict(model, lookup_layer, abstracts)
+            for i, labels in enumerate(predicted_labels):
+                data[i]["topics"] = labels
+                papers.append(data[i])
     
     load_dotenv()
     user = os.getenv("USER")
