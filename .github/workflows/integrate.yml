@@ -16,8 +16,12 @@ jobs:
         with:
           python-version: 3.8
       
-      - name: Install Python dependencies
+      - name: Install Flask REST API dependencies
         working-directory: ./api
+        run: pip install -r requirements.txt
+      
+      - name: Install NLP Model dependencies
+        working-directory: ./api/model
         run: pip install -r requirements.txt
       
       - name: Run backend tests
