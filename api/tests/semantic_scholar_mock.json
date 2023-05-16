@@ -1,40 +1,52 @@
 [
-    {
-       "paperId":"288078127a3078332230442170f6745ed333c700",
-       "url":"https://www.semanticscholar.org/paper/288078127a3078332230442170f6745ed333c700",
-       "title":"A Conversation on Artificial Intelligence, Chatbots, and Plagiarism in Higher Education",
-       "abstract":"None",
-       "publicationDate":"2023-01-02",
-       "authors":[
-          {
-             "authorId":"152378504",
-             "name":"Michael R. King"
-          },
-          {
-             "authorId":"2196932745",
-             "name":"chatGPT"
-          }
-       ]
-    },
-    {
-       "paperId":"8d984ee2eeabb630014f31fc759d4980830c4bdb",
-       "url":"https://www.semanticscholar.org/paper/8d984ee2eeabb630014f31fc759d4980830c4bdb",
-       "title":"Can artificial intelligence help for scientific writing?",
-       "abstract":"None",
-       "publicationDate":"2023-02-25",
-       "authors":[
-          {
-             "authorId":"32433579",
-             "name":"M. Salvagno"
-          },
-          {
-             "authorId":"4254919",
-             "name":"F. Taccone"
-          },
-          {
-             "authorId":"1738459585",
-             "name":"A. Gerli"
-          }
-       ]
-    }
+   {
+      "paperId":"377fd63aa67e9ac1cab465ec6e7f1e2d3260c5ad",
+      "url":"https://www.semanticscholar.org/paper/377fd63aa67e9ac1cab465ec6e7f1e2d3260c5ad",
+      "title":"Developing and Evaluating an Artificial Intelligence Model for Malicious URL Detection",
+      "abstract":"Today, the increased use of the internet has become important in our lives and new communication technologies, social networks, e-commerce, online banking, and among other applications have a significant impact on the promotion and growth of business. In our study, we aimed to work with a large dataset and to achieve the best results in detecting malicious URL addresses using an artificial intelligence model. A 7-layer RNN model was used in the study, and two similar national and international datasets were combined and merged to create a big new dataset consisting of 579,112 URL addresses. Then, this new data set is divided into training and test sets. first data set was trained at the model and then the second data set was processed test. When this data set was processed in our model, we achieved a success rate of over 91%. This rate is a very good result of detecting malicious url addresses. Your contribution with this work is significant in developing more effective methods for detecting harmful sites as internet usage increases, parallel use of artificial intelligence models makes detection of such sites more effective and potentially assist users in protecting from various types of cyber-attacks is targeted.",
+      "publicationDate":"2023-01-25",
+      "authors":[
+         {
+            "authorId":"2204123901",
+            "name":"Fatih Ti̇ryaki̇"
+         },
+         {
+            "authorId":"52216838",
+            "name":"Ümit Şentürk"
+         },
+         {
+            "authorId":"6592396 61",
+            "name":"I. Yücedag"
+         }
+      ]
+   },
+   {
+      "paperId":"eef71d5db03c357220ccf4165de3e37951f74a12",
+      "url":"https://www.semanticscholar.org/paper/eef71d5db03c357220ccf4165de3e37951f74a12",
+      "title":"Model-agnostic explainable artificial intelligence for object detection in image data",
+      "abstract":"Object detection is a fundamental task in computer vision, which has been greatly progressed through developing large and intricate deep learning models. However, the lack of transparency is a big challenge that may not allow the widespread adoption of these models. Explainable artificial intelligence is a field of research where methods are developed to help users understand the behavior, decision logics, and vulnerabilities of AI-based systems. Black-box explanation refers to explaining decisions of an AI system without having access to its internals. In this paper, we design and implement a black-box explanation method named Black-box Object Detection Explanation by Masking (BODEM) through adopting a new masking approach for AI-based object detection systems. We propose local and distant masking to generate multiple versions of an input image. Local masks are used to disturb pixels within a target object to figure out how the object detector reacts to these changes, while distant masks are used to assess how the detection model's decisions are affected by disturbing pixels outside the object. A saliency map is then created by estimating the importance of pixels through measuring the difference between the detection output before and after masking. Finally, a heatmap is created that visualizes how important pixels within the input image are to the detected objects. The experimentations on various object detection datasets and models showed that BODEM can be effectively used to explain the behavior of object detectors and reveal their vulnerabilities. This makes BODEM suitable for explaining and validating AI based object detection systems in black-box software testing scenarios. Furthermore, we conducted data augmentation experiments that showed local masks produced by BODEM can be used for further training the object detectors and improve their detection accuracy and robustness.",
+      "publicationDate":"2023-03-30",
+      "authors":[
+         {
+            "authorId":"144334436",
+            "name":"M. Moradi"
+         },
+         {
+            "authorId":"145829312",
+            "name":"Ke Yan"
+         },
+         {
+            "authorId":"2213271823",
+            "name":"David Colwell"
+         },
+         {
+            "authorId":"3004898",
+            "name":"M. Samwald"
+         },
+         {
+            "authorId":"1412897483",
+            "name":"Rhona Asgari"
+         }
+      ]
+   }
  ]

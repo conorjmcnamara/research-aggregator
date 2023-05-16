@@ -75,7 +75,7 @@ def parse_semantic_scholar(data: List[Dict[str, Any]], id: str) -> Tuple[List[De
     # maintain a heap of the most recent research papers by date
     for i in range(len(data)):
         date = data[i]["publicationDate"]
-        if not date or not data[i]["abstract"] or data[i]["paperId"] in seen_semantic_scholar_papers:
+        if not date or data[i]["abstract"] == "None" or data[i]["paperId"] in seen_semantic_scholar_papers:
             continue
         if size < MAX_PAPERS_REQUEST:
             node = Node(date, i)
@@ -110,8 +110,8 @@ def parse_semantic_scholar(data: List[Dict[str, Any]], id: str) -> Tuple[List[De
 
 def fetch_semantic_scholar(id: str, name: str, session: requests.Session) -> Optional[List[DefaultDict[str, list]]]:
     base_url = "https://api.semanticscholar.org/graph/v1/paper/search?query="
-    param = "&year=2023&fieldsOfStudy=Computer+Science&fields=title,url,abstract,publicationDate,authors&limit=20"
-    url = f"{base_url}{name}{param}"
+    param = "&year=2023&fieldsOfStudy=Computer+Science&fields=title,url,abstract,publicationDate,authors"
+    url = f"{base_url}{name}{param}&limit={MAX_PAPERS_REQUEST+50}"
     try:
         response = session.get(url)
         data = response.json()["data"]
@@ -149,8 +149,13 @@ if __name__ == "__main__":
                 data[i]["topics"] = labels
                 papers.append(data[i])
     
-    load_dotenv()
-    user = os.getenv("USER")
-    password = os.getenv("PASSWORD")
+    if "GITHUB_ACTIONS" in os.environ:
+        user = os.environ["MONGODB_USERNAME"]
+        password = os.environ["MONGODB_PASSWORD"]
+    else:
+        load_dotenv()
+        user = os.getenv("MONGODB_USERNAME")
+        password = os.getenv("MONGODB_PASSWORD")
+    
     papers_db = get_db_connection(user, password, "papers")
     upload_db_data(papers_db, papers)

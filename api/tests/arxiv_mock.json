@@ -1,126 +1,131 @@
 {
-    "feed":{
-       "@xmlns":"http://www.w3.org/2005/Atom",
-       "link":{
-          "@href":"http://arxiv.org/api/query?search_query%3Dcat%3Acs.AI%26id_list%3D%26start%3D0%26max_results%3D2",
-          "@rel":"self",
-          "@type":"application/atom+xml"
-       },
-       "title":{
-          "@type":"html",
-          "#text":"ArXiv Query: search_query=cat:cs.AI&id_list=&start=0&max_results=2"
-       },
-       "id":"http://arxiv.org/api/sLG0txIUz7g/GKW7ibPhDY0NNSQ",
-       "updated":"2023-05-14T00:00:00-04:00",
-       "opensearch:totalResults":{
-          "@xmlns:opensearch":"http://a9.com/-/spec/opensearch/1.1/",
-          "#text":"62725"
-       },
-       "opensearch:startIndex":{
-          "@xmlns:opensearch":"http://a9.com/-/spec/opensearch/1.1/",
-          "#text":"0"
-       },
-       "opensearch:itemsPerPage":{
-          "@xmlns:opensearch":"http://a9.com/-/spec/opensearch/1.1/",
-          "#text":"2"
-       },
-       "entry":[
-          {
-             "id":"http://arxiv.org/abs/2305.07011v1",
-             "updated":"2023-05-11T17:53:29Z",
-             "published":"2023-05-11T17:53:29Z",
-             "title":"Region-Aware Pretraining for Open-Vocabulary Object Detection with\n  Vision Transformers",
-             "summary":"We present Region-aware Open-vocabulary Vision Transformers (RO-ViT) - a\ncontrastive image-text pretraining recipe to bridge the gap between image-level\npretraining and open-vocabulary object detection. At the pretraining phase, we\npropose to randomly crop and resize regions of positional embeddings instead of\nusing the whole image positional embeddings. This better matches the use of\npositional embeddings at region-level in the detection finetuning phase. In\naddition, we replace the common softmax cross entropy loss in contrastive\nlearning with focal loss to better learn the informative yet difficult\nexamples. Finally, we leverage recent advances in novel object proposals to\nimprove open-vocabulary detection finetuning. We evaluate our full model on the\nLVIS and COCO open-vocabulary detection benchmarks and zero-shot transfer.\nRO-ViT achieves a state-of-the-art 32.1 $AP_r$ on LVIS, surpassing the best\nexisting approach by +5.8 points in addition to competitive zero-shot transfer\ndetection. Surprisingly, RO-ViT improves the image-level representation as well\nand achieves the state of the art on 9 out of 12 metrics on COCO and Flickr\nimage-text retrieval benchmarks, outperforming competitive approaches with\nlarger models.",
-             "author":[
-                {
-                   "name":"Dahun Kim"
-                },
-                {
-                   "name":"Anelia Angelova"
-                },
-                {
-                   "name":"Weicheng Kuo"
-                }
-             ],
-             "arxiv:comment":{
-                "@xmlns:arxiv":"http://arxiv.org/schemas/atom",
-                "#text":"CVPR 2023"
-             },
-             "link":[
-                {
-                   "@href":"http://arxiv.org/abs/2305.07011v1",
-                   "@rel":"alternate",
-                   "@type":"text/html"
-                },
-                {
-                   "@title":"pdf",
-                   "@href":"http://arxiv.org/pdf/2305.07011v1",
-                   "@rel":"related",
-                   "@type":"application/pdf"
-                }
-             ],
-             "arxiv:primary_category":{
-                "@xmlns:arxiv":"http://arxiv.org/schemas/atom",
-                "@term":"cs.CV",
-                "@scheme":"http://arxiv.org/schemas/atom"
-             },
-             "category":[
-                {
-                   "@term":"cs.CV",
-                   "@scheme":"http://arxiv.org/schemas/atom"
-                },
-                {
-                   "@term":"cs.AI",
-                   "@scheme":"http://arxiv.org/schemas/atom"
-                },
-                {
-                   "@term":"cs.CL",
-                   "@scheme":"http://arxiv.org/schemas/atom"
-                }
-             ]
-          },
-          {
-             "id":"http://arxiv.org/abs/2305.06993v1",
-             "updated":"2023-05-11T17:29:47Z",
-             "published":"2023-05-11T17:29:47Z",
-             "title":"SMATCH++: Standardized and Extended Evaluation of Semantic Graphs",
-             "summary":"The Smatch metric is a popular method for evaluating graph distances, as is\nnecessary, for instance, to assess the performance of semantic graph parsing\nsystems. However, we observe some issues in the metric that jeopardize\nmeaningful evaluation. E.g., opaque pre-processing choices can affect results,\nand current graph-alignment solvers do not provide us with upper-bounds.\nWithout upper-bounds, however, fair evaluation is not guaranteed. Furthermore,\nadaptions of Smatch for extended tasks (e.g., fine-grained semantic similarity)\nare spread out, and lack a unifying framework.\n  For better inspection, we divide the metric into three modules:\npre-processing, alignment, and scoring. Examining each module, we specify its\ngoals and diagnose potential issues, for which we discuss and test mitigation\nstrategies. For pre-processing, we show how to fully conform to annotation\nguidelines that allow structurally deviating but valid graphs. For safer and\nenhanced alignment, we show the feasibility of optimal alignment in a standard\nevaluation setup, and develop a lossless graph compression method that shrinks\nthe search space and significantly increases efficiency. For improved scoring,\nwe propose standardized and extended metric calculation of fine-grained\nsub-graph meaning aspects. Our code is available at\nhttps://github.com/flipz357/smatchpp",
-             "author":{
-                "name":"Juri Opitz"
-             },
-             "arxiv:comment":{
-                "@xmlns:arxiv":"http://arxiv.org/schemas/atom",
-                "#text":"EACL 2023 findings, Code: https://github.com/flipz357/smatchpp"
-             },
-             "link":[
-                {
-                   "@href":"http://arxiv.org/abs/2305.06993v1",
-                   "@rel":"alternate",
-                   "@type":"text/html"
-                },
-                {
-                   "@title":"pdf",
-                   "@href":"http://arxiv.org/pdf/2305.06993v1",
-                   "@rel":"related",
-                   "@type":"application/pdf"
-                }
-             ],
-             "arxiv:primary_category":{
-                "@xmlns:arxiv":"http://arxiv.org/schemas/atom",
-                "@term":"cs.CL",
-                "@scheme":"http://arxiv.org/schemas/atom"
-             },
-             "category":[
-                {
-                   "@term":"cs.CL",
-                   "@scheme":"http://arxiv.org/schemas/atom"
-                },
-                {
-                   "@term":"cs.AI",
-                   "@scheme":"http://arxiv.org/schemas/atom"
-                }
-             ]
-          }
-       ]
-    }
- }
+   "feed":{
+      "@xmlns":"http://www.w3.org/2005/Atom",
+      "link":{
+         "@href":"http://arxiv.org/api/query?search_query%3Dcat%3Acs.AI%26id_list%3D%26start%3D0%26max_results%3D2",
+         "@rel":"self",
+         "@type":"application/atom+xml"
+      },
+      "title":{
+         "@type":"html",
+         "#text":"ArXiv Query: search_query=cat:cs.AI&id_list=&start=0&max_results=2"
+      },
+      "id":"http://arxiv.org/api/sLG0txIUz7g/GKW7ibPhDY0NNSQ",
+      "updated":"2023-05-16T00:00:00-04:00",
+      "opensearch:totalResults":{
+         "@xmlns:opensearch":"http://a9.com/-/spec/opensearch/1.1/",
+         "#text":"62895"
+      },
+      "opensearch:startIndex":{
+         "@xmlns:opensearch":"http://a9.com/-/spec/opensearch/1.1/",
+         "#text":"0"
+      },
+      "opensearch:itemsPerPage":{
+         "@xmlns:opensearch":"http://a9.com/-/spec/opensearch/1.1/",
+         "#text":"2"
+      },
+      "entry":[
+         {
+            "id":"http://arxiv.org/abs/2305.08854v1",
+            "updated":"2023-05-15T17:59:57Z",
+            "published":"2023-05-15T17:59:57Z",
+            "title":"Laughing Matters: Introducing Laughing-Face Generation using Diffusion\n  Models",
+            "summary":"Speech-driven animation has gained significant traction in recent years, with\ncurrent methods achieving near-photorealistic results. However, the field\nremains underexplored regarding non-verbal communication despite evidence\ndemonstrating its importance in human interaction. In particular, generating\nlaughter sequences presents a unique challenge due to the intricacy and nuances\nof this behaviour. This paper aims to bridge this gap by proposing a novel\nmodel capable of generating realistic laughter sequences, given a still\nportrait and an audio clip containing laughter. We highlight the failure cases\nof traditional facial animation methods and leverage recent advances in\ndiffusion models to produce convincing laughter videos. We train our model on a\ndiverse set of laughter datasets and introduce an evaluation metric\nspecifically designed for laughter. When compared with previous speech-driven\napproaches, our model achieves state-of-the-art performance across all metrics,\neven when these are re-trained for laughter generation.",
+            "author":[
+               {
+                  "name":"Antoni Bigata Casademunt"
+               },
+               {
+                  "name":"Rodrigo Mira"
+               },
+               {
+                  "name":"Nikita Drobyshev"
+               },
+               {
+                  "name":"Konstantinos Vougioukas"
+               },
+               {
+                  "name":"Stavros Petridis"
+               },
+               {
+                  "name":"Maja Pantic"
+               }
+            ],
+            "link":[
+               {
+                  "@href":"http://arxiv.org/abs/2305.08854v1",
+                  "@rel":"alternate",
+                  "@type":"text/html"
+               },
+               {
+                  "@title":"pdf",
+                  "@href":"http://arxiv.org/pdf/2305.08854v1",
+                  "@rel":"related",
+                  "@type":"application/pdf"
+               }
+            ],
+            "arxiv:primary_category":{
+               "@xmlns:arxiv":"http://arxiv.org/schemas/atom",
+               "@term":"cs.CV",
+               "@scheme":"http://arxiv.org/schemas/atom"
+            },
+            "category":[
+               {
+                  "@term":"cs.CV",
+                  "@scheme":"http://arxiv.org/schemas/atom"
+               },
+               {
+                  "@term":"cs.AI",
+                  "@scheme":"http://arxiv.org/schemas/atom"
+               },
+               {
+                  "@term":"cs.LG",
+                  "@scheme":"http://arxiv.org/schemas/atom"
+               }
+            ]
+         },
+         {
+            "id":"http://arxiv.org/abs/2305.08852v1",
+            "updated":"2023-05-15T17:59:34Z",
+            "published":"2023-05-15T17:59:34Z",
+            "title":"Python Tool for Visualizing Variability of Pareto Fronts over Multiple\n  Runs",
+            "summary":"Hyperparameter optimization is crucial to achieving high performance in deep\nlearning. On top of the performance, other criteria such as inference time or\nmemory requirement often need to be optimized due to some practical reasons.\nThis motivates research on multi-objective optimization (MOO). However, Pareto\nfronts of MOO methods are often shown without considering the variability\ncaused by random seeds and this makes the performance stability evaluation\ndifficult. Although there is a concept named empirical attainment surface to\nenable the visualization with uncertainty over multiple runs, there is no major\nPython package for empirical attainment surface. We, therefore, develop a\nPython package for this purpose and describe the usage. The package is\navailable at https://github.com/nabenabe0928/empirical-attainment-func.",
+            "author":{
+               "name":"Shuhei Watanabe"
+            },
+            "arxiv:comment":{
+               "@xmlns:arxiv":"http://arxiv.org/schemas/atom",
+               "#text":"Submitted to AutoML workshop"
+            },
+            "link":[
+               {
+                  "@href":"http://arxiv.org/abs/2305.08852v1",
+                  "@rel":"alternate",
+                  "@type":"text/html"
+               },
+               {
+                  "@title":"pdf",
+                  "@href":"http://arxiv.org/pdf/2305.08852v1",
+                  "@rel":"related",
+                  "@type":"application/pdf"
+               }
+            ],
+            "arxiv:primary_category":{
+               "@xmlns:arxiv":"http://arxiv.org/schemas/atom",
+               "@term":"cs.AI",
+               "@scheme":"http://arxiv.org/schemas/atom"
+            },
+            "category":[
+               {
+                  "@term":"cs.AI",
+                  "@scheme":"http://arxiv.org/schemas/atom"
+               },
+               {
+                  "@term":"cs.LG",
+                  "@scheme":"http://arxiv.org/schemas/atom"
+               }
+            ]
+         }
+      ]
+   }
+}

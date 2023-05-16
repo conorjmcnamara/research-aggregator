@@ -15,8 +15,7 @@ def test_parse_arxiv():
         assert papers[0][field] != None
     assert papers[0]["source"] == "arXiv.org"
     assert len(papers[0]["topics"]) == 3
-    assert len(papers[0]["authors"]) == 3
-    assert len(papers[1]["authors"]) == 1
+    assert len(papers[0]["authors"]) == 6
 
 def test_node():
     node = Node("2023-02-25", 1)
@@ -32,5 +31,4 @@ def test_parse_semantic_scholar():
     for field in FIELDS:
         assert papers[0][field] != None
     assert papers[0]["source"] == "SemanticScholar.org"
-    assert len(papers[0]["authors"]) == 2
-    assert len(papers[1]["authors"]) == 3
+    assert len(papers[0]["authors"]) == 3
