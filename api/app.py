@@ -15,14 +15,21 @@ app = Flask(__name__)
 jwt = JWTManager(app)
 lru_cache = LRUCache(10)
 
-load_dotenv()
-user = os.getenv("USER")
-password = os.getenv("PASSWORD")
+if "GITHUB_ACTIONS" in os.environ:
+    user = os.environ["MONGODB_USERNAME"]
+    password = os.environ["MONGODB_PASSWORD"]
+    jwt_key = os.environ["JWT_KEY"]
+else:
+    load_dotenv()
+    user = os.getenv("MONGODB_USERNAME")
+    password = os.getenv("MONGODB_PASSWORD")
+    jwt_key = os.getenv("JWT_KEY")
+
 papers_db = get_db_connection(user, password, "papers")
 users_db = get_db_connection(user, password, "users")
 
 # JWT cookie-based authentication
-app.config["JWT_SECRET_KEY"] = os.getenv("JWT")
+app.config["JWT_SECRET_KEY"] = jwt_key
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(days=1)
 app.config["JWT_TOKEN_LOCATION"] = "cookies"
 app.config["JWT_COOKIE_SECURE"] = True
@@ -147,7 +154,7 @@ def refresh_expiring_jwts(response):
 @app.route("/api/topic/<string:id>", methods=["GET"])
 def topic_query(id: str):
     if id not in topics:
-        return jsonify({"data": "invalid topic ID: " + id}), 404
+        return jsonify({"data": f"invalid topic ID: {id}"}), 404
 
     cache_hit = lru_cache.get(id)
     if cache_hit:
@@ -163,7 +170,7 @@ def topic_query(id: str):
 
 @app.route("/api/search/<string:query>", methods=["GET"])
 def search_query(query: str):
-    response = [{
+    response_pipeline = list(papers_db.aggregate([{
         "$search": {
             "index": "papers_index",
             "text": {
@@ -171,15 +178,15 @@ def search_query(query: str):
                 "path": ["title", "abstract"]
             }
         }
-    }, {"$limit": 10}]
+    }, {"$limit": 10}]))
 
-    if response:
-        search_data = {}
-        for paper in papers_db.aggregate(response):
-            paper["_id"] = str(paper["_id"])
-            search_data[paper["_id"]] = paper
-        return jsonify(search_data), 200
-    return jsonify({"data:": f"empty search with query: {query}"}), 404
+    if len(response_pipeline) == 0:
+        return jsonify({"data": f"empty search with query: {query}"}), 404
+    search_data = {}
+    for paper in response_pipeline:
+        paper["_id"] = str(paper["_id"])
+        search_data[paper["_id"]] = paper
+    return jsonify(search_data), 200
 
 if __name__ == "__main__":
     app.run(debug=False)

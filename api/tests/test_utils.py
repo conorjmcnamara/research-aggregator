@@ -9,11 +9,10 @@ def test_get_db_connection():
     if "GITHUB_ACTIONS" in os.environ:
         user = os.environ["MONGODB_USERNAME"]
         password = os.environ["MONGODB_PASSWORD"]
-    # read from .env
     else:
         load_dotenv()
-        user = os.getenv("USER")
-        password = os.getenv("PASSWORD")
+        user = os.getenv("MONGODB_USERNAME")
+        password = os.getenv("MONGODB_PASSWORD")
     
     db = get_db_connection(user, password, "papers")
     assert db != None

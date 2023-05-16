@@ -10,6 +10,7 @@ jobs:
     env:
       MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
       MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
+      JWT_KEY: ${{ secrets.JWT_KEY }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -20,7 +21,7 @@ jobs:
         working-directory: ./api
         run: pip install -r requirements.txt
       
-      - name: Install NLP Model dependencies
+      - name: Install NLP model dependencies
         working-directory: ./api/model
         run: pip install -r requirements.txt
       
