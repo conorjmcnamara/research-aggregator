@@ -181,7 +181,7 @@ def search_query(query: str):
     }, {"$limit": 10}]))
 
     if len(response_pipeline) == 0:
-        return jsonify({"data": f"empty search with query: {query}"}), 404
+        return jsonify({"data": f"empty search result with query: {query}"}), 404
     search_data = {}
     for paper in response_pipeline:
         paper["_id"] = str(paper["_id"])

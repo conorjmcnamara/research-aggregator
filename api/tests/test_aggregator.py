@@ -9,6 +9,7 @@ def test_parse_arxiv():
     with open("arxiv_mock.json") as file:
         data = json.load(file)
     papers = parse_arxiv(data, "AI")
+    
     assert len(papers) == 2
     assert len(papers[0]) == len(FIELDS)
     for field in FIELDS:
@@ -26,6 +27,7 @@ def test_parse_semantic_scholar():
     with open("semantic_scholar_mock.json") as file:
         data = json.load(file)
     papers, abstracts = parse_semantic_scholar(data, "AI")
+
     assert len(papers) == 2
     assert len(papers[0]) == len(FIELDS)
     for field in FIELDS:

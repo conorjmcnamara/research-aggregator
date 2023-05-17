@@ -19,8 +19,8 @@ def get_tf_dataset(data: pd.DataFrame) -> tf.data.Dataset:
     dataset = dataset.batch(Constants.BATCH_SIZE)
     return dataset
 
-def predict(model: Sequential, lookup_layer: StringLookup, data: List[str]) -> List[List[str]]:
-    df = pd.DataFrame(data, columns=["abstracts"])
+def predict(model: Sequential, lookup_layer: StringLookup, abstracts: List[str]) -> List[List[str]]:
+    df = pd.DataFrame(abstracts, columns=["abstracts"])
     df["abstracts"] = df["abstracts"].apply(lambda x: remove_substrings(x))
     dataset = get_tf_dataset(df)
 
