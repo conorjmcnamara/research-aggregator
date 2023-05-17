@@ -37,7 +37,7 @@ jobs:
         with:
           node-version: 16
       
-      - name: Install Node.js dependencies
+      - name: Install frontend dependencies
         run: npm install
       
       - name: Run frontend tests

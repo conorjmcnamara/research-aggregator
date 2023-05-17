@@ -1,5 +1,6 @@
 import os
 import pickle
+import gzip
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -24,7 +25,7 @@ METRICS = [
 ]
 
 def get_model(lookup_layer: StringLookup) -> Sequential:
-    # feed-forward neural network
+    # feedforward neural network
     model = Sequential([
         Dense(150, activation="relu"),
         Dropout(0.2),
@@ -67,7 +68,7 @@ def predict(model: Sequential, dataset: tf.data.Dataset) -> np.ndarray:
     return predicted_probailities
 
 def plot_confusion_matrix(actual_probailities: np.ndarray, predicted_probailities: np.ndarray) -> None:
-    # compute confusion matrix for each label seperately, sum up, and plot
+    # compute confusion matrix for each class seperately, sum up, and plot
     confusion_matrix = multilabel_confusion_matrix(actual_probailities, predicted_probailities)
     confusion_matrix = np.sum(confusion_matrix, axis=0)
 
@@ -97,12 +98,15 @@ def plot_history(history: History, metric: str) -> None:
     plt.legend()
     plt.grid()
 
-    if not os.path.exists("plots"): os.mkdir("plots")
+    if not os.path.exists("plots"):
+        os.mkdir("plots")
     plt.savefig(f"plots/train_validation_{metric}_over_epochs.png")
     plt.show()
 
 if __name__ == "__main__":
-    training_data = pd.read_csv("data/training_data.csv")
+    # decompress the data
+    with gzip.open("data/training_data.csv", "rt", encoding="utf-8") as file:
+        training_data = pd.read_csv(file)
     lookup_layer, text_vectorizer, class_weights, datasets = preprocess_data(training_data)
     test_text, test_labels = next(iter(datasets["test"]))
 
@@ -112,7 +116,6 @@ if __name__ == "__main__":
     evaluate_model(model, datasets["test"])
 
     predicted_probailities = predict(model, test_text)
-    print(history)
     plot_history(history, "loss")
     plot_history(history, "binary_accuracy")
     plot_confusion_matrix(test_labels, predicted_probailities)

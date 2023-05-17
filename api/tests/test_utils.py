@@ -33,6 +33,7 @@ def test_lru_cache():
     lru_cache.put("LG", [{"paper_id": {"topic": "LG"}}])
     assert lru_cache.get("AI") == None
     assert lru_cache.get("DB") == [{"paper_id": {"topic": "DB"}}]
+    
     lru_cache.put("DB", [{"paper_id1": {"topic": "DB"}, "paper_id2": {"topic": "DB"}}])
     lru_cache.put("OS", [{"paper_id": {"topic": "OS"}}])
     assert lru_cache.get("DS") == None

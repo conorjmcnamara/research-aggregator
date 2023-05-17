@@ -19,7 +19,7 @@ def test_topic_query_route():
 def test_search_query_route():
     response = SERVER.get("/api/search/ZZZZZ")
     assert response.status_code == 404
-    assert response.json["data"] == "empty search with query: ZZZZZ"
+    assert response.json["data"] == "empty search result with query: ZZZZZ"
 
     response = SERVER.get("/api/search/python")
     assert response.status_code == 200

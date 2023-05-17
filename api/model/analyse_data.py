@@ -1,4 +1,5 @@
 import os
+import gzip
 import pandas as pd
 import matplotlib.pyplot as plt
 from ast import literal_eval
@@ -38,8 +39,10 @@ def plot_label_count_distribution(data: pd.DataFrame) -> None:
     plt.show()
 
 if __name__ == "__main__":
-    data = pd.read_csv("data/training_data.csv")
+    # decompress the data
+    with gzip.open("data/training_data.csv", "rt", encoding="utf-8") as file:
+        training_data = pd.read_csv(file)
     # convert the labels to lists of strings
-    data["topics"] = data["topics"].apply(lambda id: literal_eval(id))
-    show_basic_info(data)
-    plot_label_count_distribution(data)
+    training_data["topics"] = training_data["topics"].apply(lambda id: literal_eval(id))
+    show_basic_info(training_data)
+    plot_label_count_distribution(training_data)

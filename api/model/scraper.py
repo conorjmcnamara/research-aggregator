@@ -4,6 +4,7 @@ import os
 import requests
 import xmltodict
 import logging
+import gzip
 import pandas as pd
 from concurrent.futures import ThreadPoolExecutor
 from collections import defaultdict
@@ -74,4 +75,6 @@ if __name__ == "__main__":
 
     if not os.path.exists("data"):
         os.makedirs("data")
-    data.to_csv("data/training_data.csv", index=False, mode="w")
+    # compress the data
+    with gzip.open("data/training_data.csv", "wt", encoding="utf-8") as file:
+        data.to_csv(file, index=False)
