@@ -41,8 +41,12 @@ def plot_label_count_distribution(data: pd.DataFrame) -> None:
 if __name__ == "__main__":
     # decompress the data
     with gzip.open("data/training_data.csv", "rt", encoding="utf-8") as file:
-        training_data = pd.read_csv(file)
+        data = pd.read_csv(file)
+
+    # remove duplicates
+    data = data[~data["abstracts"].duplicated()]
+
     # convert the labels to lists of strings
-    training_data["topics"] = training_data["topics"].apply(lambda id: literal_eval(id))
-    show_basic_info(training_data)
-    plot_label_count_distribution(training_data)
+    data["topics"] = data["topics"].apply(literal_eval)
+    show_basic_info(data)
+    plot_label_count_distribution(data)

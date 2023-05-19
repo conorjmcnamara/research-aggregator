@@ -1,25 +1,34 @@
 import re
+import nltk
 import numpy as np
 import pandas as pd
 import tensorflow as tf
 from keras.layers import StringLookup, TextVectorization
 from sklearn.model_selection import train_test_split
 from sklearn.utils import class_weight
+from nltk.corpus import stopwords
 from ast import literal_eval
 from typing import Tuple, Dict
 from .constants import Constants
 
 AUTO = tf.data.AUTOTUNE
+nltk.download("stopwords")
+STOP_WORDS = set(stopwords.words("english"))
 
-def remove_substrings(text: str) -> str:
+def remove_substrings(abstract: str) -> str:
     latex_regex = r"\$.*?\$"
     url_regex = r"(http[s]?://|www\.)\S+"
-    text = re.sub(latex_regex, "", text)
-    text = re.sub(url_regex, "", text)
-    return text
+    abstract = re.sub(latex_regex, "", abstract)
+    abstract = re.sub(url_regex, "", abstract)
+    return abstract
+
+def remove_stop_words(abstract: str) -> str:
+    words = abstract.split()
+    filtered_words = [word for word in words if word.lower() not in STOP_WORDS]
+    return " ".join(filtered_words)
 
 def split_data(data: pd.DataFrame) -> Tuple[pd.DataFrame]:
-    train_df, test_df = train_test_split(data, test_size=0.2, shuffle=True)
+    train_df, test_df = train_test_split(data, test_size=0.3, shuffle=True, random_state=42)
     # generate a random validation dataset from the test dataset
     validation_df = test_df.sample(frac=0.5)
     test_df.drop(validation_df.index, inplace=True)
@@ -48,6 +57,7 @@ def get_tf_dataset(data: pd.DataFrame, lookup_layer: StringLookup) -> tf.data.Da
     return dataset.batch(Constants.BATCH_SIZE).prefetch(AUTO)
 
 def get_text_vectorizer(train_df: pd.DataFrame, train_dataset: tf.data.Dataset) -> TextVectorization:
+    # find the size of unique vocab
     vocab = set()
     train_df["abstracts"].str.lower().str.split().apply(vocab.update)
     vocab_size = len(vocab)
@@ -63,10 +73,13 @@ def preprocess_data(data: pd.DataFrame) -> Tuple[StringLookup, TextVectorization
     data = data[~data["abstracts"].duplicated()]
 
     # convert the labels to lists of strings
-    data["topics"] = data["topics"].apply(lambda x: literal_eval(x))
+    data["topics"] = data["topics"].apply(literal_eval)
 
     # remove LaTex and URL substrings from abstracts
-    data["abstracts"] = data["abstracts"].apply(lambda x: remove_substrings(x))
+    data["abstracts"] = data["abstracts"].apply(remove_substrings)
+    
+    # remove stopwords
+    data["abstracts"] = data["abstracts"].apply(remove_stop_words)
 
     train_df, validation_df, test_df = split_data(data)
     lookup_layer = multi_label_binarization(train_df)

@@ -4,7 +4,7 @@ import tensorflow as tf
 from keras import models, Sequential
 from keras.layers import StringLookup
 from typing import Tuple, List
-from .preprocesser import remove_substrings
+from .preprocesser import remove_substrings, remove_stop_words
 from .constants import Constants
 
 def load_model() -> Tuple[Sequential, StringLookup]:
@@ -20,9 +20,13 @@ def get_tf_dataset(data: pd.DataFrame) -> tf.data.Dataset:
     return dataset
 
 def predict(model: Sequential, lookup_layer: StringLookup, abstracts: List[str]) -> List[List[str]]:
-    df = pd.DataFrame(abstracts, columns=["abstracts"])
-    df["abstracts"] = df["abstracts"].apply(lambda x: remove_substrings(x))
-    dataset = get_tf_dataset(df)
+    data = pd.DataFrame(abstracts, columns=["abstracts"])
+    # remove LaTex and URL substrings from abstracts
+    data["abstracts"] = data["abstracts"].apply(remove_substrings)
+    
+    # remove stopwords
+    data["abstracts"] = data["abstracts"].apply(remove_stop_words)
+    dataset = get_tf_dataset(data)
 
     predicted_probailities = model.predict(dataset)
     predicted_probailities = (predicted_probailities >= Constants.PREDICTION_THRESHOLD).astype(int)

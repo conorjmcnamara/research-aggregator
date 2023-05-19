@@ -8,7 +8,6 @@ import tensorflow as tf
 from keras import Sequential, metrics
 from keras.layers import StringLookup, Dense, Dropout, TextVectorization
 from keras.callbacks import EarlyStopping, History
-from keras.optimizers import Adam
 from sklearn.metrics import multilabel_confusion_matrix
 from typing import Dict
 from .preprocesser import preprocess_data
@@ -21,27 +20,26 @@ METRICS = [
     metrics.FalseNegatives(), 
     metrics.BinaryAccuracy(),
     metrics.Precision(),
-    metrics.Recall(),
+    metrics.Recall()
 ]
 
 def get_model(lookup_layer: StringLookup) -> Sequential:
     # feedforward neural network
     model = Sequential([
-        Dense(150, activation="relu"),
-        Dropout(0.2),
-        Dense(150, activation="relu"),
-        Dropout(0.2),
-        Dense(150, activation="relu"),
-        Dropout(0.2),
+        Dense(100, activation="relu"),
+        Dropout(0.3),
+        Dense(100, activation="relu"),
+        Dropout(0.3),
+        Dense(100, activation="relu"),
+        Dropout(0.3),
         Dense(lookup_layer.vocabulary_size(), activation="sigmoid")
     ])
-    optimizer = Adam(learning_rate=0.001)
-    model.compile(loss="binary_crossentropy", optimizer=optimizer, metrics=METRICS)
+    model.compile(loss="binary_crossentropy", optimizer="adam", metrics=METRICS)
     return model
 
 def fit_model(model: Sequential, class_weights: Dict[int, float], train_dataset: tf.data.Dataset, validation_dataset: tf.data.Dataset) -> History:
     # implement early stopping to reduce overfitting
-    early_stop = EarlyStopping(monitor="loss", patience=5)
+    early_stop = EarlyStopping(monitor="loss", patience=3)
 
     # set class weights to handle class imbalance
     history = model.fit(train_dataset, validation_data=validation_dataset, epochs=Constants.EPOCHS,
@@ -67,40 +65,44 @@ def predict(model: Sequential, dataset: tf.data.Dataset) -> np.ndarray:
     predicted_probailities = (predicted_probailities >= Constants.PREDICTION_THRESHOLD).astype(int)
     return predicted_probailities
 
+def plot_metrics(history: History) -> None:
+    if not os.path.exists("plots"):
+        os.mkdir("plots")
+    
+    PLOT_METRICS = ["binary_accuracy", "precision", "recall", "loss"]
+    for metric in PLOT_METRICS:
+        name = metric.replace("_", " ").capitalize()
+        plt.figure()
+        plt.plot(history.epoch, history.history[metric], label="Training")
+        plt.plot(history.epoch, history.history["val_" + metric], label="Validation")
+        plt.xlabel("Epoch")
+        plt.ylabel(name)
+        plt.title(f"Training and Validation {name}")
+        plt.legend()
+        plt.savefig(f"plots/training_and_validation_{metric}.png")
+        plt.show()
+
 def plot_confusion_matrix(actual_probailities: np.ndarray, predicted_probailities: np.ndarray) -> None:
     # compute confusion matrix for each class seperately, sum up, and plot
     confusion_matrix = multilabel_confusion_matrix(actual_probailities, predicted_probailities)
     confusion_matrix = np.sum(confusion_matrix, axis=0)
 
+    plt.figure()
     plt.imshow(confusion_matrix, cmap=plt.cm.Blues, interpolation="nearest")
     plt.colorbar()
     plt.xlabel("Predicted label")
-    plt.ylabel("True label")
+    plt.ylabel("Actual label")
     plt.xticks([0, 1])
     plt.yticks([0, 1])
     for i in range(2):
         for j in range(2):
             color = "white" if confusion_matrix[i, j] > confusion_matrix.max() / 2 else "black"
             plt.text(j, i, format(confusion_matrix[i, j]), horizontalalignment="center", color=color)
-    plt.title("Confusion matrix")
+    plt.title(f"Confusion matrix @ {Constants.PREDICTION_THRESHOLD}")
 
     if not os.path.exists("plots"):
         os.mkdir("plots")
     plt.savefig(f"plots/confusion_matrix.png")
-    plt.show()
-
-def plot_history(history: History, metric: str) -> None:
-    plt.plot(history.history[metric], label=metric)
-    plt.plot(history.history["val_" + metric], label="val_" + metric)
-    plt.xlabel("Epochs")
-    plt.ylabel(metric)
-    plt.title(f"Train and Validation {metric} Over Epochs", fontsize=14)
-    plt.legend()
-    plt.grid()
-
-    if not os.path.exists("plots"):
-        os.mkdir("plots")
-    plt.savefig(f"plots/train_validation_{metric}_over_epochs.png")
     plt.show()
 
 if __name__ == "__main__":
@@ -113,9 +115,8 @@ if __name__ == "__main__":
     model = get_model(lookup_layer)
     history = fit_model(model, class_weights, datasets["train"], datasets["validation"])
     save_model(model, text_vectorizer, lookup_layer)
-    evaluate_model(model, datasets["test"])
 
+    evaluate_model(model, datasets["test"])
     predicted_probailities = predict(model, test_text)
-    plot_history(history, "loss")
-    plot_history(history, "binary_accuracy")
+    plot_metrics(history)
     plot_confusion_matrix(test_labels, predicted_probailities)
