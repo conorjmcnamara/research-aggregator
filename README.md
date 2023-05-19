@@ -70,26 +70,31 @@ The plot above illustrates class imbalance in the dataset, meaning classes such 
 
 The model is a sequential neural network starting with a text vectorization preprocessing layer that standardises text (lowercase + punctuation stripping), splits the result into substrings and applies tokenization and indexing before converting the text into a numerical vector.
 
-This is followed by 3 hidden dense layers, each with 100 neurons and the ReLU activation function, which introduces non-linearity to help identify patterns in the text data. Between each of these is a dropout layer with a rate of 0.3 to mitigate overfitting by randomly setting output features of the layer to 0. The final layer has the same number of neurons as the number of classes and uses the sigmoid activation function, which estimates probabilities for each label.
+There are 3 hidden dense layers, each with 100 neurons and the ReLU activation function, which introduces non-linearity to help identify patterns in the text. Between each of these is a dropout layer with a rate of 0.3 to mitigate overfitting by randomly setting output features of the layer to 0. The final layer has the same number of neurons as the number of classes and uses the sigmoid activation function, which estimates probabilities for each label.
 
-The model is compiled using the binary crossentropy loss function, which measures dissimilarity between the predicted probabilities and true labels. The Adam optimiser determines how the model's weights are updated during training in order to minimise the loss function. The output of the neural network is a probability distribution over all labels.
+The model is compiled using the binary crossentropy loss function, which measures dissimilarity between the predicted probabilities and true labels. The Adam optimiser determines how the model's weights are updated during training in order to minimise the loss function. The output of the model is a probability distribution over all labels.
 
 ### Model Evaluation
 
 The dataset was split into 70% training data, 15% validation data and 15% testing data.
-The following metrics were monitored during training:
-- Binary Accuracy: percentage of correct predictions over all predictions, where each label is treated as an independent binary classification problem.
-- Precision: percentage of correct positive predictions over all positive predictions. Low precision indicates a high number of false positives.
-- Recall: percentage of correct positive predictions over all actual positive data points. Low recall indicates a high number of false negatives.
 
+The following metrics were monitored during training:
+- **Binary Accuracy**: percentage of correct predictions over all predictions, where each label is treated as an independent binary classification problem.
+- **Precision**: percentage of correct positive predictions over all positive predictions. Low precision indicates a high number of false positives.
+- **Recall**: percentage of correct positive predictions over all actual positive data points. Low recall indicates a high number of false negatives.
+
+#### Binary Accuracy
 ![Training and Validation Binary Accuracy](api/model/plots/training_and_validation_binary_accuracy.png)
 
 The graph above shows a relatively high binary accuracy for both the training and validation datasets. However, since the dataset is imbalanced binary accuracy may not be a suitable metric. The binary accuracy on the evaluated test dataset was 97%.
 
+#### Confusion Matrix
 ![Confusion Matrix](api/model/plots/confusion_matrix.png)
 
 The above matrix is formatted as follows:
+
 [True Negatives (TN), False Positives (FP)]
+
 [False Negatives (FN), True Positives (TP)]
 
 A confusion matrix represents the model's performance on unseen data. It visualises how many labels were correctly and incorrectly predicted. The above plot is the aggregated confusion matrix for each class, it uses a threshold of 0.5 on the probability distribution and is based off the test dataset. It has more TP than FP and more TN than FN, which is generally considered good peformance.
