@@ -75,6 +75,7 @@ if __name__ == "__main__":
 
     if not os.path.exists("data"):
         os.makedirs("data")
+    
     # compress the data
     with gzip.open("data/training_data.csv", "wt", encoding="utf-8") as file:
         data.to_csv(file, index=False)

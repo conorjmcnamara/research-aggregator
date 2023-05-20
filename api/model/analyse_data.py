@@ -43,10 +43,10 @@ if __name__ == "__main__":
     with gzip.open("data/training_data.csv", "rt", encoding="utf-8") as file:
         data = pd.read_csv(file)
 
-    # remove duplicates
-    data = data[~data["abstracts"].duplicated()]
-
     # convert the labels to lists of strings
     data["topics"] = data["topics"].apply(literal_eval)
     show_basic_info(data)
+
+    # remove duplicates from abstracts
+    data = data[~data["abstracts"].duplicated()]
     plot_label_count_distribution(data)
