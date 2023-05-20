@@ -141,7 +141,7 @@ if __name__ == "__main__":
         if i % 2 == 0:
             for paper in future.result():
                 papers.append(paper)
-        # Semantic Scholar topic prediction from abstracts
+        # topic area prediction for Semantic Scholar abstracts
         else:
             data, abstracts = future.result()
             predicted_labels = predict(model, lookup_layer, abstracts)

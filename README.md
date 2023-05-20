@@ -3,6 +3,8 @@ A natural language processing (NLP)-driven web app that aggregates and displays 
 
 The web app features a TypeScript React frontend and Flask backend REST API with MongoDB that supports user authentication and CRUD operations on users and bookmarks.
 
+[![NLP Research Aggregator GIF](assets/demo.gif)](https://conorjmcnamara.github.io/research-aggregator)
+
 ## Installation
 
 ### Prerequisites
@@ -29,10 +31,10 @@ Execute the following commands where appropriate:
 
 ```bash
 # 1. generate training dataset
-$ cd api/model && python -m scraper
+$ cd api && python -m model.scraper
 
 # 2. train model
-$ cd api/model && python -m train
+$ cd api && python -m model.train
 
 # 3. aggregate database papers
 $ cd api && python aggregator.py
@@ -56,11 +58,11 @@ $ npm run test
 
 ## Multi-label Text Classification
 
-Given that the application aggregates data from multple scholarly sources, a model was needed to standardise topic area classification. Using Keras, a feedforward neural network was trained on >143K research paper abstracts across 39 classes. Unseen abstracts can be passed into the model, and it will predict one or more topic area labels for each.
+Given that the application aggregates data from multple scholarly sources, a model was needed to standardise topic area classification. Using Keras, a feedforward neural network was trained on >143k research paper abstracts across 39 classes. Unseen abstracts can be passed into the model, and it will predict one or more topic area labels for each.
 
 ### Dataset Analysis
 
-The training dataset is generated and compressed by running the multi-threaded ```scraper.py``` program, which aggregates research paper abstracts and their respective topic area tags from arXiv.org
+The training dataset is generated and compressed by running the multi-threaded ```scraper.py``` program, which aggregates research paper abstracts and their respective topic area tags using the arXiv.org API.
 
 ![Distribution of Individual Class Counts](api/model/plots/individual_class_counts.png)
 
@@ -86,20 +88,21 @@ The following metrics were monitored during training:
 #### Binary Accuracy
 ![Training and Validation Binary Accuracy](api/model/plots/training_and_validation_binary_accuracy.png)
 
-The graph above shows a relatively high binary accuracy for both the training and validation datasets. However, since the dataset is imbalanced binary accuracy may not be a suitable metric. The binary accuracy on the evaluated test dataset was 97%.
+The graph above shows a relatively high binary accuracy for both the training and validation datasets. However, since the dataset is imbalanced, binary accuracy may not be a suitable metric.
 
 #### Confusion Matrix
 ![Confusion Matrix](api/model/plots/confusion_matrix.png)
 
-The above matrix is formatted as follows:
+The matrix above is formatted as follows:
 
-[True Negatives (TN), False Positives (FP)]
-
+[True Negatives (TN), False Positives (FP)]  
 [False Negatives (FN), True Positives (TP)]
 
-A confusion matrix represents the model's performance on unseen data. It visualises how many labels were correctly and incorrectly predicted. The above plot is the aggregated confusion matrix for each class, it uses a threshold of 0.5 on the probability distribution and is based off the test dataset. It has more TP than FP and more TN than FN, which is generally considered good peformance.
+A confusion matrix represents the model's performance on unseen data. It visualises how many labels were correctly and incorrectly predicted. The above plot is the aggreated confusion matrix for each class and is based off the test dataset. It uses a threshold of 0.5 on the proobability distribution. It has more TP than FP and more TN than FN, which is generally considered good peformance.
 
-Summary metrics obtained on the test dataset include:
+#### Performance on the Test Dataset
+
+Metrics obtained on the test dataset include:
 - Binary Accuracy: 97%
 - Precision: 80%
 - Recall: 47%

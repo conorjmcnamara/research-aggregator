@@ -11,9 +11,9 @@ from ast import literal_eval
 from typing import Tuple, Dict
 from .constants import Constants
 
-AUTO = tf.data.AUTOTUNE
 nltk.download("stopwords")
 STOP_WORDS = set(stopwords.words("english"))
+AUTO = tf.data.AUTOTUNE
 
 def remove_substrings(abstract: str) -> str:
     latex_regex = r"\$.*?\$"
@@ -78,7 +78,7 @@ def preprocess_data(data: pd.DataFrame) -> Tuple[StringLookup, TextVectorization
     # remove LaTex and URL substrings from abstracts
     data["abstracts"] = data["abstracts"].apply(remove_substrings)
     
-    # remove stopwords
+    # remove stopwords from abstracts
     data["abstracts"] = data["abstracts"].apply(remove_stop_words)
 
     train_df, validation_df, test_df = split_data(data)
