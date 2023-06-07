@@ -35,6 +35,43 @@ app.config["JWT_TOKEN_LOCATION"] = "cookies"
 app.config["JWT_COOKIE_SECURE"] = True
 app.config["JWT_COOKIE_CSRF_PROTECT"] = True
 
+@app.route("/api/topic/<string:id>", methods=["GET"])
+def topic_query(id: str):
+    if id not in topics:
+        return jsonify({"data": f"invalid topic ID: {id}"}), 404
+
+    cache_hit = lru_cache.get(id)
+    if cache_hit:
+        return jsonify(cache_hit), 200
+    
+    response = papers_db.find({"topics": [id]}).limit(10)
+    topic_data = {}
+    for paper in response:
+        paper["_id"] = str(paper["_id"])
+        topic_data[paper["_id"]] = paper
+    lru_cache.put(id, topic_data)
+    return jsonify(topic_data), 200
+
+@app.route("/api/search/<string:query>", methods=["GET"])
+def search_query(query: str):
+    response_pipeline = list(papers_db.aggregate([{
+        "$search": {
+            "index": "papers_index",
+            "text": {
+                "query": query,
+                "path": ["title", "abstract"]
+            }
+        }
+    }, {"$limit": 10}]))
+
+    if len(response_pipeline) == 0:
+        return jsonify({"data": f"empty search result with query: {query}"}), 404
+    search_data = {}
+    for paper in response_pipeline:
+        paper["_id"] = str(paper["_id"])
+        search_data[paper["_id"]] = paper
+    return jsonify(search_data), 200
+
 @app.route("/api/signup", methods=["POST"])
 def signup():
     credentials = request.get_json()
@@ -150,43 +187,6 @@ def refresh_expiring_jwts(response):
         return response
     except (RuntimeError, KeyError):
         return response
-
-@app.route("/api/topic/<string:id>", methods=["GET"])
-def topic_query(id: str):
-    if id not in topics:
-        return jsonify({"data": f"invalid topic ID: {id}"}), 404
-
-    cache_hit = lru_cache.get(id)
-    if cache_hit:
-        return jsonify(cache_hit), 200
-    
-    response = papers_db.find({"topics": [id]}).limit(10)
-    topic_data = {}
-    for paper in response:
-        paper["_id"] = str(paper["_id"])
-        topic_data[paper["_id"]] = paper
-    lru_cache.put(id, topic_data)
-    return jsonify(topic_data), 200
-
-@app.route("/api/search/<string:query>", methods=["GET"])
-def search_query(query: str):
-    response_pipeline = list(papers_db.aggregate([{
-        "$search": {
-            "index": "papers_index",
-            "text": {
-                "query": query,
-                "path": ["title", "abstract"]
-            }
-        }
-    }, {"$limit": 10}]))
-
-    if len(response_pipeline) == 0:
-        return jsonify({"data": f"empty search result with query: {query}"}), 404
-    search_data = {}
-    for paper in response_pipeline:
-        paper["_id"] = str(paper["_id"])
-        search_data[paper["_id"]] = paper
-    return jsonify(search_data), 200
 
 if __name__ == "__main__":
     app.run(debug=False)

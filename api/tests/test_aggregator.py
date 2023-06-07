@@ -1,6 +1,6 @@
+import json
 import sys
 sys.path.append("..")
-import json
 from aggregator import parse_arxiv, Node, parse_semantic_scholar
 
 FIELDS = ["title", "date", "abstract", "url", "source", "authors", "topics"]

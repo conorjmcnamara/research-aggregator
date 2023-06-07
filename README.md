@@ -3,7 +3,7 @@ A natural language processing (NLP)-driven web app that aggregates and displays 
 
 The web app features a TypeScript React frontend and Flask backend REST API with MongoDB that supports user authentication and CRUD operations on users and bookmarks.
 
-[![NLP Research Aggregator GIF](assets/demo.gif)](https://conorjmcnamara.github.io/research-aggregator)
+![NLP Research Aggregator GIF](assets/demo.gif)
 
 ## Installation
 
@@ -74,7 +74,7 @@ The model is a sequential neural network starting with a text vectorization prep
 
 There are 3 hidden dense layers, each with 100 neurons and the ReLU activation function, which introduces non-linearity to help identify patterns in the text. Between each of these is a dropout layer with a rate of 0.3 to mitigate overfitting by randomly setting output features of the layer to 0. The final layer has the same number of neurons as the number of classes and uses the sigmoid activation function, which estimates probabilities for each label.
 
-The model is compiled using the binary crossentropy loss function, which measures dissimilarity between the predicted probabilities and true labels. The Adam optimiser determines how the model's weights are updated during training in order to minimise the loss function. The output of the model is a probability distribution over all labels.
+The model is compiled using the binary crossentropy loss function, which measures dissimilarity between the predicted probabilities and true labels. The Adam optimizer determines how the model's weights are updated during training in order to minimize the loss function. The output of the model is a probability distribution over all labels.
 
 ### Model Evaluation
 
@@ -98,11 +98,11 @@ The matrix above is formatted as follows:
 [True Negatives (TN), False Positives (FP)]  
 [False Negatives (FN), True Positives (TP)]
 
-A confusion matrix represents the model's performance on unseen data. It visualises how many labels were correctly and incorrectly predicted. The above plot is the aggreated confusion matrix for each class and is based off the test dataset. It uses a threshold of 0.5 on the proobability distribution. It has more TP than FP and more TN than FN, which is generally considered good peformance.
+A confusion matrix represents the model's performance on unseen data. It visualises how many labels were correctly and incorrectly predicted. The above plot is the aggreated confusion matrix for each class and is based off the test dataset. It uses a threshold of 0.5 on the probability distribution. It has more TP than FP and more TN than FN, which is generally considered good peformance.
 
 #### Performance on the Test Dataset
 
-Metrics obtained on the test dataset include:
+Metrics include:
 - Binary Accuracy: 97%
 - Precision: 80%
 - Recall: 47%
