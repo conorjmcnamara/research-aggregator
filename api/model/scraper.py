@@ -1,11 +1,11 @@
-import sys
-sys.path.append("..")
 import os
 import requests
 import xmltodict
 import logging
 import gzip
 import pandas as pd
+import sys
+sys.path.append("..")
 from concurrent.futures import ThreadPoolExecutor
 from collections import defaultdict
 from typing import Optional, List, DefaultDict, Dict, Any

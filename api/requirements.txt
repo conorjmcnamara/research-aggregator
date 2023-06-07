@@ -5,3 +5,4 @@ requests
 xmltodict
 pymongo
 pytest
+pytest-mock
