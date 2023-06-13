@@ -10,20 +10,16 @@ from keras.layers import StringLookup, Dense, Dropout, TextVectorization
 from keras.callbacks import EarlyStopping, History
 from sklearn.metrics import multilabel_confusion_matrix
 from typing import Dict
-from .preprocesser import preprocess_data
+from .preprocessor import preprocess_data
 from .constants import Constants
 
 METRICS = [
-    metrics.TruePositives(),
-    metrics.FalsePositives(),
-    metrics.TrueNegatives(),
-    metrics.FalseNegatives(), 
     metrics.BinaryAccuracy(),
     metrics.Precision(),
     metrics.Recall()
 ]
 
-def get_model(lookup_layer: StringLookup) -> Sequential:
+def get_model(lookup_classes: StringLookup) -> Sequential:
     # feedforward neural network
     model = Sequential([
         Dense(100, activation="relu"),
@@ -32,7 +28,7 @@ def get_model(lookup_layer: StringLookup) -> Sequential:
         Dropout(0.3),
         Dense(100, activation="relu"),
         Dropout(0.3),
-        Dense(lookup_layer.vocabulary_size(), activation="sigmoid")
+        Dense(lookup_classes.vocabulary_size(), activation="sigmoid")
     ])
     model.compile(loss="binary_crossentropy", optimizer="adam", metrics=METRICS)
     return model
@@ -46,13 +42,13 @@ def fit_model(model: Sequential, class_weights: Dict[int, float], train_dataset:
                         class_weight=class_weights, callbacks=early_stop, verbose=2)
     return history
 
-def save_model(model: Sequential, text_vectorizer_layer: TextVectorization, lookup_layer: StringLookup) -> None:
+def save_model(model: Sequential, text_vectorizer_layer: TextVectorization, lookup_classes: StringLookup) -> None:
     model = Sequential([text_vectorizer_layer, model])
     model.summary()
     model.save(Constants.MODEL_FILE, overwrite=True)
 
     with open(Constants.VOCAB_FILE, "wb") as file:
-        pickle.dump(lookup_layer.get_vocabulary(), file)
+        pickle.dump(lookup_classes.get_vocabulary(), file)
     file.close()
 
 def evaluate_model(model: Sequential, dataset: tf.data.Dataset) -> None:
@@ -108,13 +104,13 @@ def plot_confusion_matrix(actual_probailities: np.ndarray, predicted_probailitie
 if __name__ == "__main__":
     # decompress the data
     with gzip.open("data/training_data.csv", "rt", encoding="utf-8") as file:
-        training_data = pd.read_csv(file)
-    lookup_layer, text_vectorizer, class_weights, datasets = preprocess_data(training_data)
+        training_df = pd.read_csv(file)
+    lookup_classes, text_vectorizer, class_weights, datasets = preprocess_data(training_df)
     test_text, test_labels = next(iter(datasets["test"]))
 
-    model = get_model(lookup_layer)
+    model = get_model(lookup_classes)
     history = fit_model(model, class_weights, datasets["train"], datasets["validation"])
-    save_model(model, text_vectorizer, lookup_layer)
+    save_model(model, text_vectorizer, lookup_classes)
 
     evaluate_model(model, datasets["test"])
     predicted_probailities = predict(model, test_text)

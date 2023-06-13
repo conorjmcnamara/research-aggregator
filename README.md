@@ -9,8 +9,8 @@ The web app features a TypeScript React frontend and Flask backend REST API with
 
 ### Prerequisites
 
-- Python - [install](https://www.python.org/)
-- Node.js and npm - [install](https://nodejs.org/)
+- Python
+- Node.js and npm
 
 ```bash
 # install backend dependencies
@@ -26,8 +26,6 @@ $ npm install
 In the ```/api``` directory, remove the ```.example``` extension from the ```.env.example``` file and replace the variable values.
 
 ### Running the Application
-
-Execute the following commands where appropriate:
 
 ```bash
 # 1. generate training dataset
@@ -58,7 +56,7 @@ $ npm run test
 
 ## Multi-label Text Classification
 
-Given that the application aggregates data from multple scholarly sources, a model was needed to standardise topic area classification. Using Keras, a feedforward neural network was trained on >143k research paper abstracts across 39 classes. Unseen abstracts can be passed into the model, and it will predict one or more topic area labels for each.
+Given that the application aggregates data from multple scholarly sources, a model was needed to standardise topic area classification. Using Keras, a feedforward neural network was trained on 143k research paper abstracts across 39 classes. Unseen abstracts can be passed into the model, and it will predict one or more topic area labels for each.
 
 ### Dataset Analysis
 
@@ -85,12 +83,12 @@ The following metrics were monitored during training:
 - **Precision**: percentage of correct positive predictions over all positive predictions. Low precision indicates a high number of false positives.
 - **Recall**: percentage of correct positive predictions over all actual positive data points. Low recall indicates a high number of false negatives.
 
-#### Binary Accuracy
+### Binary Accuracy
 ![Training and Validation Binary Accuracy](api/model/plots/training_and_validation_binary_accuracy.png)
 
 The graph above shows a relatively high binary accuracy for both the training and validation datasets. However, since the dataset is imbalanced, binary accuracy may not be a suitable metric.
 
-#### Confusion Matrix
+### Confusion Matrix
 ![Confusion Matrix](api/model/plots/confusion_matrix.png)
 
 The matrix above is formatted as follows:
@@ -100,7 +98,7 @@ The matrix above is formatted as follows:
 
 A confusion matrix represents the model's performance on unseen data. It visualises how many labels were correctly and incorrectly predicted. The above plot is the aggreated confusion matrix for each class and is based off the test dataset. It uses a threshold of 0.5 on the probability distribution. It has more TP than FP and more TN than FN, which is generally considered good peformance.
 
-#### Performance on the Test Dataset
+### Test Dataset Performance
 
 Metrics include:
 - Binary Accuracy: 97%

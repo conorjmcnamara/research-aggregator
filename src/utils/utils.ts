@@ -48,7 +48,6 @@ export const topics: topicsI = {
     "ET": "Emerging Technologies",
     "FL": "Formal Languages and Automata Theory",
     "GT": "Game Theory",
-    "GL": "General Literature",
     "GR": "Graphics",
     "AR": "Hardware Architecture",
     "HC": "Human-Computer Interaction", 
