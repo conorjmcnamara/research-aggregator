@@ -65,7 +65,6 @@ topics = {
     "ET": "emerging+technologies",
     "FL": "formal+languages+automata+theory",
     "GT": "game+theory",
-    "GL": "general+literature",
     "GR": "graphics",
     "AR": "hardware+architecture",
     "HC": "human+computer+interaction", 

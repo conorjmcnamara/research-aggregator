@@ -12,6 +12,7 @@ from typing import Optional, List, DefaultDict, Dict, Any
 from utils import topics
 
 MAX_PAPERS_REQUEST = 5000
+NUM_THREADS = 10
 seen_papers = set()
 
 def parse_arxiv(data: Dict[str, Any], id: str) -> List[DefaultDict[str, list]]:
@@ -53,7 +54,7 @@ def fetch_arxiv(id: str, session: requests.Session) -> Optional[List[DefaultDict
 if __name__ == "__main__":
     # create a pool of threads and a session object for persistent HTTP connections
     session = requests.Session()
-    executor = ThreadPoolExecutor(10)
+    executor = ThreadPoolExecutor(NUM_THREADS)
 
     futures = []
     for id, name in topics.items():
@@ -68,7 +69,7 @@ if __name__ == "__main__":
                 all_abstracts.append(paper["abstract"])
                 all_topics.append(paper["topics"])
 
-    data = pd.DataFrame({
+    df = pd.DataFrame({
         "abstracts": all_abstracts,
         "topics": all_topics
     })
@@ -78,4 +79,4 @@ if __name__ == "__main__":
     
     # compress the data
     with gzip.open("data/training_data.csv", "wt", encoding="utf-8") as file:
-        data.to_csv(file, index=False)
+        df.to_csv(file, index=False)

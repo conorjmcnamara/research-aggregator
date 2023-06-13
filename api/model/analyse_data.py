@@ -4,16 +4,16 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from ast import literal_eval
 
-def show_basic_info(data: pd.DataFrame) -> None:
-    print(data.head())
-    print(f"Rows: {len(data)}")
-    print(f"Duplicate rows: {sum(data['abstracts'].duplicated())}")
-    print(f"Classes: {data.explode('topics')['topics'].nunique()}")
-    print(f"Rows with zero labels: {len(data[data['topics'].apply(len) == 0])}")
+def show_basic_info(df: pd.DataFrame) -> None:
+    print(df.head())
+    print(f"Rows: {len(df)}")
+    print(f"Duplicate rows: {sum(df['abstracts'].duplicated())}")
+    print(f"Classes: {df.explode('topics')['topics'].nunique()}")
+    print(f"Rows with zero labels: {len(df[df['topics'].apply(len) == 0])}")
 
-def plot_label_count_distribution(data: pd.DataFrame) -> None:
+def plot_label_count_distribution(df: pd.DataFrame) -> None:
     # distribution of label counts per paper
-    paper_counts = data["topics"].apply(len).value_counts()
+    paper_counts = df["topics"].apply(len).value_counts()
     axis = paper_counts.plot(kind="bar")
     for i, count in enumerate(paper_counts):
         axis.text(i, count, str(count), ha="center", va="bottom")
@@ -28,7 +28,7 @@ def plot_label_count_distribution(data: pd.DataFrame) -> None:
     plt.show()
 
     # distribution of individual class counts
-    class_counts = data["topics"].explode().value_counts()
+    class_counts = df["topics"].explode().value_counts()
     axis = class_counts.plot(kind="bar", width=0.5)
     axis.tick_params(axis="x", labelsize=9)
 
@@ -38,15 +38,27 @@ def plot_label_count_distribution(data: pd.DataFrame) -> None:
     plt.savefig("plots/individual_class_counts.png")
     plt.show()
 
+def plot_words_per_abstract(df: pd.DataFrame) -> None:
+    df["word_count"] = df["abstracts"].apply(lambda x: len(x.split()))
+    word_count_freq = df["word_count"].value_counts().sort_index()
+    plt.bar(word_count_freq.index, word_count_freq.values)
+    plt.title("Distribution of Abstract Word Counts")
+    plt.xlabel("Word Count")
+    plt.ylabel("Abstract Count")
+    plt.savefig("plots/abstract_word_counts.png")
+    plt.show()
+
 if __name__ == "__main__":
     # decompress the data
-    with gzip.open("data/training_data.csv", "rt", encoding="utf-8") as file:
-        data = pd.read_csv(file)
+    with gzip.open("data/training_df.csv", "rt", encoding="utf-8") as file:
+        df = pd.read_csv(file)
 
     # convert the labels to lists of strings
-    data["topics"] = data["topics"].apply(literal_eval)
-    show_basic_info(data)
+    df["topics"] = df["topics"].apply(literal_eval)
+    show_basic_info(df)
 
     # remove duplicates from abstracts
-    data = data[~data["abstracts"].duplicated()]
-    plot_label_count_distribution(data)
+    df = df[~df["abstracts"].duplicated()]
+
+    plot_label_count_distribution(df)
+    plot_words_per_abstract(df)

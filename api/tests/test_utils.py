@@ -42,8 +42,8 @@ def test_lru_cache():
 
 def test_topics_list():
     verify = ["AI", "CC", "CE", "CG", "CL", "CR", "CV", "CY", "DB", "DC", "DL",
-              "DM", "DS", "ET", "FL", "GT", "GL", "GR", "AR", "HC", "IR", "IT",
-              "LG", "LO", "MA", "MM", "MS", "NA", "NE", "NI", "OS", "PF", "PL",
-              "RO", "SC", "SD", "SE", "SI", "SY"]
+              "DM", "DS", "ET", "FL", "GT", "GR", "AR", "HC", "IR", "IT", "LG",
+              "LO", "MA", "MM", "MS", "NA", "NE", "NI", "OS", "PF", "PL", "RO",
+              "SC", "SD", "SE", "SI", "SY"]
     for id in verify:
         assert topics.get(id) != None

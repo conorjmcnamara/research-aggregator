@@ -91,7 +91,7 @@ def login():
     encrypted_password = hashlib.sha256(credentials["password"].encode("utf-8")).hexdigest()
     user = users_db.find_one({"email": credentials["email"]})
     
-    # check if the user is new
+    # check if the user already exists
     if user and encrypted_password == user["password"]:
         # create double submit protection cookies to prevent CSRF attacks
         access_token = create_access_token(identity=user["email"])

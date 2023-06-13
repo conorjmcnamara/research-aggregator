@@ -11,6 +11,7 @@ from utils import get_db_connection, upload_db_data, topics
 from model.predict import load_model, predict
 
 MAX_PAPERS_REQUEST = 25
+NUM_THREADS = 10
 seen_arxiv_papers = set()
 seen_semantic_scholar_papers = set()
 
@@ -108,7 +109,7 @@ def parse_semantic_scholar(data: List[Dict[str, Any]], id: str) -> Tuple[List[De
         abstracts.append(paper["abstract"])
     return (result, abstracts)
 
-def fetch_semantic_scholar(id: str, name: str, session: requests.Session) -> Optional[List[DefaultDict[str, list]]]:
+def fetch_semantic_scholar(id: str, name: str, session: requests.Session) -> Optional[Tuple[List[DefaultDict[str, list]], List[str]]]:
     base_url = "https://api.semanticscholar.org/graph/v1/paper/search?query="
     param = "&year=2023&fieldsOfStudy=Computer+Science&fields=title,url,abstract,publicationDate,authors"
     url = f"{base_url}{name}{param}&limit={MAX_PAPERS_REQUEST+50}"
@@ -124,7 +125,7 @@ def fetch_semantic_scholar(id: str, name: str, session: requests.Session) -> Opt
 if __name__ == "__main__":
     # create a pool of threads and a session object for persistent HTTP connections
     session = requests.Session()
-    executor = ThreadPoolExecutor(10)
+    executor = ThreadPoolExecutor(NUM_THREADS)
 
     futures = []
     for id, name in topics.items():

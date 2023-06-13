@@ -6,7 +6,7 @@ from aggregator import parse_arxiv, Node, parse_semantic_scholar
 FIELDS = ["title", "date", "abstract", "url", "source", "authors", "topics"]
 
 def test_parse_arxiv():
-    with open("arxiv_mock.json") as file:
+    with open("mocks/arxiv_mock.json") as file:
         data = json.load(file)
     papers = parse_arxiv(data, "AI")
     
@@ -24,11 +24,12 @@ def test_node():
     assert node.json_index == 1
 
 def test_parse_semantic_scholar():
-    with open("semantic_scholar_mock.json") as file:
+    with open("mocks/semantic_scholar_mock.json") as file:
         data = json.load(file)
     papers, abstracts = parse_semantic_scholar(data, "AI")
 
     assert len(papers) == 2
+    assert len(abstracts) == 2
     assert len(papers[0]) == len(FIELDS)
     for field in FIELDS:
         assert papers[0][field] != None
