@@ -1,6 +1,6 @@
 from bson.objectid import ObjectId
 
-db_papers = [
+db_papers_response = [
     {
         "_id": ObjectId("645cfd573007dd700aa1fe7d"),
         "title": "Handwriting Recognition using Artificial Intelligence Neural Network and Image Processing",
@@ -23,7 +23,7 @@ db_papers = [
     }
 ]
 
-parsed_papers = {}
-for paper in db_papers:
+parsed_db_papers_response = {}
+for paper in db_papers_response:
     paper["_id"] = str(paper["_id"])
-    parsed_papers[paper["_id"]] = paper
+    parsed_db_papers_response[paper["_id"]] = paper

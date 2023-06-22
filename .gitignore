@@ -23,4 +23,5 @@ yarn-error.log*
 __pycache__
 .env
 .pytest_cache
-classifier.model
+.coverage
+classifier_model

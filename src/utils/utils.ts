@@ -33,6 +33,7 @@ interface topicsI {
 
 export const topics: topicsI = {
     "AI": "Artificial Intelligence",
+    "AR": "Hardware Architecture",
     "CL": "Computation and Language",
     "CC": "Computational Complexity",
     "CE": "Computational Engineering, Finance, and Science",
@@ -49,7 +50,6 @@ export const topics: topicsI = {
     "FL": "Formal Languages and Automata Theory",
     "GT": "Game Theory",
     "GR": "Graphics",
-    "AR": "Hardware Architecture",
     "HC": "Human-Computer Interaction", 
     "IR": "Information Retrieval",
     "IT": "Information Theory",

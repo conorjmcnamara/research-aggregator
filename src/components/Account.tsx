@@ -35,14 +35,14 @@ export const Account: FC = () => {
     const updateEmail = async() => {
         if (!loginCookie) return;
         else if (newUserEmail === currentUserEmail) {
-            setResponseMsg({responseMsg: "email update unsuccessful, matching emails detected"});
+            setResponseMsg({responseMsg: "email update unsuccessful"});
             return;
         }
         const requestOptions = {
             method: "PUT",
             headers: {"Content-Type": "application/json",
             "X-CSRF-TOKEN": loginCookie},
-            body: JSON.stringify({newEmail: newUserEmail})
+            body: JSON.stringify({email: newUserEmail})
         }
         fetch("/api/user", requestOptions)
         .then(response => {
@@ -66,7 +66,7 @@ export const Account: FC = () => {
             method: "PUT",
             headers: {"Content-Type": "application/json",
             "X-CSRF-TOKEN": loginCookie},
-            body: JSON.stringify({newPassword: newUserPassword})
+            body: JSON.stringify({password: newUserPassword})
         }
         fetch("/api/user", requestOptions)
         .then(response => {

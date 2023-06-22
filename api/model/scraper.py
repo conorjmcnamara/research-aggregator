@@ -20,10 +20,11 @@ def parse_arxiv(data: Dict[str, Any], id: str) -> List[DefaultDict[str, list]]:
     for entry in data["feed"]["entry"]:
         if entry["id"] in seen_papers:
             continue
+
         paper = defaultdict(list)
         paper["abstract"] = entry["summary"]
-
         paper_topics = []
+        
         for paper_id in entry["category"]:
             if type(paper_id) == str:
                 continue
@@ -45,8 +46,8 @@ def fetch_arxiv(id: str, session: requests.Session) -> Optional[List[DefaultDict
     try:
         response = session.get(url)
         data = xmltodict.parse(response.text)
-    except Exception as e:
-        logging.critical(f"Failed to make a GET request to arXiv with topic ID: {id}. Error: {e}")
+    except Exception as error:
+        logging.critical(f"Failed to make a GET request to arXiv with topic ID: {id}. Error: {error}")
         return None
     else:
         return parse_arxiv(data, id)
@@ -69,14 +70,9 @@ if __name__ == "__main__":
                 all_abstracts.append(paper["abstract"])
                 all_topics.append(paper["topics"])
 
-    df = pd.DataFrame({
-        "abstracts": all_abstracts,
-        "topics": all_topics
-    })
-
+    df = pd.DataFrame({"abstracts": all_abstracts, "topics": all_topics})
     if not os.path.exists("data"):
         os.makedirs("data")
     
-    # compress the data
     with gzip.open("data/training_data.csv", "wt", encoding="utf-8") as file:
         df.to_csv(file, index=False)
