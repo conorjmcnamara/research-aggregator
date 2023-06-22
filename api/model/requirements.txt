@@ -2,6 +2,7 @@ numpy
 pandas
 matplotlib
 tensorflow
+tf-nightly
 keras
 scikit-learn
 nltk

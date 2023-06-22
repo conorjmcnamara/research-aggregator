@@ -1,32 +1,17 @@
-import os
 import hashlib
 import datetime
+import flask_jwt_extended
 from flask import Flask, request, jsonify
-from flask_jwt_extended import (
-    JWTManager, create_access_token, jwt_required, get_jwt,
-    set_access_cookies, unset_jwt_cookies, get_jwt_identity
-)
-from dotenv import load_dotenv
 from bson.objectid import ObjectId
-from api.utils import get_db_connection, LRUCache, topics
+from api.utils import get_env_var, get_db_connection, LRUCache, topics
 
-# configuration
 app = Flask(__name__)
-jwt = JWTManager(app)
+jwt = flask_jwt_extended.JWTManager(app)
 lru_cache = LRUCache(10)
 
-if "GITHUB_ACTIONS" in os.environ:
-    user = os.environ["MONGODB_USERNAME"]
-    password = os.environ["MONGODB_PASSWORD"]
-    jwt_key = os.environ["JWT_KEY"]
-else:
-    load_dotenv()
-    user = os.getenv("MONGODB_USERNAME")
-    password = os.getenv("MONGODB_PASSWORD")
-    jwt_key = os.getenv("JWT_KEY")
-
-papers_db = get_db_connection(user, password, "papers")
-users_db = get_db_connection(user, password, "users")
+username, password, jwt_key = get_env_var(get_jwt_key=True)
+papers_db = get_db_connection(username, password, "papers")
+users_db = get_db_connection(username, password, "users")
 
 # JWT cookie-based authentication
 app.config["JWT_SECRET_KEY"] = jwt_key
@@ -38,7 +23,7 @@ app.config["JWT_COOKIE_CSRF_PROTECT"] = True
 @app.route("/api/topic/<string:id>", methods=["GET"])
 def topic_query(id: str):
     if id not in topics:
-        return jsonify({"data": f"invalid topic ID: {id}"}), 404
+        return jsonify({"data": f"Invalid topic ID: {id}"}), 404
 
     cache_hit = lru_cache.get(id)
     if cache_hit:
@@ -65,7 +50,7 @@ def search_query(query: str):
     }, {"$limit": 10}]))
 
     if len(response_pipeline) == 0:
-        return jsonify({"data": f"empty search result with query: {query}"}), 404
+        return jsonify({"data": f"Empty search result with query: {query}"}), 404
     search_data = {}
     for paper in response_pipeline:
         paper["_id"] = str(paper["_id"])
@@ -77,13 +62,12 @@ def signup():
     credentials = request.get_json()
     credentials["password"] = hashlib.sha256(credentials["password"].encode("utf-8")).hexdigest()
     user = users_db.find_one({"email": credentials["email"]})
-    
-    # check if the user exists in the database
+
     if not user:
         credentials["bookmarks"] = []
         users_db.insert_one(credentials)
-        return jsonify({"data": "signup successful"}), 201
-    return jsonify({"data": "signup unsuccessful, user already exists"}), 409
+        return jsonify({"data": "Signup successful"}), 201
+    return jsonify({"data": "Signup unsuccessful, user already exists"}), 409
 
 @app.route("/api/login", methods=["POST"])
 def login():
@@ -91,63 +75,65 @@ def login():
     encrypted_password = hashlib.sha256(credentials["password"].encode("utf-8")).hexdigest()
     user = users_db.find_one({"email": credentials["email"]})
     
-    # check if the user already exists
     if user and encrypted_password == user["password"]:
         # create double submit protection cookies to prevent CSRF attacks
-        access_token = create_access_token(identity=user["email"])
-        response = jsonify({"data": "login successful"})
-        set_access_cookies(response, access_token)
+        access_token = flask_jwt_extended.create_access_token(identity=user["email"])
+        response = jsonify({"data": "Login successful"})
+        flask_jwt_extended.set_access_cookies(response, access_token)
         return response, 200
-    return jsonify({"data": "login unsuccessful, user not found"}), 401
+    return jsonify({"data": "Login unsuccessful, user not found"}), 401
 
 @app.route("/api/logout", methods=["POST"])
 def logout():
-    response = jsonify({"data": "logout successful"})
-    unset_jwt_cookies(response)
+    response = jsonify({"data": "Logout successful"})
+    flask_jwt_extended.unset_jwt_cookies(response)
     return response, 200
 
-# secured user account endpoint
 @app.route("/api/user", methods=["GET", "PUT", "DELETE"])
-@jwt_required()
+@flask_jwt_extended.jwt_required()
 def user():
-    credentials = get_jwt_identity()
+    credentials = flask_jwt_extended.get_jwt_identity()
 
     # get email
     if request.method == "GET":
         return jsonify(credentials), 200
 
     elif request.method == "PUT":
-        new_credentials = request.get_json()
         user = users_db.find_one({"email": credentials})
+        new_credentials = request.get_json()
 
         # update email
-        if "newEmail" in new_credentials:
-            users_db.update_one({"email": credentials}, {"$set": {"email": new_credentials["newEmail"]}})
-            access_token = create_access_token(identity=new_credentials["newEmail"])
-            response = jsonify({"data": "email update successful"})
-            set_access_cookies(response, access_token)
+        if "email" in new_credentials:
+            if new_credentials["email"] == user["email"]:
+                return jsonify({"data": "Email update unsuccessful"}), 409
+            users_db.update_one({"email": credentials}, {"$set": {"email": new_credentials["email"]}})
+            access_token = flask_jwt_extended.create_access_token(identity=new_credentials["email"])
+            response = jsonify({"data": "Email update successful"})
+            flask_jwt_extended.set_access_cookies(response, access_token)
             return response, 200
 
         # update password
-        elif "newPassword" in new_credentials:
-            encrypted_password = hashlib.sha256(new_credentials["newPassword"].encode("utf-8")).hexdigest()
+        elif "password" in new_credentials:
+            encrypted_password = hashlib.sha256(new_credentials["password"].encode("utf-8")).hexdigest()
             if encrypted_password == user["password"]:
-                return jsonify({"data": "password update unsuccessful"}), 409
+                return jsonify({"data": "Password update unsuccessful"}), 409
             users_db.update_one({"email": credentials}, {"$set": {"password": encrypted_password}})
-            return jsonify({"data": "password update successful"}), 200
+            return jsonify({"data": "Password update successful"}), 200
+
+        else:
+            return jsonify({"data": "PUT request JSON must contain an \'email\' or \'password\' key"}), 409
     
     # delete account
     else:
         users_db.delete_one({"email": credentials})
-        response = jsonify({"account deletion": "successful"})
-        unset_jwt_cookies(response)
+        response = jsonify({"data": "Account deletion successful"})
+        flask_jwt_extended.unset_jwt_cookies(response)
         return response, 200
 
-# secured bookmarks endpoint
 @app.route("/api/bookmarks", methods=["GET", "POST", "DELETE"])
-@jwt_required()
+@flask_jwt_extended.jwt_required()
 def bookmarks():
-    credentials = get_jwt_identity()
+    credentials = flask_jwt_extended.get_jwt_identity()
     user = users_db.find_one({"email": credentials})
     bookmarks = user["bookmarks"]
 
@@ -164,26 +150,26 @@ def bookmarks():
     elif request.method == "POST":
         paper_uid = request.get_json()["uid"]
         users_db.update_one({"email": user["email"]}, {"$addToSet": {"bookmarks": paper_uid}})
-        return jsonify({"data": "bookmark addition successful"}), 201
+        return jsonify({"data": "Bookmark addition successful"}), 201
     
     # delete a paper from the bookmarks list
     else:
         paper_uid = request.get_json()["uid"]
         users_db.update_one({"email": user["email"]}, {"$pull": {"bookmarks": paper_uid}})
-        return jsonify({"data": "bookmark deletion successful"}), 200
+        return jsonify({"data": "Bookmark deletion successful"}), 200
 
 @app.after_request
 def refresh_expiring_jwts(response):
     try:
-        expiry = get_jwt()["exp"]
+        expiry = flask_jwt_extended.get_jwt()["exp"]
         now = datetime.datetime.now(datetime.timezone.utc)
-        buffer = datetime.datetime.timestamp(now + datetime.timedelta(minutes=10))
-        
-        if buffer > expiry:
-            user = get_jwt_identity()
-            access_token = create_access_token(identity=user)
+        ten_mins_from_now = datetime.datetime.timestamp(now + datetime.timedelta(minutes=10))
+
+        if expiry < ten_mins_from_now:
+            user = flask_jwt_extended.get_jwt_identity()
+            access_token = flask_jwt_extended.create_access_token(identity=user)
             response = jsonify({"data": "JWT refresh successful"})
-            set_access_cookies(response, access_token)
+            flask_jwt_extended.set_access_cookies(response, access_token)
         return response
     except (RuntimeError, KeyError):
         return response

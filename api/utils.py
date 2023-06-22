@@ -1,7 +1,23 @@
+import os
 import logging
 import pymongo
+from dotenv import load_dotenv
 from collections import OrderedDict
-from typing import Optional, List, DefaultDict, Dict, Any
+from typing import Union, Tuple, Optional, List, DefaultDict, Dict, Any
+
+def get_env_var(get_jwt_key: bool = False) -> Union[Tuple[str, str], Tuple[str, str, str]]:
+    if "GITHUB_ACTIONS" in os.environ:
+        username = os.environ["MONGODB_USERNAME"]
+        password = os.environ["MONGODB_PASSWORD"]
+        jwt_key = os.environ["JWT_KEY"]
+    else:
+        load_dotenv()
+        username = os.getenv("MONGODB_USERNAME")
+        password = os.getenv("MONGODB_PASSWORD")
+        jwt_key = os.getenv("JWT_KEY")
+    if get_jwt_key:
+        return (username, password, jwt_key)
+    return (username, password)
 
 def get_db_connection(username: str, password: str, collection: str) -> Optional[pymongo.collection.Collection]:
     connection = f"mongodb+srv://{username}:{password}@research.holkbao.mongodb.net/?retryWrites=true&w=majority"
@@ -13,8 +29,8 @@ def get_db_connection(username: str, password: str, collection: str) -> Optional
             return None
         logging.info("Connected to MongoDB Atlas")
         return db[collection]
-    except Exception as e:
-        logging.critical(f"Failed to connect to MongoDB Atlas. Error: {e}")
+    except Exception as error:
+        logging.critical(f"Failed to connect to MongoDB Atlas. Error: {error}")
         return None
 
 def upload_db_data(papers_db: pymongo.collection.Collection, papers: List[DefaultDict[str, list]]) -> bool:
@@ -26,8 +42,8 @@ def upload_db_data(papers_db: pymongo.collection.Collection, papers: List[Defaul
         papers_db.insert_many(papers)
         logging.info("Successfully updated the MongoDB Atlas database")
         return True
-    except Exception as e:
-        logging.critical(f"Failed to update the MongoDB Atlas database. Error: {e}")
+    except Exception as error:
+        logging.critical(f"Failed to update the MongoDB Atlas database. Error: {error}")
         return False
 
 class LRUCache:
@@ -50,6 +66,7 @@ class LRUCache:
 # simplify topic names for the Semantic Scholar API
 topics = {
     "AI": "artificial+intelligence",
+    "AR": "hardware+architecture",
     "CC": "computational+complexity",
     "CE": "computational+engineering+finance+science",
     "CG": "computational+geometry",
@@ -66,7 +83,6 @@ topics = {
     "FL": "formal+languages+automata+theory",
     "GT": "game+theory",
     "GR": "graphics",
-    "AR": "hardware+architecture",
     "HC": "human+computer+interaction", 
     "IR": "information+retrieval",
     "IT": "information+theory",

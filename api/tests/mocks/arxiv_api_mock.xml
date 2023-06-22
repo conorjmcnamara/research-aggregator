@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <link href="http://arxiv.org/api/query?search_query%3Dcat%3Acs.AI%26id_list%3D%26start%3D0%26max_results%3D2" rel="self" type="application/atom+xml"/>
+  <title type="html">ArXiv Query: search_query=cat:cs.AI&amp;id_list=&amp;start=0&amp;max_results=2</title>
+  <id>http://arxiv.org/api/sLG0txIUz7g/GKW7ibPhDY0NNSQ</id>
+  <updated>2023-05-16T00:00:00-04:00</updated>
+  <opensearch:totalResults xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/">62895</opensearch:totalResults>
+  <opensearch:startIndex xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/">0</opensearch:startIndex>
+  <opensearch:itemsPerPage xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/">2</opensearch:itemsPerPage>
+  <entry>
+    <id>http://arxiv.org/abs/2305.08854v1</id>
+    <updated>2023-05-15T17:59:57Z</updated>
+    <published>2023-05-15T17:59:57Z</published>
+    <title>Laughing Matters: Introducing Laughing-Face Generation using Diffusion 
+Models</title>
+    <summary>Speech-driven animation has gained significant traction in recent years, with 
+current methods achieving near-photorealistic results. However, the field 
+remains underexplored regarding non-verbal communication despite evidence 
+demonstrating its importance in human interaction. In particular, generating 
+laughter sequences presents a unique challenge due to the intricacy and nuances 
+of this behaviour. This paper aims to bridge this gap by proposing a novel 
+model capable of generating realistic laughter sequences, given a still 
+portrait and an audio clip containing laughter. We highlight the failure cases 
+of traditional facial animation methods and leverage recent advances in 
+diffusion models to produce convincing laughter videos. We train our model on a 
+diverse set of laughter datasets and introduce an evaluation metric 
+specifically designed for laughter. When compared with previous speech-driven 
+approaches, our model achieves state-of-the-art performance across all metrics, 
+even when these are re-trained for laughter generation.</summary>
+    <author>
+      <name>Antoni Bigata Casademunt</name>
+    </author>
+    <author>
+      <name>Rodrigo Mira</name>
+    </author>
+    <author>
+      <name>Nikita Drobyshev</name>
+    </author>
+    <author>
+      <name>Konstantinos Vougioukas</name>
+    </author>
+    <author>
+      <name>Stavros Petridis</name>
+    </author>
+    <author>
+      <name>Maja Pantic</name>
+    </author>
+    <link href="http://arxiv.org/abs/2305.08854v1" rel="alternate" type="text/html"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2305.08854v1" rel="related" type="application/pdf"/>
+    <arxiv:primary_category xmlns:arxiv="http://arxiv.org/schemas/atom" term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2305.08852v1</id>
+    <updated>2023-05-15T17:59:34Z</updated>
+    <published>2023-05-15T17:59:34Z</published>
+    <title>Python Tool for Visualizing Variability of Pareto Fronts over Multiple 
+Runs</title>
+    <summary>Hyperparameter optimization is crucial to achieving high performance in deep 
+learning. On top of the performance, other criteria such as inference time or 
+memory requirement often need to be optimized due to some practical reasons. 
+This motivates research on multi-objective optimization (MOO). However, Pareto 
+fronts of MOO methods are often shown without considering the variability 
+caused by random seeds and this makes the performance stability evaluation 
+difficult. Although there is a concept named empirical attainment surface to 
+enable the visualization with uncertainty over multiple runs, there is no major 
+Python package for empirical attainment surface. We, therefore, develop a 
+Python package for this purpose and describe the usage. The package is 
+available at https://github.com/nabenabe0928/empirical-attainment-func.</summary>
+    <author>
+      <name>Shuhei Watanabe</name>
+    </author>
+    <arxiv:comment xmlns:arxiv="http://arxiv.org/schemas/atom">Submitted to AutoML workshop</arxiv:comment>
+    <link href="http://arxiv.org/abs/2305.08852v1" rel="alternate" type="text/html"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2305.08852v1" rel="related" type="application/pdf"/>
+    <arxiv:primary_category xmlns:arxiv="http://arxiv.org/schemas/atom" term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+  </entry>
+</feed>

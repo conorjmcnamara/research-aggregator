@@ -11,54 +11,48 @@ def show_basic_info(df: pd.DataFrame) -> None:
     print(f"Classes: {df.explode('topics')['topics'].nunique()}")
     print(f"Rows with zero labels: {len(df[df['topics'].apply(len) == 0])}")
 
-def plot_label_count_distribution(df: pd.DataFrame) -> None:
-    # distribution of label counts per paper
-    paper_counts = df["topics"].apply(len).value_counts()
-    axis = paper_counts.plot(kind="bar")
-    for i, count in enumerate(paper_counts):
+def plot_num_labels_distribution(df: pd.DataFrame) -> None:
+    num_labels = df["topics"].apply(len).value_counts()
+    axis = num_labels.plot(kind="bar")
+    for i, count in enumerate(num_labels):
         axis.text(i, count, str(count), ha="center", va="bottom")
-    
-    if not os.path.exists("plots"):
-        os.mkdir("plots")
-
-    plt.title("Distribution of Label Counts per Paper")
-    plt.xlabel("Number of Labels")
-    plt.ylabel("Count")
-    plt.savefig("plots/label_counts_per_paper.png")
+    plt.title("Distribution of Number of Labels in Papers")
+    plt.xlabel("Number of labels")
+    plt.ylabel("Number of papers")
+    plt.savefig("plots/num_labels_in_papers_distribution.png")
     plt.show()
 
-    # distribution of individual class counts
-    class_counts = df["topics"].explode().value_counts()
-    axis = class_counts.plot(kind="bar", width=0.5)
+def plot_class_instance_distribution(df: pd.DataFrame) -> None:
+    class_instances = df["topics"].explode().value_counts()
+    axis = class_instances.plot(kind="bar", width=0.5)
     axis.tick_params(axis="x", labelsize=9)
-
-    plt.title("Distribution of Individual Class Counts")
-    plt.xlabel("Class")
-    plt.ylabel("Count")
-    plt.savefig("plots/individual_class_counts.png")
+    plt.title("Distribution of Class Instances")
+    plt.xlabel("Class ID")
+    plt.ylabel("Number of instances")
+    plt.savefig("plots/class_instance_distribution.png")
     plt.show()
 
-def plot_words_per_abstract(df: pd.DataFrame) -> None:
+def plot_abstract_length_distribution(df: pd.DataFrame) -> None:
     df["word_count"] = df["abstracts"].apply(lambda x: len(x.split()))
     word_count_freq = df["word_count"].value_counts().sort_index()
     plt.bar(word_count_freq.index, word_count_freq.values)
-    plt.title("Distribution of Abstract Word Counts")
-    plt.xlabel("Word Count")
-    plt.ylabel("Abstract Count")
-    plt.savefig("plots/abstract_word_counts.png")
+    plt.title("Distribution of Abstract Lengths")
+    plt.xlabel("Length of abstract")
+    plt.ylabel("Number of abstracts")
+    plt.savefig("plots/abstract_length_distribution.png")
     plt.show()
 
 if __name__ == "__main__":
-    # decompress the data
-    with gzip.open("data/training_df.csv", "rt", encoding="utf-8") as file:
+    with gzip.open("data/training_data.csv", "rt", encoding="utf-8") as file:
         df = pd.read_csv(file)
 
-    # convert the labels to lists of strings
     df["topics"] = df["topics"].apply(literal_eval)
+    df = df[~df["abstracts"].duplicated()]
     show_basic_info(df)
 
-    # remove duplicates from abstracts
-    df = df[~df["abstracts"].duplicated()]
+    if not os.path.exists("plots"):
+        os.mkdir("plots")
 
-    plot_label_count_distribution(df)
-    plot_words_per_abstract(df)
+    plot_num_labels_distribution(df)
+    plot_class_instance_distribution(df)
+    plot_abstract_length_distribution(df)
