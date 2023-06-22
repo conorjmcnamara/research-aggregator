@@ -15,7 +15,7 @@ def load_model() -> Tuple[Sequential, StringLookup]:
     lookup_classes = StringLookup(vocabulary=classes, output_mode="multi_hot")
     return (model, lookup_classes)
 
-def predict(model: Sequential, lookup_classes: StringLookup, abstracts: List[str]) -> List[List[str]]:
+def predict_labels(model: Sequential, lookup_classes: StringLookup, abstracts: List[str]) -> List[List[str]]:
     df = pd.DataFrame(abstracts, columns=["abstracts"])
     executor = concurrent.futures.ThreadPoolExecutor(max_workers=Constants.NUM_PREPROCESSING_THREADS)
     df["abstracts"] = list(executor.map(lambda text: normalize_text(text), df["abstracts"]))

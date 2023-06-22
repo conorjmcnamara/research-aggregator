@@ -6,7 +6,7 @@ from concurrent.futures import ThreadPoolExecutor, wait
 from collections import defaultdict
 from typing import Optional, List, DefaultDict, Dict, Tuple, Any
 from utils import get_env_var, get_db_connection, upload_db_data, topics
-from model.predict import load_model, predict
+from model.predict import load_model, predict_labels
 
 MAX_PAPERS_REQUEST = 25
 NUM_THREADS = 10
@@ -133,7 +133,7 @@ if __name__ == "__main__":
         # predict topic areas for Semantic Scholar abstracts
         else:
             data, abstracts = future.result()
-            predicted_labels = predict(model, lookup_layer, abstracts)
+            predicted_labels = predict_labels(model, lookup_layer, abstracts)
             for i, labels in enumerate(predicted_labels):
                 data[i]["topics"] = labels
                 papers.append(data[i])
