@@ -10,7 +10,7 @@ class Constants:
 
     EMBEDDING_VECTOR_LENGTH = 600
     EPOCHS = 10
-    EARLY_STOP_PATIENCE = 3
+    EARLY_STOP_PATIENCE = 2
     MODEL_FILE = "classifier_model"
     CLASSES_FILE = "classes.pkl"
     PREDICTION_THRESHOLD = 0.5

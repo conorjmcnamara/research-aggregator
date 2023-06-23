@@ -28,19 +28,19 @@ In the ```/api``` directory, remove the ```.example``` extension from the ```.en
 ### Running the Application
 
 ```bash
-# 1. generate training dataset
+# generate training dataset
 $ cd api && python -m model.scraper
 
-# 2. train model
+# train model
 $ cd api && python -m model.train
 
-# 3. aggregate database papers
+# aggregate database papers
 $ cd api && python aggregator.py
 
-# 4. start backend server
+# start backend server
 $ npm run api
 
-# 5. start frontend server
+# start frontend server
 $ npm start
 ```
 
@@ -57,3 +57,71 @@ $ npm run test
 ## Multi-label Text Classification
 
 The application aggregates data from multiple scholarly sources, so a model is needed to standardize topic area classification. Using Keras, a neural network was trained on 141k research paper abstracts across 38 classes. Unseen abstracts can be passed into the model, and each will have one or more topic area labels predicted.
+
+### Dataset Analysis
+
+The training dataset was generated and compressed by the multi-threaded ```scraper.py``` program, which aggregates research paper abstracts and their respective topic area tags using the arXiv.org API.
+
+![Distribution of Class Instances](api/model/plots/class_instance_distribution.png)
+
+The plot above shows class imbalance in the dataset, meaning classes such as LG (machine learning) are overrepresented. To handle this, class weights were computed using each classes' frequency, and those with high instances receive low weights, which reduce significance during training.
+
+![Distribution of Abstract Lengths](api/model/plots/abstract_length_distribution.png)
+
+The plot above shows that the distribution of abstract lengths closley follow a normal distribution, indicating a realistic representation. During vectorization, abstracts are converted to integer vectors of a fixed size, where those abstracts fewer than this size are padded and those larger are partially limited.
+
+### Model Architecture
+
+Text is first normalized by converting it to lowercase and removing new line characters, URLs, Latex, non-alphabetic characters, stop words, short words (sub 3 characters) and extra spaces.
+
+Text is then converted to an integer vector of a fixed size. It's first tokenized into distinct terms, and a mapping is applied to each token to find its index in the vectorizer's vocabulary. Each integer in the resulting vector represents a token in the vocabulary.
+
+An embedding layer is the first layer of the neural network. This takes the integer-encoded vectors and maps each token to a dense vector representation of a fixed size, where the values are learned during training based on context. The embedding vectors capture the semantic relationships between words.
+
+Following this is a dropout layer to reduce overfitting by randomly setting a fraction of its input units to zero. Next, a GlobalAvergagePooling1D layer acts as a dimensionality reduction technique. It takes the sequence of embedded vectors and condenses it into a single vector by averaging the values. This is followed by another dropout layer.
+
+A dense layer of 100 units with a ReLU activation function is used next. ReLU sets negative values to zero and keeps positive values unchanged. This introduces non-linearity to the model, allowing it to learn complex relationships in the data. Afterwards is a dropout layer.
+
+Finally, there is a dense layer with the same number of units as there are classes. It uses the sigmoid activation function to calculate a probability value for each class indepdently, producing a probability distribution.
+
+### Model Evaluation
+
+The dataset was split into 75% training, 12.5% validation and 12.5% test data. The validation dataset is used during model training to optimize hyperparameters, and the test dataset is used post-training to measure performance on unseen data.
+
+The following metrics were monitored during training:
+- **Binary Accuracy:** percentage of correctly predicted labels, where each label is treated as an independent binary classification problem.
+- **Precision:** percentage of true positive predictions out of all positive predictions.
+- **Recall:** percentage of true positive predictions out of all actual positive instances in the dataset.
+- **Macro F1 Score:** unweighted average of the harmonic mean of precision and recall calculated for each class.
+
+### Binary Accuracy
+
+![Training and Validation Binary Accuracy](api/model/plots/training_and_validation_binary_accuracy.png)
+
+The graph above shows a high binary accuracy for both the training and validation datasets. However, given that the dataset is imbalanced and multi-label, binary accuracy is not a suitable representative metric for performance and is misleading.
+
+### Macro F1 Score
+
+F1 score is considered a better metric than binary accuracy for imbalanced multi-label data. It's more comprehensive and balanced, taking into into account both precision (ability to avoid false positives) and recall (ability to avoid false negatives), which are calculated for each individual class.
+
+![Training and Validation F1 Score](api/model/plots/training_and_validation_f1_score.png)
+
+The graph above shows that both the training and validation F1 score's are increasing as the number of epochs increasing, indicating little overfitting, both roughly around 70% after 10 epochs.
+
+### Test Dataset Performance
+
+- Binary Accuracy: 98%
+- Precision: 83%
+- Recall: 59%
+- Macro F1 Score: 70%
+
+### Test Dataset Confusion Matrix
+
+![Confusion Matrix](api/model/plots/confusion_matrix.png)
+
+The matrix above is formatted as follows:
+
+[True Negatives (TN), False Positives (FP)]  
+[False Negatives (FN), True Positives (TP)]
+
+A confusion matrix represents a model's performance on unseen data. It visualizes how many labels were correctly and incorrectly predicted. The above plot is the aggregated confusion matrix computed for each class. It uses a threshold of 0.5 on the probability distribution. It shows more TP than FP and more TN than FN, indicating accurate positive and negative classification.

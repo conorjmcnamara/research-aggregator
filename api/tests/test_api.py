@@ -142,11 +142,11 @@ def test_user_put_invalid(mocker: pytest_mock.MockerFixture):
     mocker.patch.object(users_db, "find_one", return_value=VALID_USERS_DB_ENTRY)
     mocker.patch.object(users_db, "update_one")
 
-    # same email as in user's account
+    # same email as in the user's account
     response = SERVER.put("/api/user", json=json, headers=headers)
     assert response.status_code == 409
 
-    # same password as in user's account
+    # same password as in the user's account
     json = {"password": CREDENTIALS["password"]}
     response = SERVER.put("/api/user", json=json, headers=headers)
     assert response.status_code == 409
@@ -160,12 +160,12 @@ def test_user_put_valid(mocker: pytest_mock.MockerFixture):
     headers = {"Content-Type": "application/json", "X-CSRF-TOKEN": extract_csrf_token_helper(login_response.headers)}
     json = {"email": CREDENTIALS["email"] + "test"}
 
-    # different email than in user's account
+    # different email than in the user's account
     response = SERVER.put("/api/user", json=json, headers=headers)
     assert response.status_code == 200
     headers["X-CSRF-TOKEN"] = extract_csrf_token_helper(response.headers)
 
-    # different password than in user's account
+    # different password than in the user's account
     json = {"password": CREDENTIALS["password"] + "test"}
     response = SERVER.put("/api/user", json=json, headers=headers)
     assert response.status_code == 200

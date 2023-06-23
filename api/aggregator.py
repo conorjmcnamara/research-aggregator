@@ -111,7 +111,6 @@ def parse_semantic_scholar(json_data: List[Dict[str, Any]], id: str) -> Tuple[Li
     return (result, abstracts)
 
 if __name__ == "__main__":
-    # create a pool of threads and a session object for persistent HTTP connections
     session = requests.Session()
     executor = ThreadPoolExecutor(NUM_THREADS)
 
@@ -130,8 +129,8 @@ if __name__ == "__main__":
         if i % 2 == 0:
             for paper in future.result():
                 papers.append(paper)
-        # predict topic areas for Semantic Scholar abstracts
         else:
+            # predict topic areas for Semantic Scholar abstracts
             data, abstracts = future.result()
             predicted_labels = predict_labels(model, lookup_layer, abstracts)
             for i, labels in enumerate(predicted_labels):

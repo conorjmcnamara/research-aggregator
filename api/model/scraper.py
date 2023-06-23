@@ -53,7 +53,6 @@ def fetch_arxiv(id: str, session: requests.Session) -> Optional[List[DefaultDict
         return parse_arxiv(data, id)
 
 if __name__ == "__main__":
-    # create a pool of threads and a session object for persistent HTTP connections
     session = requests.Session()
     executor = ThreadPoolExecutor(NUM_THREADS)
 
