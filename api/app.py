@@ -49,7 +49,7 @@ def search_query(query: str):
         }
     }, {"$limit": 10}]))
 
-    if len(response_pipeline) == 0:
+    if not response_pipeline:
         return jsonify({"data": f"Empty search result with query: {query}"}), 404
     search_data = {}
     for paper in response_pipeline:

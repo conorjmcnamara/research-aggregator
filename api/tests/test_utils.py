@@ -6,7 +6,7 @@ from utils import get_env_var, get_db_connection, upload_db_data, LRUCache, topi
 
 def test_get_env_var_with_jwt_key(mocker: pytest_mock.MockFixture):
     mocker.patch.dict("os.environ", {
-        "GITHUB_ACTIONS": "true",
+        "GITHUB_ACTIONS": "",
         "MONGODB_USERNAME": "username",
         "MONGODB_PASSWORD": "password",
         "JWT_KEY": "jwt_key",

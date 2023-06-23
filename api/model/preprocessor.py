@@ -70,7 +70,6 @@ def split_data(df: pd.DataFrame) -> Tuple[pd.DataFrame]:
         shuffle=True,
         random_state=Constants.SPLIT_SEED
     )
-
     validation_df = test_df.sample(frac=0.5)
     test_df.drop(validation_df.index, inplace=True)
     return (train_df, validation_df, test_df)

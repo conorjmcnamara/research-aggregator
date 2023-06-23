@@ -52,7 +52,6 @@ def fit_model(model: Sequential, class_weights: Dict[int, float], train_dataset:
 def save_model(model: Sequential, text_vectorizer: layers.TextVectorization, lookup_classes: layers.StringLookup) -> None:
     model = Sequential([text_vectorizer, model])
     model.save(Constants.MODEL_FILE, overwrite=True)
-
     with open(Constants.CLASSES_FILE, "wb") as file:
         pickle.dump(lookup_classes.get_vocabulary(), file)
 

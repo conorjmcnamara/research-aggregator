@@ -15,6 +15,7 @@ def get_env_var(get_jwt_key: bool = False) -> Union[Tuple[str, str], Tuple[str, 
         username = os.getenv("MONGODB_USERNAME")
         password = os.getenv("MONGODB_PASSWORD")
         jwt_key = os.getenv("JWT_KEY")
+    
     if get_jwt_key:
         return (username, password, jwt_key)
     return (username, password)

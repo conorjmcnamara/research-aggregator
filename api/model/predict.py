@@ -27,8 +27,8 @@ def predict_labels(model: Sequential, lookup_classes: StringLookup, abstracts: L
     predicted_probailities = model.predict(dataset)
     predicted_probailities = (predicted_probailities >= Constants.PREDICTION_THRESHOLD).astype(int)
     predicted_labels = []
-    classes = lookup_classes.get_vocabulary()
 
+    classes = lookup_classes.get_vocabulary()
     for individual_probailities in predicted_probailities:
         labels = []
         for i, prob in enumerate(individual_probailities):

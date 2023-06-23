@@ -47,8 +47,8 @@ if __name__ == "__main__":
         df = pd.read_csv(file)
 
     df["topics"] = df["topics"].apply(literal_eval)
-    df = df[~df["abstracts"].duplicated()]
     show_basic_info(df)
+    df = df[~df["abstracts"].duplicated()]
 
     if not os.path.exists("plots"):
         os.mkdir("plots")
