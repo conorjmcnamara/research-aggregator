@@ -56,7 +56,7 @@ $ npm run test
 
 ## Multi-label Text Classification
 
-The application aggregates data from multiple scholarly sources, so a model is needed to standardize topic area classification. Using Keras, a neural network was trained on 141k research paper abstracts across 38 classes. Unseen abstracts can be passed into the model, and each will have one or more topic area labels predicted.
+The application aggregates data from multiple scholarly sources, so a model was needed to standardize topic area classification. Using Keras, a neural network was trained on 141k research paper abstracts across 38 classes. Unseen abstracts can be passed into the model, and each will have one or more topic area labels predicted.
 
 ### Dataset Analysis
 
@@ -80,11 +80,11 @@ A GlobalAvergagePooling1D layer acts as a dimensionality reduction technique. It
 
 A dense layer of 100 units with a ReLU activation function is used next. ReLU sets negative values to zero and keeps positive values unchanged. This introduces non-linearity to the model, allowing it to learn complex relationships in the data. Afterwards there is another dropout layer.
 
-Finally, a dense layer with the same number of units as there are classes is used. A sigmoid activation function is used, which calculates a probability value for each class indepdently, producing a probability distribution.
+Finally, a dense layer with a sigmoid activation function and the same number of units as there are classes is used. This function calculates a probability value for each class indepdently, producing a probability distribution.
 
 ### Model Evaluation
 
-The dataset was split into 75% training, 12.5% validation and 12.5% test data. The validation dataset is used during model training to optimize hyperparameters, and the test dataset is used post-training to measure performance on unseen data.
+The dataset was split into 75% training, 12.5% validation and 12.5% test data. A validation dataset is used during model training to optimize hyperparameters, and a test dataset is used post-training to measure performance on unseen data.
 
 The following metrics were monitored during training:
 - **Binary Accuracy:** percentage of correctly predicted labels.
