@@ -56,7 +56,7 @@ $ npm run test
 
 ## Multi-label Text Classification
 
-The application aggregates data from multiple scholarly sources, so a model was needed to standardize topic area classification. Using Keras, a neural network was trained on 141k research paper abstracts across 38 classes. Unseen abstracts can be passed into the model, and each will have one or more topic area labels predicted.
+The application aggregates data from multiple scholarly sources, so a model was needed to standardize topic area classification. Using Keras, a neural network was trained on 141k research paper abstracts across 38 classes. Unseen abstracts can be passed into the model, and each can have multiple topic area labels predicted.
 
 ### Dataset Analysis
 
@@ -74,9 +74,9 @@ The plot above shows that the distribution of abstract lengths closley follow a 
 
 Text is first normalized by converting it to lowercase and removing new line characters, URLs, Latex, non-alphabetic characters, stop words, short words (sub 3 characters) and extra spaces. Text is then converted to an integer vector of a fixed size. It's first tokenized into distinct terms, and a mapping is applied to each token to find its index in the vectorizer's vocabulary. Each integer in the resulting vector represents a token in the vocabulary.
 
-An embedding layer is the first layer of the neural network. This takes the integer-encoded vectors and maps each token to a dense vector representation of a fixed size, where the values are learned during training based on context. The embedding vectors capture the semantic relationships between words. Following this is a dropout layer to reduce overfitting by randomly setting a fraction of its input units to zero.
+An embedding layer is the first layer of the neural network. This takes the integer-encoded vectors and maps each token to a dense vector representation of a fixed size, where the values are learned during training based on context. The embedding vectors capture the semantic relationships between words. Following this, is a dropout layer to reduce overfitting by randomly setting a fraction of its input units to zero.
 
-A GlobalAvergagePooling1D layer acts as a dimensionality reduction technique. It takes the sequence of embedded vectors and condenses it into a single vector by averaging the values. This is followed by another dropout layer.
+A GlobalAvergagePooling1D layer acts as a dimensionality reduction technique. It takes the sequence of embedded vectors and condenses them into a single vector by averaging the values. This is followed by another dropout layer.
 
 A dense layer of 100 units with a ReLU activation function is used next. ReLU sets negative values to zero and keeps positive values unchanged. This introduces non-linearity to the model, allowing it to learn complex relationships in the data. Afterwards there is another dropout layer.
 
